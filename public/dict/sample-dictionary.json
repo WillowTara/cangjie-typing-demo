@@ -1,0 +1,15 @@
+[
+  { "char": "日", "cangjie": "A", "quick": "A" },
+  { "char": "月", "cangjie": "B", "quick": "B" },
+  { "char": "金", "cangjie": "C", "quick": "C" },
+  { "char": "木", "cangjie": "D", "quick": "D" },
+  { "char": "水", "cangjie": "E", "quick": "E" },
+  { "char": "火", "cangjie": "F", "quick": "F" },
+  { "char": "土", "cangjie": "G", "quick": "G" },
+  { "char": "人", "cangjie": "O", "quick": "O" },
+  { "char": "心", "cangjie": "P", "quick": "P" },
+  { "char": "口", "cangjie": "R", "quick": "R" },
+  { "char": "明", "cangjie": "AB", "quick": "AB" },
+  { "char": "林", "cangjie": "DD", "quick": "DD" },
+  { "char": "森", "cangjie": "DDD", "quick": "DD" }
+]

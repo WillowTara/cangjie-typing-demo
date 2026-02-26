@@ -1,0 +1,98 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg-color: #323437;
+  --main-color: #e2b714;
+  --caret-color: #e2b714;
+  --sub-color: #646669;
+  --sub-alt-color: #2c2e31;
+  --text-color: #d1d0c5;
+  --error-color: #ca4754;
+  --error-extra-color: #7e2a33;
+  --colorful-error-color: #ca4754;
+  --colorful-error-extra-color: #7e2a33;
+  
+  --font-main: 'Roboto Mono', 'JetBrains Mono', 'Fira Code', monospace;
+  --font-size: 1.5rem;
+  --font-size-large: 2rem;
+  
+  --transition-fast: 0.1s ease;
+  --transition-medium: 0.25s ease;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-main);
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  min-height: 100vh;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  color: inherit;
+}
+
+input, textarea, select {
+  font-family: inherit;
+  font-size: inherit;
+  border: none;
+  background: transparent;
+  color: inherit;
+  outline: none;
+}
+
+::selection {
+  background-color: var(--main-color);
+  color: var(--bg-color);
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--sub-alt-color);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--sub-color);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--main-color);
+}
+
+@media (max-width: 768px) {
+  :root {
+    --font-size: 1.2rem;
+    --font-size-large: 1.5rem;
+  }
+  
+  html {
+    font-size: 14px;
+  }
+}
