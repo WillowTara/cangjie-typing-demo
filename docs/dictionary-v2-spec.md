@@ -1,6 +1,6 @@
 # Dictionary Data Format v2 Specification (Draft)
 
-Status: Draft
+Status: Draft (PR1 implemented)
 Owner: Dictionary Platform
 Last Updated: 2026-02-27
 
@@ -237,6 +237,7 @@ M9. Deprecation policy:
 
 ### 6.1 Runtime API Stability
 - Introduce lookup abstraction (`lookup(char)`) so UI does not depend on concrete storage (`Map` vs binary index).
+- Status (PR1): Implemented in `src/App.tsx`, `src/features/dictionary/useDictionary.ts`, `src/features/lookup/DictionaryLookup.tsx`, and `src/lib/dictionary.ts`.
 
 ### 6.2 CI and Tests
 - Add deterministic codec unit tests for header, offsets, CRC, and decode correctness.
@@ -256,4 +257,5 @@ M9. Deprecation policy:
 
 ## 8. Version History
 
+- v0.2 (2026-02-27): PR1 landed with runtime lookup abstraction in app/hook/UI integration.
 - v0.1 (2026-02-27): Initial draft created from architecture planning.

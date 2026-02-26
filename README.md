@@ -1,6 +1,6 @@
 # 倉頡打字練習 - Cangjie Typing Practice Demo
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue)
+![Version](https://img.shields.io/badge/version-1.1.2-blue)
 ![React](https://img.shields.io/badge/React-19.2+-61DAFB)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9+-3178C6)
 ![Vite](https://img.shields.io/badge/Vite-7.3+-646CFF)
@@ -244,6 +244,11 @@ VITE_DICTIONARY_URL=/dict/full-dictionary.json
 - UI 靈感：Monkeytype (https://monkeytype.com/)
 
 ## 更新日誌
+
+### v1.1.2 (2026-02-27) - PR1 lookup 抽象落地
+- ✅ 完成 PR1 `lookup(char)` 抽象介面，`DictionaryLookup` 不再直接依賴 `Map.get`
+- ✅ `useDictionary` 對外提供 `lookup`，並保留 `dictionaryIndex` 相容欄位
+- ✅ 在 `pr/01-dict-v2-lookup-abstraction` 分支完成驗證：`npm run check`、`npm run test:e2e`、`npm run build`
 
 ### v1.1.1 (2026-02-27) - v2 規格文件化
 - ✅ 新增 `docs/dictionary-v2-spec.md`（bin/meta/migration 規格草案）

@@ -56,7 +56,7 @@ Related Spec: `docs/dictionary-v2-spec.md`
 
 ## 5. Runtime 整合（本 repo）
 
-- [ ] UI lookup 走抽象介面（例如 `lookup(char)`），不綁死 `Map.get`
+- [x] UI lookup 走抽象介面（例如 `lookup(char)`），不綁死 `Map.get`
 - [ ] `useDictionary` 可辨識並載入 v2 binary（`arrayBuffer`）
 - [ ] v2 decode 失敗時會回退 v1 parser
 - [ ] v1 parser 失敗時會回退 built-in fallback index
@@ -75,7 +75,7 @@ Related Spec: `docs/dictionary-v2-spec.md`
 ## 7. PR 拆分與驗收（建議）
 
 ### PR1: Lookup 抽象介面
-- [ ] 完成 lookup interface 抽象，UI 不直接依賴 `Map`
+- [x] 完成 lookup interface 抽象，UI 不直接依賴 `Map`
 
 ### PR2: Binary codec
 - [ ] 完成 v2 encode/decode + 單測
@@ -105,3 +105,8 @@ Related Spec: `docs/dictionary-v2-spec.md`
 - [ ] 來源授權資料可追溯
 - [ ] rollback 路徑可用（可切回 v1）
 - [ ] 版本標記與 changelog 已更新
+
+## 9. Progress Notes
+
+- 2026-02-27: PR1 `lookup` 抽象完成（`src/App.tsx`、`src/features/dictionary/useDictionary.ts`、`src/features/lookup/DictionaryLookup.tsx`、`src/lib/dictionary.ts`）。
+- 2026-02-27: PR1 分支品質關卡已通過：`npm run check`、`npm run test:e2e`、`npm run build`。
