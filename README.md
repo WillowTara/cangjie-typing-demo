@@ -232,6 +232,11 @@ VITE_DICTIONARY_URL=/dict/full-dictionary.json
 - 使用 localStorage 儲存歷史成績
 - 或接入後端 API 儲存至資料庫
 
+### 4. Dictionary v2 規格與落地清單
+- 規格草案：`docs/dictionary-v2-spec.md`
+- 實作清單：`docs/dictionary-v2-checklist.md`
+- 建議流程：先更新規格，再依清單拆 PR 實作，避免 migration 規則在開發中遺漏
+
 ## 授權與鳴謝
 
 - 練習素材：原創白話文示範
@@ -240,12 +245,9 @@ VITE_DICTIONARY_URL=/dict/full-dictionary.json
 
 ## 更新日誌
 
-### v1.0.0 (2026-02-26) - Demo 封板
-- ✅ 打字練習功能（WPM/CPM/準確率/進度）
-- ✅ 字典查詢功能（倉頡碼/速成碼/鍵序）
-- ✅ Monkeytype 風格深色主題
-- ✅ 響應式設計（支援手機/平板）
-- ✅ CSV/JSON 字典匯入優化
+### v1.1.1 (2026-02-27) - v2 規格文件化
+- ✅ 新增 `docs/dictionary-v2-spec.md`（bin/meta/migration 規格草案）
+- ✅ 新增 `docs/dictionary-v2-checklist.md`（PR 執行與驗收清單）
 
 ### v1.1.0 (2026-02-27) - 基線補強
 - ✅ Node/CI 對齊（`.nvmrc` + CI `node-version-file`）
@@ -253,3 +255,10 @@ VITE_DICTIONARY_URL=/dict/full-dictionary.json
 - ✅ Playwright E2E 基線（3 條 happy-path）
 - ✅ 架構拆分（features/config/observability）
 - ✅ 字典來源設定治理（`VITE_DICTIONARY_URL`）
+
+### v1.0.0 (2026-02-26) - Demo 封板
+- ✅ 打字練習功能（WPM/CPM/準確率/進度）
+- ✅ 字典查詢功能（倉頡碼/速成碼/鍵序）
+- ✅ Monkeytype 風格深色主題
+- ✅ 響應式設計（支援手機/平板）
+- ✅ CSV/JSON 字典匯入優化
