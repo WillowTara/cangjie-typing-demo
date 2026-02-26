@@ -11,6 +11,29 @@ export type DictionaryIndex = {
   size: number
 }
 
+// Lookup abstraction - allows UI to query without knowing storage implementation
+/**
+ * Result of a dictionary lookup for a single character.
+ */
+export type LookupResult = {
+  cangjie: string
+  quick: string
+}
+
+/**
+ * Abstract lookup function - UI uses this to query dictionary.
+ * This decouples UI from concrete storage (Map vs binary index).
+ */
+export type DictionaryLookupFn = (char: string) => LookupResult | undefined
+
+/**
+ * Dictionary source interface - provides lookup abstraction.
+ */
+export type DictionarySource = {
+  lookup: DictionaryLookupFn
+  size: number
+}
+
 export type DictionaryFormat = 'csv' | 'json'
 
 export type DictionaryIssueCode =
