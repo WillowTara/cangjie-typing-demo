@@ -61,7 +61,12 @@ newproject/
 │   ├── App.tsx           # 主應用程式
 │   ├── App.css           # 樣式
 │   ├── index.css         # 全域樣式
+│   ├── config/runtime.ts # 執行期設定（VITE_*）
+│   ├── features/         # typing/lookup/dictionary 模組
+│   ├── observability/    # 錯誤可觀測模組
 │   └── lib/dictionary.ts # 字典解析模組
+├── e2e/                  # Playwright E2E
+├── playwright.config.ts
 ├── package.json
 └── vite.config.ts
 ```
@@ -71,6 +76,12 @@ newproject/
 ```bash
 # 確保 build 成功
 npm run build
+
+# 全量品質關卡
+npm run check
+
+# E2E 測試
+npm run test:e2e
 
 # 預覽本地部署
 npm run preview
@@ -91,6 +102,6 @@ npm run preview
 ## 技術規格
 
 - **Framework**: Vite + React 19 + TypeScript
-- **Node 版本**: 建議 22.x
+- **Node 版本**: 25.7.0（以 `.nvmrc` 為準）
 - **建置輸出**: `dist/`
 - **依賴**: 無後端，純靜態部署

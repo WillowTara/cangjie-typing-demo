@@ -301,7 +301,18 @@
   top: 50%;
   transform: translateY(-50%);
   color: var(--sub-color);
-  font-size: 0.74rem;
+font-size: 0.74rem;
+}
+
+.lookup-message {
+  color: var(--sub-color);
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 1rem;
+}
+
+.lookup-message.error {
+  color: var(--error-color);
 }
 
 .lookup-results {

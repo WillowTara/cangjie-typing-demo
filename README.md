@@ -47,12 +47,20 @@ Monkeytype 風格的倉頡與速成輸入法練習應用，同時提供字典查
 ```
 newproject/
 ├── src/
-│   ├── App.tsx              # 主應用元件 (包含所有 UI 元件)
+│   ├── App.tsx              # 應用組裝層（composition root）
 │   ├── App.css             # 樣式定義
 │   ├── index.css           # 全域樣式 (CSS Variables)
 │   ├── main.tsx            # 入口點
+│   ├── config/
+│   │   └── runtime.ts      # 執行期設定（VITE_*）
+│   ├── features/
+│   │   ├── dictionary/     # 字典載入與 fallback
+│   │   ├── lookup/         # 查碼 UI
+│   │   └── typing/         # 打字流程與狀態管理
+│   ├── observability/      # logger、全域錯誤攔截、ErrorBoundary
 │   └── lib/
-│       └── dictionary.ts   # 字典資料處理與索引建置
+│       └── dictionary.ts   # 字典解析與驗證核心
+├── e2e/                    # Playwright E2E 測試
 ├── public/
 │   └── dict/               # 外部字典檔案 (CSV/JSON)
 │       ├── sample-dictionary.csv
@@ -81,21 +89,25 @@ newproject/
 - parseDictionaryTextWithReport(filename, text): DictionaryParseResult
 ```
 
-#### 2. App.tsx - 應用主邏輯
+#### 2. App.tsx - 組裝層
 ```
-主要狀態 (State)：
-- viewMode: 'typing' | 'lookup' | 'result'  # 視圖切換
-- duration: number                            # 練習計時秒數
-- inputValue: string                         # 使用者輸入
-- timeLeft: number                           # 剩餘時間
-- isRunning: boolean                         # 練習是否進行中
-- testCompleted: boolean                     # 練習是否完成
+職責：
+- 協調 view mode（typing / lookup / result）
+- 串接 typing session hook 與 dictionary hook
+- 保持 UI 組件職責分離，避免單檔過度耦合
 
-主要函數：
-- normalizeChineseText(): 過濾出中文字元
-- codeToEnglishKeys(): 將倉頡碼轉為鍵盤序列
-- handleInput(): 處理使用者輸入
-- resetTypingState(): 重設練習狀態
+實作模組：
+- features/typing/useTypingSession.ts：打字狀態機與統計
+- features/lookup/DictionaryLookup.tsx：查碼 UI
+- features/dictionary/useDictionary.ts：字典 fetch + fallback
+```
+
+#### 3. 錯誤可觀測 (Observability)
+```
+模組：
+- observability/logger.ts：結構化日誌（debug/info/warn/error）
+- observability/errorHandling.ts：window error / unhandledrejection 捕捉
+- observability/AppErrorBoundary.tsx：React 錯誤邊界 fallback UI
 ```
 
 ### 字典資料格式
@@ -136,8 +148,18 @@ char,cangjie,quick
 ## 本地開發
 
 ### 環境要求
-- Node.js 18+
+- Node.js 25.7.0（以 `.nvmrc` 為準）
 - npm 或 yarn
+
+### 環境變數（設定治理）
+建立 `.env.local`（或 `.env.development`）可覆蓋字典來源：
+
+```bash
+VITE_DICTIONARY_URL=/dict/sample-dictionary.json
+```
+
+- 所有執行期設定由 `src/config/runtime.ts` 集中管理
+- 未提供 `VITE_DICTIONARY_URL` 時，會回退到預設 `/dict/sample-dictionary.json`
 
 ### 安裝與啟動
 ```bash
@@ -152,6 +174,12 @@ npm run build
 
 # 程式碼檢查
 npm run lint
+
+# 全量品質關卡（typecheck + lint + unit/dom + coverage）
+npm run check
+
+# E2E 測試
+npm run test:e2e
 ```
 
 ### Vercel 部署
@@ -189,14 +217,12 @@ npm run lint
 
 ### 1. 接入完整字典
 ```typescript
-// 替換 src/App.tsx 中的 DICTIONARY 常數
-import { parseDictionaryText, buildDictionaryIndex } from './lib/dictionary'
+// 透過環境變數覆蓋字典來源（建議）
+// .env.local
+VITE_DICTIONARY_URL=/dict/full-dictionary.json
 
-// 從 public/dict/ 目錄載入
-const response = await fetch('/dict/full-dictionary.json')
-const text = await response.text()
-const FULL_DICTIONARY = parseDictionaryText('dict.json', text)
-const FULL_INDEX = buildDictionaryIndex(FULL_DICTIONARY)
+// 由 src/config/runtime.ts 統一讀取
+// useDictionary 會自動載入並在失敗時 fallback
 ```
 
 ### 2. 新增練習素材
@@ -220,3 +246,10 @@ const FULL_INDEX = buildDictionaryIndex(FULL_DICTIONARY)
 - ✅ Monkeytype 風格深色主題
 - ✅ 響應式設計（支援手機/平板）
 - ✅ CSV/JSON 字典匯入優化
+
+### v1.1.0 (2026-02-27) - 基線補強
+- ✅ Node/CI 對齊（`.nvmrc` + CI `node-version-file`）
+- ✅ 測試分流（Vitest node/dom）與 coverage 門檻
+- ✅ Playwright E2E 基線（3 條 happy-path）
+- ✅ 架構拆分（features/config/observability）
+- ✅ 字典來源設定治理（`VITE_DICTIONARY_URL`）
