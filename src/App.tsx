@@ -1,12 +1,7 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import './App.css'
-import {
-  buildDictionaryIndex,
-  type DictionaryEntry,
-  type DictionaryIndex,
-} from './lib/dictionary'
+import { buildDictionaryIndex, type DictionaryEntry, type DictionaryIndex } from './lib/dictionary'
 
-type InputMode = 'cangjie' | 'quick'
 type ViewMode = 'typing' | 'lookup' | 'result'
 
 const DICTIONARY: DictionaryEntry[] = [
@@ -71,109 +66,98 @@ const PRACTICE_TEXTS = [
   '你我他 都愛學習',
 ]
 
-function phraseToCodes(
-  phrase: string,
-  mode: InputMode,
-  dictionaryMap: DictionaryIndex['map'],
-): string[] {
-  return Array.from(phrase).map((char) => {
-    if (char === ' ') return '/'
-    const entry = dictionaryMap.get(char)
-    if (!entry) return '?'
-    return mode === 'cangjie' ? entry.cangjie : entry.quick
-  })
+function normalizeChineseText(text: string): string {
+  return Array.from(text)
+    .filter((char) => /[\u3400-\u9fff\uf900-\ufaff]/u.test(char))
+    .join('')
 }
 
 function codeToEnglishKeys(code: string): string {
   return code.split('').join(' ')
 }
 
+function formatTime(seconds: number): string {
+  const mins = Math.floor(seconds / 60)
+  const secs = seconds % 60
+  return `${mins}:${secs.toString().padStart(2, '0')}`
+}
+
+function randomPracticeText(currentText: string): string {
+  const candidates = PRACTICE_TEXTS.filter((text) => text !== currentText)
+  if (candidates.length === 0) {
+    return currentText
+  }
+
+  return candidates[Math.floor(Math.random() * candidates.length)] ?? currentText
+}
+
 function Header({
   viewMode,
-  setViewMode,
+  onSwitch,
 }: {
   viewMode: ViewMode
-  setViewMode: (mode: ViewMode) => void
+  onSwitch: (mode: ViewMode) => void
 }) {
   return (
     <header className="header">
-      <div className="header-left">
-        <div className="logo">
-          <span className="logo-icon">倉</span>
-          <span className="logo-text">cangjie</span>
-        </div>
+      <div className="logo">
+        <span className="logo-icon">倉</span>
+        <span className="logo-text">cangjie</span>
       </div>
       <nav className="nav">
         <button
+          type="button"
           className={`nav-btn ${viewMode === 'typing' ? 'active' : ''}`}
-          onClick={() => setViewMode('typing')}
+          onClick={() => onSwitch('typing')}
         >
           打字
         </button>
         <button
+          type="button"
           className={`nav-btn ${viewMode === 'lookup' ? 'active' : ''}`}
-          onClick={() => setViewMode('lookup')}
+          onClick={() => onSwitch('lookup')}
         >
           查碼
         </button>
       </nav>
-      <div className="header-right">
-        <span className="version">Demo</span>
-      </div>
+      <span className="version">Demo</span>
     </header>
   )
 }
 
 function ConfigBar({
-  mode,
-  setMode,
   duration,
-  setDuration,
+  onDurationChange,
+  onReroll,
   onRestart,
 }: {
-  mode: InputMode
-  setMode: (mode: InputMode) => void
   duration: number
-  setDuration: (duration: number) => void
+  onDurationChange: (duration: number) => void
+  onReroll: () => void
   onRestart: () => void
 }) {
   return (
     <div className="config-bar">
       <div className="config-group">
-        <span className="config-label">mode</span>
-        <div className="config-options">
-          <button
-            className={`config-option ${mode === 'cangjie' ? 'active' : ''}`}
-            onClick={() => setMode('cangjie')}
-          >
-            倉頡
-          </button>
-          <button
-            className={`config-option ${mode === 'quick' ? 'active' : ''}`}
-            onClick={() => setMode('quick')}
-          >
-            速成
-          </button>
-        </div>
-      </div>
-      <div className="config-group">
         <span className="config-label">time</span>
         <div className="config-options">
-          {[15, 30, 60, 120].map((sec) => (
+          {[15, 30, 60, 120].map((seconds) => (
             <button
-              key={sec}
-              className={`config-option ${duration === sec ? 'active' : ''}`}
-              onClick={() => setDuration(sec)}
+              key={seconds}
+              type="button"
+              className={`config-option ${duration === seconds ? 'active' : ''}`}
+              onClick={() => onDurationChange(seconds)}
             >
-              {sec}
+              {seconds}
             </button>
           ))}
         </div>
       </div>
-      <button className="restart-btn" onClick={onRestart}>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
-        </svg>
+      <button type="button" className="config-action" onClick={onReroll}>
+        換一段
+      </button>
+      <button type="button" className="config-action" onClick={onRestart}>
+        重設
       </button>
     </div>
   )
@@ -183,17 +167,13 @@ function StatsBar({
   timeLeft,
   wpm,
   accuracy,
+  progress,
 }: {
   timeLeft: number
   wpm: number
   accuracy: number
+  progress: number
 }) {
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60)
-    const secs = seconds % 60
-    return `${mins}:${secs.toString().padStart(2, '0')}`
-  }
-
   return (
     <div className="stats-bar">
       <div className="stat">
@@ -208,24 +188,28 @@ function StatsBar({
         <span className="stat-label">acc</span>
         <span className="stat-value">{accuracy.toFixed(0)}%</span>
       </div>
+      <div className="stat">
+        <span className="stat-label">progress</span>
+        <span className="stat-value">{progress.toFixed(0)}%</span>
+      </div>
     </div>
   )
 }
 
 function TypingArea({
-  expectedTokens,
-  typedTokens,
-  isFocused,
-  setIsFocused,
-  onInput,
+  expectedChars,
+  typedChars,
   inputValue,
+  isFocused,
+  onFocusChange,
+  onInput,
 }: {
-  expectedTokens: string[]
-  typedTokens: string[]
-  isFocused: boolean
-  setIsFocused: (focused: boolean) => void
-  onInput: (value: string) => void
+  expectedChars: string[]
+  typedChars: string[]
   inputValue: string
+  isFocused: boolean
+  onFocusChange: (focused: boolean) => void
+  onInput: (value: string) => void
 }) {
   const inputRef = useRef<HTMLTextAreaElement>(null)
 
@@ -235,54 +219,51 @@ function TypingArea({
     }
   }, [isFocused])
 
-  const handleClick = () => {
-    setIsFocused(true)
+  const handleContainerClick = () => {
+    onFocusChange(true)
     inputRef.current?.focus()
   }
 
   return (
-    <div
-      className={`typing-area ${isFocused ? 'focused' : ''}`}
-      onClick={handleClick}
-    >
-      {!isFocused && (
-        <div className="focus-prompt">
-          <span>點擊或按任意鍵開始</span>
-        </div>
-      )}
+    <section className={`typing-area ${isFocused ? 'focused' : ''}`} onClick={handleContainerClick}>
+      {!isFocused ? <p className="focus-prompt">點擊輸入框，切到中文輸入法開始練習</p> : null}
 
-      <div className="words-container">
-        {expectedTokens.map((token, index) => {
-          const typed = typedTokens[index]
-          const isCurrent = index === typedTokens.length
+      <div className="target-text" aria-label="練習文本">
+        {expectedChars.map((char, index) => {
+          const typed = typedChars[index]
+          const isCurrent = index === typedChars.length
 
-          let className = 'word'
-          if (typed) {
-            className += typed === token ? ' correct' : ' incorrect'
+          let className = 'target-char'
+          if (typeof typed !== 'undefined') {
+            className += typed === char ? ' correct' : ' incorrect'
           } else if (isCurrent) {
             className += ' current'
           }
 
           return (
-            <span key={index} className={className}>
-              {token}
-              {isCurrent && <span className="caret" />}
+            <span key={`${char}-${index}`} className={className}>
+              {char}
+              {isCurrent ? <span className="caret" /> : null}
             </span>
           )
         })}
       </div>
 
+      <label htmlFor="typing-input" className="typing-input-label">
+        請輸入與上方相同的中文內容（不需輸入空格）
+      </label>
       <textarea
+        id="typing-input"
         ref={inputRef}
-        className="hidden-input"
+        className="typing-input"
         value={inputValue}
-        onChange={(e) => onInput(e.target.value)}
-        onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(false)}
+        onChange={(event) => onInput(event.target.value)}
+        onFocus={() => onFocusChange(true)}
+        onBlur={() => onFocusChange(false)}
+        placeholder="在這裡輸入中文..."
         spellCheck={false}
-        autoComplete="off"
       />
-    </div>
+    </section>
   )
 }
 
@@ -290,23 +271,22 @@ function ResultScreen({
   wpm,
   accuracy,
   cpm,
-  correctTokens,
-  totalTokens,
-  onRestart,
-  onSwitchMode,
+  correctChars,
+  totalChars,
+  onRetry,
+  onLookup,
 }: {
   wpm: number
   accuracy: number
   cpm: number
-  correctTokens: number
-  totalTokens: number
-  onRestart: () => void
-  onSwitchMode: () => void
+  correctChars: number
+  totalChars: number
+  onRetry: () => void
+  onLookup: () => void
 }) {
   return (
-    <div className="result-screen">
+    <section className="result-screen">
       <h2 className="result-title">測試完成</h2>
-
       <div className="result-stats">
         <div className="result-stat main">
           <span className="result-label">wpm</span>
@@ -322,150 +302,136 @@ function ResultScreen({
         </div>
         <div className="result-stat">
           <span className="result-label">chars</span>
-          <span className="result-value">{correctTokens}/{totalTokens}</span>
+          <span className="result-value">
+            {correctChars}/{totalChars}
+          </span>
         </div>
       </div>
-
       <div className="result-actions">
-        <button className="btn-primary" onClick={onRestart}>
-          再測一次
+        <button type="button" className="btn-primary" onClick={onRetry}>
+          再試一次
         </button>
-        <button className="btn-secondary" onClick={onSwitchMode}>
-          查碼字典
+        <button type="button" className="btn-secondary" onClick={onLookup}>
+          去查碼
         </button>
       </div>
-    </div>
+    </section>
   )
 }
 
-function DictionaryLookup({
-  dictionaryIndex,
-}: {
-  dictionaryIndex: DictionaryIndex
-}) {
+function DictionaryLookup({ dictionaryIndex }: { dictionaryIndex: DictionaryIndex }) {
   const [input, setInput] = useState('')
 
-  const results = useMemo(() => {
-    if (!input.trim()) return []
+  const rows = useMemo(() => {
+    if (!input.trim()) {
+      return []
+    }
+
     return Array.from(input).map((char) => {
       const entry = dictionaryIndex.map.get(char)
       return {
         char,
         cangjie: entry?.cangjie ?? '-',
         quick: entry?.quick ?? '-',
-        english: entry ? codeToEnglishKeys(entry.cangjie) : '-',
+        cangjieKeys: entry ? codeToEnglishKeys(entry.cangjie) : '-',
       }
     })
   }, [input, dictionaryIndex])
 
   return (
-    <div className="dictionary-lookup">
+    <section className="dictionary-lookup">
       <div className="lookup-input-container">
         <input
           type="text"
           className="lookup-input"
           value={input}
-          onChange={(e) => setInput(e.target.value)}
+          onChange={(event) => setInput(event.target.value)}
           placeholder="輸入中文字查詢倉頡/速成碼..."
         />
-        <span className="lookup-hint">{results.length} 字</span>
+        <span className="lookup-hint">{rows.length} 字</span>
       </div>
 
-      {results.length > 0 && (
+      {rows.length > 0 ? (
         <div className="lookup-results">
-          {results.map((item, index) => (
-            <div key={index} className="lookup-item">
-              <span className="lookup-char">{item.char}</span>
+          {rows.map((row) => (
+            <article key={`${row.char}-${row.cangjie}-${row.quick}`} className="lookup-item">
+              <span className="lookup-char">{row.char}</span>
               <div className="lookup-codes">
                 <div className="code-row">
                   <span className="code-label">倉頡</span>
-                  <span className="code-value">{item.cangjie}</span>
-                  <span className="code-english">{item.english}</span>
+                  <span className="code-value">{row.cangjie}</span>
+                  <span className="code-english">{row.cangjieKeys}</span>
                 </div>
                 <div className="code-row">
                   <span className="code-label">速成</span>
-                  <span className="code-value">{item.quick}</span>
+                  <span className="code-value">{row.quick}</span>
                 </div>
               </div>
-            </div>
+            </article>
           ))}
         </div>
-      )}
-    </div>
+      ) : null}
+    </section>
   )
 }
 
 function App() {
   const [viewMode, setViewMode] = useState<ViewMode>('typing')
-  const [dictionaryIndex] = useState<DictionaryIndex>(BUILTIN_INDEX)
-
-  // Typing test states
-  const [practiceMode, setPracticeMode] = useState<InputMode>('cangjie')
   const [duration, setDuration] = useState(60)
-  const [practiceText] = useState(PRACTICE_TEXTS[0])
+  const [practiceText, setPracticeText] = useState(PRACTICE_TEXTS[0] ?? '')
   const [inputValue, setInputValue] = useState('')
   const [timeLeft, setTimeLeft] = useState(60)
+  const [elapsedSeconds, setElapsedSeconds] = useState(0)
   const [isRunning, setIsRunning] = useState(false)
   const [isFocused, setIsFocused] = useState(false)
-  const [elapsedSeconds, setElapsedSeconds] = useState(0)
   const [testCompleted, setTestCompleted] = useState(false)
 
-  const expectedTokens = useMemo(() => {
-    const source = practiceText.replace(/\s+/g, '')
-    return phraseToCodes(source, practiceMode, dictionaryIndex.map)
-  }, [practiceText, practiceMode, dictionaryIndex])
-
-  const typedTokens = useMemo(() => {
-    const trimmed = inputValue.trim()
-    if (!trimmed) return []
-    return trimmed.split(/\s+/)
-  }, [inputValue])
+  const expectedText = useMemo(() => normalizeChineseText(practiceText), [practiceText])
+  const expectedChars = useMemo(() => Array.from(expectedText), [expectedText])
+  const typedText = useMemo(() => normalizeChineseText(inputValue), [inputValue])
+  const typedChars = useMemo(() => Array.from(typedText), [typedText])
 
   const stats = useMemo(() => {
-    const typedChars = typedTokens.join('').length
-    const comparedCount = Math.min(typedTokens.length, expectedTokens.length)
-    let correctTokens = 0
+    const comparedCount = Math.min(typedChars.length, expectedChars.length)
+    let correctChars = 0
 
-    for (let i = 0; i < comparedCount; i++) {
-      if (typedTokens[i]?.toUpperCase() === expectedTokens[i]) {
-        correctTokens++
+    for (let index = 0; index < comparedCount; index += 1) {
+      if (typedChars[index] === expectedChars[index]) {
+        correctChars += 1
       }
     }
 
-    const accuracy =
-      typedTokens.length === 0 ? 100 : (correctTokens / typedTokens.length) * 100
-    const effectiveElapsed = elapsedSeconds > 0 ? elapsedSeconds : 1
-    const minutes = effectiveElapsed / 60
-    const cpm = minutes === 0 ? 0 : Math.round(typedChars / minutes)
-    const wpm = minutes === 0 ? 0 : Math.round(typedChars / 5 / minutes)
+    const accuracy = typedChars.length === 0 ? 100 : (correctChars / typedChars.length) * 100
+    const effectiveElapsedSeconds = elapsedSeconds > 0 ? elapsedSeconds : 1
+    const minutes = effectiveElapsedSeconds / 60
+    const cpm = minutes === 0 ? 0 : Math.round(typedChars.length / minutes)
+    const wpm = minutes === 0 ? 0 : Math.round(typedChars.length / 5 / minutes)
+    const progress =
+      expectedChars.length === 0
+        ? 0
+        : Math.min(100, (typedChars.length / expectedChars.length) * 100)
 
     return {
+      correctChars,
+      accuracy,
       cpm,
       wpm,
-      accuracy,
-      correctTokens,
-      totalTokens: typedTokens.length,
+      progress,
     }
-  }, [typedTokens, expectedTokens, elapsedSeconds])
+  }, [typedChars, expectedChars, elapsedSeconds])
 
-  // Reset test state
-  const resetTest = useCallback(() => {
-    setTimeLeft(duration)
+  const resetTypingState = (nextDuration: number) => {
     setInputValue('')
-    setIsRunning(false)
+    setTimeLeft(nextDuration)
     setElapsedSeconds(0)
+    setIsRunning(false)
     setTestCompleted(false)
-  }, [duration])
+  }
 
-  // Initialize test when dependencies change
   useEffect(() => {
-    const timeoutId = window.setTimeout(resetTest, 0)
-    return () => window.clearTimeout(timeoutId)
-  }, [resetTest])
-
-  // Timer effect
-  useEffect(() => {
-    if (!isRunning) return
+    if (!isRunning) {
+      return undefined
+    }
 
     const timer = window.setInterval(() => {
       setElapsedSeconds((prev) => prev + 1)
@@ -474,14 +440,16 @@ function App() {
           window.clearInterval(timer)
           return 0
         }
+
         return prev - 1
       })
     }, 1000)
 
-    return () => window.clearInterval(timer)
+    return () => {
+      window.clearInterval(timer)
+    }
   }, [isRunning])
 
-  // Handle test completion when time runs out
   useEffect(() => {
     if (timeLeft === 0 && isRunning) {
       const timeoutId = window.setTimeout(() => {
@@ -489,92 +457,100 @@ function App() {
         setTestCompleted(true)
         setViewMode('result')
       }, 0)
-      return () => window.clearTimeout(timeoutId)
+
+      return () => {
+        window.clearTimeout(timeoutId)
+      }
     }
+
+    return undefined
   }, [timeLeft, isRunning])
 
-  // Check for all tokens typed
   useEffect(() => {
-    if (
-      typedTokens.length >= expectedTokens.length &&
-      expectedTokens.length > 0 &&
-      isRunning
-    ) {
+    if (typedText === expectedText && expectedText.length > 0 && isRunning) {
       const timeoutId = window.setTimeout(() => {
         setIsRunning(false)
         setTestCompleted(true)
         setViewMode('result')
       }, 0)
-      return () => window.clearTimeout(timeoutId)
-    }
-  }, [typedTokens.length, expectedTokens.length, isRunning])
 
-  const handleInput = (value: string) => {
-    const normalized = value.toUpperCase()
-
-    if (!isRunning && normalized.trim() && !testCompleted) {
-      setIsRunning(true)
+      return () => {
+        window.clearTimeout(timeoutId)
+      }
     }
 
-    setInputValue(normalized)
+    return undefined
+  }, [typedText, expectedText, isRunning])
+
+  const handleDurationChange = (nextDuration: number) => {
+    setDuration(nextDuration)
+    resetTypingState(nextDuration)
+  }
+
+  const handleReroll = () => {
+    setPracticeText((current) => randomPracticeText(current))
+    resetTypingState(duration)
+    setIsFocused(true)
   }
 
   const handleRestart = () => {
-    setInputValue('')
-    setTimeLeft(duration)
-    setIsRunning(false)
-    setElapsedSeconds(0)
-    setTestCompleted(false)
+    resetTypingState(duration)
     setViewMode('typing')
     setIsFocused(true)
   }
 
+  const handleInput = (value: string) => {
+    setInputValue(value)
+
+    if (!isRunning && !testCompleted && normalizeChineseText(value).length > 0) {
+      setIsRunning(true)
+    }
+  }
+
   return (
     <div className="app">
-      <Header viewMode={viewMode} setViewMode={setViewMode} />
+      <Header viewMode={viewMode} onSwitch={setViewMode} />
 
       <main className="main">
-        {viewMode === 'typing' && (
+        {viewMode === 'typing' ? (
           <>
             <ConfigBar
-              mode={practiceMode}
-              setMode={setPracticeMode}
               duration={duration}
-              setDuration={setDuration}
+              onDurationChange={handleDurationChange}
+              onReroll={handleReroll}
               onRestart={handleRestart}
             />
             <StatsBar
               timeLeft={timeLeft}
               wpm={stats.wpm}
               accuracy={stats.accuracy}
+              progress={stats.progress}
             />
             <TypingArea
-              expectedTokens={expectedTokens}
-              typedTokens={typedTokens}
-              isFocused={isFocused}
-              setIsFocused={setIsFocused}
-              onInput={handleInput}
+              expectedChars={expectedChars}
+              typedChars={typedChars}
               inputValue={inputValue}
+              isFocused={isFocused}
+              onFocusChange={setIsFocused}
+              onInput={handleInput}
             />
-            <div className="source-text">原文：{practiceText}</div>
+            <p className="source-text">練習文本：{practiceText}</p>
           </>
-        )}
+        ) : null}
 
-        {viewMode === 'lookup' && (
-          <DictionaryLookup dictionaryIndex={dictionaryIndex} />
-        )}
+        {viewMode === 'lookup' ? <DictionaryLookup dictionaryIndex={BUILTIN_INDEX} /> : null}
 
-        {viewMode === 'result' && (
+        {viewMode === 'result' ? (
           <ResultScreen
             wpm={stats.wpm}
             accuracy={stats.accuracy}
             cpm={stats.cpm}
-            correctTokens={stats.correctTokens}
-            totalTokens={stats.totalTokens}
-            onRestart={handleRestart}
-            onSwitchMode={() => setViewMode('lookup')}
+            correctChars={stats.correctChars}
+            totalChars={expectedChars.length}
+            onRetry={handleRestart}
+            onLookup={() => setViewMode('lookup')}
           />
-        )}
+        ) : null}
       </main>
 
       <footer className="footer">
