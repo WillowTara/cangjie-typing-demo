@@ -26,6 +26,9 @@ jobs:
       - name: Run quality gate
         run: npm run check
 
+      - name: Run binary dictionary smoke test
+        run: npm run test:binary-smoke
+
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
 
