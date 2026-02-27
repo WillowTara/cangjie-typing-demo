@@ -54,9 +54,11 @@
 ```
 newproject/
 ├── dist/                 # npm run build 產出
-├── public/dict/          # 範例字典
+├── public/dict/          # 範例與 core 字典
 │   ├── sample-dictionary.csv
-│   └── sample-dictionary.json
+│   ├── sample-dictionary.json
+│   ├── core-dictionary.csv
+│   └── core.<version>.<hash>.v2/meta/licenses
 ├── src/
 │   ├── App.tsx           # 主應用程式
 │   ├── App.css           # 樣式
@@ -83,6 +85,9 @@ npm run check
 # E2E 測試
 npm run test:e2e
 
+# 字典 core 產物一致性驗證
+npm run dict:verify:core
+
 # 預覽本地部署
 npm run preview
 ```
@@ -104,6 +109,7 @@ npm run preview
 npm run check
 npm run test:e2e
 npm run build
+npm run dict:verify:core
 
 # 2) 封版 commit
 git add .

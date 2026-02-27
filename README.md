@@ -63,11 +63,13 @@ newproject/
 │       └── dictionaryBinary.ts    # v2 binary codec（encode/decode/lookup）
 ├── e2e/                    # Playwright E2E 測試
 ├── scripts/
-│   └── dict/               # v2 build / sqlite export 腳本
+│   └── dict/               # v2 build / verify / sqlite export 腳本
 ├── public/
 │   └── dict/               # 外部字典檔案 (CSV/JSON)
 │       ├── sample-dictionary.csv
-│       └── sample-dictionary.json
+│       ├── sample-dictionary.json
+│       ├── core-dictionary.csv
+│       └── core.<version>.<hash>.v2/meta/licenses
 ├── docs/
 │   ├── dictionary-v2-spec.md
 │   ├── dictionary-v2-checklist.md
@@ -195,6 +197,9 @@ npm run test:binary-smoke
 # 產出 v2 binary/meta/licenses
 npm run dict:build:v2 -- --input public/dict/sample-dictionary.json --variant core --version 2026.03.0
 
+# 驗證 core 產物一致性（meta/licenses/hash/entryCount）
+npm run dict:verify:core
+
 # 匯出 mobile sqlite
 npm run dict:export:sqlite -- --input public/dict/sample-dictionary.json --output public/dict/dict.sqlite
 ```
@@ -277,6 +282,11 @@ VITE_DICTIONARY_URL=/dict/full-dictionary.json
 - ✅ PR7：CI 新增 `npm run test:binary-smoke`
 - ✅ PR8：README 與 docs 補齊 v2 / mobile 產物流
 - ✅ PR9：新增 `scripts/dict/export-sqlite.mts` 與 `docs/mobile-dict.md`
+
+### v1.2.1 (2026-02-27) - PR10-PR12 core 字典與驗證鏈補齊
+- ✅ PR10：新增 `public/dict/core-dictionary.csv` 與 core v2 產物（`core.2026.03.0.5b9218e9.*`）
+- ✅ PR11：新增 `scripts/dict/verify-core-artifacts.mts`，並在 CI 加入 `npm run dict:verify:core`
+- ✅ PR12：更新 release/readme/deploy 文件，補齊 PR10-PR11 驗證與交接紀錄
 
 ### v1.1.1 (2026-02-27) - v2 規格文件化
 - ✅ 新增 `docs/dictionary-v2-spec.md`（bin/meta/migration 規格草案）

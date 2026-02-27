@@ -107,6 +107,9 @@ Related Spec: `docs/dictionary-v2-spec.md`
 ### PR11: Artifact verification + CI evidence
 - [x] 新增 core artifact 驗證腳本並接入 CI（`npm run dict:verify:core`）
 
+### PR12: Docs + release continuity
+- [x] 更新 README / DEPLOY / release 文件，補齊 PR10-PR11 驗證證據鏈
+
 ## 8. Release 前最後檢查
 
 - [x] 產物檔名帶 hash，且與 meta 一致
@@ -121,3 +124,4 @@ Related Spec: `docs/dictionary-v2-spec.md`
 - 2026-02-27: PR1 分支品質關卡已通過：`npm run check`、`npm run test:e2e`、`npm run build`。
 - 2026-02-27: 補齊測試/清單必做項：新增 migration parity 測試（`src/lib/dictionaryBinary.test.ts`），並重跑 `npm run check`、`npm run test:e2e`、`npm run build`、`npm run dict:build:v2 -- --input public/dict/sample-dictionary.json --variant core --version 2026.03.0 --out-dir dist/dict-v2`、`npm run dict:export:sqlite -- --input public/dict/sample-dictionary.json --output dist/dict-v2/dict.sqlite`。
 - 2026-02-27: PR11 新增 `scripts/dict/verify-core-artifacts.mts`，並在 CI 加入 `npm run dict:verify:core`，驗證 `core-dictionary.csv` 與 `core.*.v2/meta/licenses` 一致性（sha256/entryCount/duplicateOverrides/hash filename）。
+- 2026-02-27: PR12 更新 `README.md`、`DEPLOY.md`、`docs/release-v1.2.0.md`，記錄 PR10-PR11 scope、驗證命令與 artifacts traceability。
