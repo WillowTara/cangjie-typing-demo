@@ -92,19 +92,19 @@ function sha256Hex(value: Uint8Array | string): string {
   return createHash('sha256').update(value).digest('hex')
 }
 
-function findMetaFile(files: string[], version: string): string {
-  const prefix = `core.${version}.`
+function findMetaFile(files: string[], variant: string, version: string): string {
+  const prefix = `${variant}.${version}.`
   const candidates = files
     .filter((name) => name.startsWith(prefix) && name.endsWith('.meta.json'))
     .sort()
 
   if (candidates.length === 0) {
-    throw new Error(`No core meta file found for version ${version}`)
+    throw new Error(`No ${variant} meta file found for version ${version}`)
   }
 
   const latest = candidates[candidates.length - 1]
   if (!latest) {
-    throw new Error(`No core meta file resolved for version ${version}`)
+    throw new Error(`No ${variant} meta file resolved for version ${version}`)
   }
 
   return latest
@@ -112,16 +112,18 @@ function findMetaFile(files: string[], version: string): string {
 
 async function main(): Promise<void> {
   const args = process.argv.slice(2)
-  const input = getArg(args, '--input', 'public/dict/core-dictionary.csv')
+  const variant = getArg(args, '--variant', 'core')
+  const input = getArg(args, '--input', `public/dict/${variant}-dictionary.csv`)
   const dictDir = getArg(args, '--dict-dir', 'public/dict')
   const version = getArg(args, '--version', '2026.03.0')
 
   const sourceText = await readFile(input, 'utf8')
   const rows = parseCsvRows(sourceText)
   const entries = normalizeEntries(rows)
+  const sourceSha = sha256Hex(sourceText)
 
   const files = await readdir(dictDir)
-  const metaFile = findMetaFile(files, version)
+  const metaFile = findMetaFile(files, variant, version)
   const metaPath = join(dictDir, metaFile)
 
   const meta = JSON.parse(await readFile(metaPath, 'utf8')) as {
@@ -131,13 +133,21 @@ async function main(): Promise<void> {
     artifact: { file: string; sha256: string; bytes: number }
     stats: { entryCount: number; duplicateOverrides: number }
     unicode: { includesNonBmpHan: boolean }
+    sources: Array<{
+      id: string
+      name: string
+      license: string
+      version: string
+      sha256: string
+      url?: string
+    }>
   }
 
   if (meta.schema !== 'cj-dict-meta@2') {
     throw new Error(`Unexpected meta schema: ${meta.schema}`)
   }
-  if (meta.variant !== 'core') {
-    throw new Error(`Unexpected variant: ${meta.variant}`)
+  if (meta.variant !== variant) {
+    throw new Error(`Unexpected variant: ${meta.variant} !== ${variant}`)
   }
   if (meta.dictVersion !== version) {
     throw new Error(`Meta dictVersion mismatch: ${meta.dictVersion} !== ${version}`)
@@ -162,7 +172,14 @@ async function main(): Promise<void> {
   const licensesPath = join(dictDir, `${base}.licenses.json`)
   const licenses = JSON.parse(await readFile(licensesPath, 'utf8')) as {
     schema: string
-    sources: Array<{ sha256: string }>
+    sources: Array<{
+      id: string
+      name: string
+      license: string
+      version: string
+      sha256: string
+      url?: string
+    }>
   }
 
   if (licenses.schema !== 'cj-dict-licenses@1') {
@@ -172,7 +189,53 @@ async function main(): Promise<void> {
     throw new Error('licenses.sources must be non-empty')
   }
 
-  const sourceSha = sha256Hex(sourceText)
+  const sourceRecords = meta.sources
+  if (!Array.isArray(sourceRecords) || sourceRecords.length === 0) {
+    throw new Error('meta.sources must be non-empty')
+  }
+
+  for (let index = 0; index < sourceRecords.length; index += 1) {
+    const source = sourceRecords[index]
+    if (!source.id?.trim()) {
+      throw new Error(`meta.sources[${index}].id is required`)
+    }
+    if (!source.name?.trim()) {
+      throw new Error(`meta.sources[${index}].name is required`)
+    }
+    if (!source.version?.trim()) {
+      throw new Error(`meta.sources[${index}].version is required`)
+    }
+    if (!source.license?.trim() || source.license.toUpperCase() === 'UNSPECIFIED') {
+      throw new Error(`meta.sources[${index}].license must not be empty/UNSPECIFIED`)
+    }
+    if (!/^[a-f0-9]{64}$/iu.test(source.sha256 ?? '')) {
+      throw new Error(`meta.sources[${index}].sha256 must be a 64-char hex string`)
+    }
+  }
+
+  const licenseRecords = licenses.sources
+  for (let index = 0; index < licenseRecords.length; index += 1) {
+    const source = licenseRecords[index]
+    if (!source.id?.trim()) {
+      throw new Error(`licenses.sources[${index}].id is required`)
+    }
+    if (!source.name?.trim()) {
+      throw new Error(`licenses.sources[${index}].name is required`)
+    }
+    if (!source.version?.trim()) {
+      throw new Error(`licenses.sources[${index}].version is required`)
+    }
+    if (!source.license?.trim() || source.license.toUpperCase() === 'UNSPECIFIED') {
+      throw new Error(`licenses.sources[${index}].license must not be empty/UNSPECIFIED`)
+    }
+    if (!/^[a-f0-9]{64}$/iu.test(source.sha256 ?? '')) {
+      throw new Error(`licenses.sources[${index}].sha256 must be a 64-char hex string`)
+    }
+  }
+
+  if (meta.sources[0]?.sha256 !== sourceSha) {
+    throw new Error('Source SHA-256 mismatch between CSV and meta.sources[0]')
+  }
   if (licenses.sources[0]?.sha256 !== sourceSha) {
     throw new Error('Source SHA-256 mismatch between CSV and licenses manifest')
   }
@@ -194,7 +257,7 @@ async function main(): Promise<void> {
   }
 
   process.stdout.write(
-    `verified core artifacts: ${meta.artifact.file} (${entries.length} entries, hash=${shortHash})\n`,
+    `verified ${variant} artifacts: ${meta.artifact.file} (${entries.length} entries, hash=${shortHash})\n`,
   )
 }
 

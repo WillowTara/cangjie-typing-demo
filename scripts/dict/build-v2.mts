@@ -16,6 +16,20 @@ type InputRow = {
   quick?: string
 }
 
+type SourceMetadata = {
+  id: string
+  name: string
+  license: string
+  version: string
+  sha256?: string
+  url?: string
+}
+
+type SourcesManifest = {
+  schema?: string
+  sources: SourceMetadata[]
+}
+
 function deriveQuick(cangjie) {
   return cangjie.length <= 2 ? cangjie : `${cangjie[0]}${cangjie[cangjie.length - 1]}`
 }
@@ -27,6 +41,56 @@ function codeToSlot(code) {
     out[i + 1] = code.charCodeAt(i) - 65
   }
   return out
+}
+
+function normalizeOptionalString(value: unknown): string | undefined {
+  if (typeof value !== 'string') {
+    return undefined
+  }
+
+  const trimmed = value.trim()
+  return trimmed.length > 0 ? trimmed : undefined
+}
+
+function requireString(value: unknown, label: string): string {
+  const normalized = normalizeOptionalString(value)
+  if (!normalized) {
+    throw new Error(`Missing required source field: ${label}`)
+  }
+
+  return normalized
+}
+
+function normalizeSourceMetadata(raw: unknown, fallbackSha256: string, index: number): SourceMetadata {
+  if (!raw || typeof raw !== 'object') {
+    throw new Error(`Invalid source metadata at index ${index}: must be an object`)
+  }
+
+  const record = raw as Record<string, unknown>
+  const id = requireString(record.id, `sources[${index}].id`)
+  const name = requireString(record.name, `sources[${index}].name`)
+  const license = requireString(record.license, `sources[${index}].license`)
+  if (license.toUpperCase() === 'UNSPECIFIED') {
+    throw new Error(`sources[${index}].license must not be UNSPECIFIED`)
+  }
+
+  const version = requireString(record.version, `sources[${index}].version`)
+  const providedSha = normalizeOptionalString(record.sha256)
+  const sha256 = providedSha ?? fallbackSha256
+  if (!/^[a-f0-9]{64}$/iu.test(sha256)) {
+    throw new Error(`sources[${index}].sha256 must be a 64-char hex string`)
+  }
+
+  const url = normalizeOptionalString(record.url)
+
+  return {
+    id,
+    name,
+    license,
+    version,
+    sha256,
+    ...(url ? { url } : {}),
+  }
 }
 
 function parseRows(inputText: string, inputFile: string): InputRow[] {
@@ -136,8 +200,27 @@ async function main() {
   const variant = getArg('--variant', 'core')
   const dictVersion = getArg('--version', '2026.03.0')
   const outputDir = getArg('--out-dir', 'public/dict')
+  const defaultSources = input.replace(/\.[^./\\]+$/u, '.sources.json')
+  const sourcesPath = getArg('--sources', defaultSources)
 
   const sourceText = await readFile(input, 'utf8')
+  const sourceSha256 = createHash('sha256').update(sourceText).digest('hex')
+
+  const sourcesManifestText = await readFile(sourcesPath, 'utf8')
+  const parsedManifest = JSON.parse(sourcesManifestText) as unknown
+  if (!parsedManifest || typeof parsedManifest !== 'object') {
+    throw new Error(`Invalid sources manifest: ${sourcesPath}`)
+  }
+
+  const sourcesManifest = parsedManifest as SourcesManifest
+  if (!Array.isArray(sourcesManifest.sources) || sourcesManifest.sources.length === 0) {
+    throw new Error(`Sources manifest must include non-empty sources[]: ${sourcesPath}`)
+  }
+
+  const sources = sourcesManifest.sources.map((source, index) =>
+    normalizeSourceMetadata(source, sourceSha256, index),
+  )
+
   const rows = parseRows(sourceText, input)
   const entries = normalizeEntries(rows)
 
@@ -190,13 +273,7 @@ async function main() {
       includesNonBmpHan,
     },
     sources: [
-      {
-        id: 'input',
-        name: input,
-        license: 'UNSPECIFIED',
-        version: 'local',
-        sha256: createHash('sha256').update(sourceText).digest('hex'),
-      },
+      ...sources,
     ],
     build: {
       toolVersion: 'dict-build/0.1.0',

@@ -32,6 +32,9 @@ jobs:
       - name: Verify core dictionary artifacts
         run: npm run dict:verify:core
 
+      - name: Verify full dictionary artifacts
+        run: npm run dict:verify:full
+
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
 

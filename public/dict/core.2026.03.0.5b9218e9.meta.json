@@ -28,16 +28,17 @@
   },
   "sources": [
     {
-      "id": "input",
-      "name": "public/dict/core-dictionary.csv",
-      "license": "UNSPECIFIED",
-      "version": "local",
-      "sha256": "0dd91ef43fb69964293e74d8fe7776a2010f4ad36a55489f99d7078d19f5b5c0"
+      "id": "core-curated-local",
+      "name": "Core curated dictionary CSV",
+      "license": "LicenseRef-CuratedData",
+      "version": "2026.03.0",
+      "sha256": "0dd91ef43fb69964293e74d8fe7776a2010f4ad36a55489f99d7078d19f5b5c0",
+      "url": "local://public/dict/core-dictionary.csv"
     }
   ],
   "build": {
     "toolVersion": "dict-build/0.1.0",
-    "generatedAt": "2026-02-27T10:51:07.910Z",
+    "generatedAt": "2026-02-27T11:40:07.627Z",
     "gitCommit": "unknown"
   },
   "compat": {

@@ -6,6 +6,7 @@ export type DictMetaSource = {
   license: string
   version: string
   sha256: string
+  url?: string
 }
 
 export type DictMeta = {
