@@ -1,0 +1,12 @@
+{
+  "schema": "cj-dict-licenses@1",
+  "sources": [
+    {
+      "id": "input",
+      "name": "public/dict/core-dictionary.csv",
+      "license": "UNSPECIFIED",
+      "version": "local",
+      "sha256": "0dd91ef43fb69964293e74d8fe7776a2010f4ad36a55489f99d7078d19f5b5c0"
+    }
+  ]
+}

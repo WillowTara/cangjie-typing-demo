@@ -1,0 +1,47 @@
+{
+  "schema": "cj-dict-meta@2",
+  "dictVersion": "2026.03.0",
+  "variant": "core",
+  "artifact": {
+    "file": "core.2026.03.0.5b9218e9.v2.bin",
+    "sha256": "5b9218e962ace397e3997f5cd44659fde24f905c716873f484f1cf6ef2f71a77",
+    "bytes": 3600
+  },
+  "format": {
+    "versionMajor": 2,
+    "versionMinor": 0,
+    "flags": {
+      "hasQuickTable": true,
+      "hasFrequency": false,
+      "quickDerivedDefault": false
+    }
+  },
+  "stats": {
+    "entryCount": 221,
+    "duplicateOverrides": 56,
+    "rejectedRows": 0
+  },
+  "unicode": {
+    "minCodepoint": "U+4E00",
+    "maxCodepoint": "U+9F52",
+    "includesNonBmpHan": false
+  },
+  "sources": [
+    {
+      "id": "input",
+      "name": "public/dict/core-dictionary.csv",
+      "license": "UNSPECIFIED",
+      "version": "local",
+      "sha256": "0dd91ef43fb69964293e74d8fe7776a2010f4ad36a55489f99d7078d19f5b5c0"
+    }
+  ],
+  "build": {
+    "toolVersion": "dict-build/0.1.0",
+    "generatedAt": "2026-02-27T10:51:07.910Z",
+    "gitCommit": "unknown"
+  },
+  "compat": {
+    "minRuntimeSchema": 2,
+    "fallbackFormat": "v1-json-csv"
+  }
+}
