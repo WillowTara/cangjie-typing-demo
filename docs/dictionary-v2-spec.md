@@ -1,6 +1,6 @@
-# Dictionary Data Format v2 Specification (Draft)
+# Dictionary Data Format v2 Specification
 
-Status: Draft (PR1 implemented)
+Status: Baseline implemented (PR2-PR9)
 Owner: Dictionary Platform
 Last Updated: 2026-02-27
 
@@ -9,7 +9,7 @@ This document defines:
 - Metadata sidecar schema (`*.meta.json`)
 - Migration rules from v1 CSV/JSON pipeline
 
-It is intended to guide implementation in this repository while preserving current runtime compatibility.
+This document guides implementation and records the baseline now landed in this repository while preserving runtime compatibility.
 
 ## 1. Scope and Non-Goals
 
@@ -257,5 +257,6 @@ M9. Deprecation policy:
 
 ## 8. Version History
 
+- v1.0 (2026-02-27): PR2-PR9 landed (binary codec, build/export scripts, runtime integration, Unicode hardening, CI smoke, docs/mobile output).
 - v0.2 (2026-02-27): PR1 landed with runtime lookup abstraction in app/hook/UI integration.
 - v0.1 (2026-02-27): Initial draft created from architecture planning.

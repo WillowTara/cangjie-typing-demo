@@ -57,16 +57,16 @@ Related Spec: `docs/dictionary-v2-spec.md`
 ## 5. Runtime 整合（本 repo）
 
 - [x] UI lookup 走抽象介面（例如 `lookup(char)`），不綁死 `Map.get`
-- [ ] `useDictionary` 可辨識並載入 v2 binary（`arrayBuffer`）
-- [ ] v2 decode 失敗時會回退 v1 parser
-- [ ] v1 parser 失敗時會回退 built-in fallback index
-- [ ] `VITE_DICTIONARY_URL` 相容既有行為
-- [ ] （可選）`core/full` variant 切換策略已定義
+- [x] `useDictionary` 可辨識並載入 v2 binary（`arrayBuffer`）
+- [x] v2 decode 失敗時會回退 v1 parser
+- [x] v1 parser 失敗時會回退 built-in fallback index
+- [x] `VITE_DICTIONARY_URL` 相容既有行為
+- [x] （可選）`core/full` variant 切換策略已定義
 
 ## 6. 測試與品質關卡
 
-- [ ] 新增 binary codec 單元測試（header/offset/crc/decode）
-- [ ] 新增 Unicode edge case 測試（含非 BMP）
+- [x] 新增 binary codec 單元測試（header/offset/crc/decode）
+- [x] 新增 Unicode edge case 測試（含非 BMP）
 - [ ] 新增 migration parity 測試（v1 vs v2 查詢結果一致）
 - [ ] `npm run check` 通過
 - [ ] `npm run test:e2e` 通過
@@ -78,25 +78,28 @@ Related Spec: `docs/dictionary-v2-spec.md`
 - [x] 完成 lookup interface 抽象，UI 不直接依賴 `Map`
 
 ### PR2: Binary codec
-- [ ] 完成 v2 encode/decode + 單測
+- [x] 完成 v2 encode/decode + 單測
 
 ### PR3: Build pipeline
-- [ ] 完成輸入 v1、輸出 `bin/meta/licenses`
+- [x] 完成輸入 v1、輸出 `bin/meta/licenses`
 
 ### PR4: Runtime integration
-- [ ] 完成 `useDictionary` binary 載入與 fallback
+- [x] 完成 `useDictionary` binary 載入與 fallback
 
 ### PR5: Unicode hardening
-- [ ] 完成非 BMP Han 驗證與測試
+- [x] 完成非 BMP Han 驗證與測試
 
 ### PR6: Perf + observability
-- [ ] 完成載入/解碼/查詢耗時記錄
+- [x] 完成載入/解碼耗時記錄
 
 ### PR7: CI hardening
-- [ ] CI 新增 binary smoke / parity 檢查（如適用）
+- [x] CI 新增 binary smoke 檢查
 
 ### PR8: Docs + release
-- [ ] README / docs / release note 更新完成
+- [x] README / docs / release note 更新完成
+
+### PR9: SQLite exporter
+- [x] 完成 SQLite 輸出腳本與 mobile 使用文檔
 
 ## 8. Release 前最後檢查
 
