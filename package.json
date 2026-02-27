@@ -26,6 +26,7 @@
     "test:all": "npm run test:node && npm run test:dom",
     "check": "npm run typecheck && npm run lint && npm run test:all && npm run test:coverage",
     "dict:build:v2": "node scripts/dict/build-v2.mts",
+    "dict:verify:core": "node scripts/dict/verify-core-artifacts.mts",
     "dict:export:sqlite": "node scripts/dict/export-sqlite.mts",
     "prepare": "husky"
   },

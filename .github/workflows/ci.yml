@@ -29,6 +29,9 @@ jobs:
       - name: Run binary dictionary smoke test
         run: npm run test:binary-smoke
 
+      - name: Verify core dictionary artifacts
+        run: npm run dict:verify:core
+
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
 
