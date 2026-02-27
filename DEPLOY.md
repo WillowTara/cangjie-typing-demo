@@ -97,6 +97,26 @@ npm run preview
 
 每次推送更新到 GitHub main 分支，Vercel 會自動重新部署。
 
+## 封版與 GitHub 備份流程
+
+```bash
+# 1) 品質關卡
+npm run check
+npm run test:e2e
+npm run build
+
+# 2) 封版 commit
+git add .
+git commit -m "release: freeze v1.2.0 dictionary v2 baseline"
+
+# 3) 推送到 GitHub（備份）
+git push origin <branch>
+
+# 4) 可選：打 tag
+git tag -a v1.2.0 -m "release v1.2.0"
+git push origin v1.2.0
+```
+
 ---
 
 ## 技術規格

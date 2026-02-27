@@ -1,6 +1,6 @@
 # 倉頡打字練習 - Cangjie Typing Practice Demo
 
-![Version](https://img.shields.io/badge/version-1.1.2-blue)
+![Version](https://img.shields.io/badge/version-1.2.0-blue)
 ![React](https://img.shields.io/badge/React-19.2+-61DAFB)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9+-3178C6)
 ![Vite](https://img.shields.io/badge/Vite-7.3+-646CFF)
@@ -59,12 +59,19 @@ newproject/
 │   │   └── typing/         # 打字流程與狀態管理
 │   ├── observability/      # logger、全域錯誤攔截、ErrorBoundary
 │   └── lib/
-│       └── dictionary.ts   # 字典解析與驗證核心
+│       ├── dictionary.ts          # 字典解析與驗證核心
+│       └── dictionaryBinary.ts    # v2 binary codec（encode/decode/lookup）
 ├── e2e/                    # Playwright E2E 測試
+├── scripts/
+│   └── dict/               # v2 build / sqlite export 腳本
 ├── public/
 │   └── dict/               # 外部字典檔案 (CSV/JSON)
 │       ├── sample-dictionary.csv
 │       └── sample-dictionary.json
+├── docs/
+│   ├── dictionary-v2-spec.md
+│   ├── dictionary-v2-checklist.md
+│   └── mobile-dict.md
 ├── index.html
 ├── package.json
 ├── vite.config.ts
@@ -156,6 +163,7 @@ char,cangjie,quick
 
 ```bash
 VITE_DICTIONARY_URL=/dict/sample-dictionary.json
+VITE_DICTIONARY_VARIANT=core
 ```
 
 - 所有執行期設定由 `src/config/runtime.ts` 集中管理
@@ -180,6 +188,15 @@ npm run check
 
 # E2E 測試
 npm run test:e2e
+
+# v2 binary smoke test
+npm run test:binary-smoke
+
+# 產出 v2 binary/meta/licenses
+npm run dict:build:v2 -- --input public/dict/sample-dictionary.json --variant core --version 2026.03.0
+
+# 匯出 mobile sqlite
+npm run dict:export:sqlite -- --input public/dict/sample-dictionary.json --output public/dict/dict.sqlite
 ```
 
 ### Vercel 部署
@@ -235,6 +252,7 @@ VITE_DICTIONARY_URL=/dict/full-dictionary.json
 ### 4. Dictionary v2 規格與落地清單
 - 規格草案：`docs/dictionary-v2-spec.md`
 - 實作清單：`docs/dictionary-v2-checklist.md`
+- 封版說明：`docs/release-v1.2.0.md`
 - 建議流程：先更新規格，再依清單拆 PR 實作，避免 migration 規則在開發中遺漏
 
 ## 授權與鳴謝
@@ -249,6 +267,16 @@ VITE_DICTIONARY_URL=/dict/full-dictionary.json
 - ✅ 完成 PR1 `lookup(char)` 抽象介面，`DictionaryLookup` 不再直接依賴 `Map.get`
 - ✅ `useDictionary` 對外提供 `lookup`，並保留 `dictionaryIndex` 相容欄位
 - ✅ 在 `pr/01-dict-v2-lookup-abstraction` 分支完成驗證：`npm run check`、`npm run test:e2e`、`npm run build`
+
+### v1.2.0 (2026-02-27) - PR2-PR9 dictionary v2 落地
+- ✅ PR2：新增 `src/lib/dictionaryBinary.ts` 與 `src/lib/dictionaryBinary.test.ts`（v2 binary codec + smoke）
+- ✅ PR3：新增 `scripts/dict/build-v2.mts`、`scripts/dict/schema.ts`，可產出 `bin/meta/licenses`
+- ✅ PR4：`src/features/dictionary/useDictionary.ts` 支援 `.bin` 載入並保留 fallback chain
+- ✅ PR5：`src/lib/dictionary.ts` 升級 Han 驗證，支援非 BMP Han 與 U+3007
+- ✅ PR6：字典載入新增 load/parse/decode 耗時紀錄（`logger`）
+- ✅ PR7：CI 新增 `npm run test:binary-smoke`
+- ✅ PR8：README 與 docs 補齊 v2 / mobile 產物流
+- ✅ PR9：新增 `scripts/dict/export-sqlite.mts` 與 `docs/mobile-dict.md`
 
 ### v1.1.1 (2026-02-27) - v2 規格文件化
 - ✅ 新增 `docs/dictionary-v2-spec.md`（bin/meta/migration 規格草案）
