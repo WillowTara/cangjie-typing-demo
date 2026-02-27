@@ -67,10 +67,10 @@ Related Spec: `docs/dictionary-v2-spec.md`
 
 - [x] 新增 binary codec 單元測試（header/offset/crc/decode）
 - [x] 新增 Unicode edge case 測試（含非 BMP）
-- [ ] 新增 migration parity 測試（v1 vs v2 查詢結果一致）
-- [ ] `npm run check` 通過
-- [ ] `npm run test:e2e` 通過
-- [ ] `npm run build` 通過
+- [x] 新增 migration parity 測試（v1 vs v2 查詢結果一致）
+- [x] `npm run check` 通過
+- [x] `npm run test:e2e` 通過
+- [x] `npm run build` 通過
 
 ## 7. PR 拆分與驗收（建議）
 
@@ -103,13 +103,14 @@ Related Spec: `docs/dictionary-v2-spec.md`
 
 ## 8. Release 前最後檢查
 
-- [ ] 產物檔名帶 hash，且與 meta 一致
-- [ ] spec 與實作一致（無規格漂移）
-- [ ] 來源授權資料可追溯
-- [ ] rollback 路徑可用（可切回 v1）
-- [ ] 版本標記與 changelog 已更新
+- [x] 產物檔名帶 hash，且與 meta 一致
+- [x] spec 與實作一致（無規格漂移）
+- [x] 來源授權資料可追溯
+- [x] rollback 路徑可用（可切回 v1）
+- [x] 版本標記與 changelog 已更新
 
 ## 9. Progress Notes
 
 - 2026-02-27: PR1 `lookup` 抽象完成（`src/App.tsx`、`src/features/dictionary/useDictionary.ts`、`src/features/lookup/DictionaryLookup.tsx`、`src/lib/dictionary.ts`）。
 - 2026-02-27: PR1 分支品質關卡已通過：`npm run check`、`npm run test:e2e`、`npm run build`。
+- 2026-02-27: 補齊測試/清單必做項：新增 migration parity 測試（`src/lib/dictionaryBinary.test.ts`），並重跑 `npm run check`、`npm run test:e2e`、`npm run build`、`npm run dict:build:v2 -- --input public/dict/sample-dictionary.json --variant core --version 2026.03.0 --out-dir dist/dict-v2`、`npm run dict:export:sqlite -- --input public/dict/sample-dictionary.json --output dist/dict-v2/dict.sqlite`。

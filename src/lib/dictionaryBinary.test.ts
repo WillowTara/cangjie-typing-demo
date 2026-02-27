@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { createBinaryLookup, decodeDictionaryBinary, encodeDictionaryBinary } from './dictionaryBinary'
 import type { DictionaryEntry } from './dictionary'
+import { buildDictionaryIndex, parseDictionaryCsv } from './dictionary'
 
 const SAMPLE_ENTRIES: DictionaryEntry[] = [
   { char: '日', cangjie: 'A', quick: 'A' },
@@ -77,6 +78,31 @@ describe('dictionaryBinary.ts', () => {
     const lookup = createBinaryLookup(decoded)
 
     expect(lookup('你')).toEqual({ cangjie: 'ONF', quick: 'OF' })
+  })
+
+  it('keeps migration parity between v1 index and v2 binary lookup', () => {
+    const csv = `char,cangjie,quick
+日,A,A
+明,AB,
+你,ONF,OF
+𠮷,ONF,
+〇,A,
+日,B,B`
+
+    const entries = parseDictionaryCsv(csv)
+    const v1Index = buildDictionaryIndex(entries)
+
+    const binary = encodeDictionaryBinary(entries)
+    const decoded = decodeDictionaryBinary(binary)
+    const v2Lookup = createBinaryLookup(decoded)
+
+    expect(decoded.header.entryCount).toBe(v1Index.size)
+
+    for (const [char, expected] of v1Index.map.entries()) {
+      expect(v2Lookup(char)).toEqual(expected)
+    }
+
+    expect(v2Lookup('木')).toBeUndefined()
   })
 
   it('throws for invalid lookup input', () => {
