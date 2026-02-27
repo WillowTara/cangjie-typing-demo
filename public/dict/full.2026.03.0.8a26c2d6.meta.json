@@ -1,0 +1,48 @@
+{
+  "schema": "cj-dict-meta@2",
+  "dictVersion": "2026.03.0",
+  "variant": "full",
+  "artifact": {
+    "file": "full.2026.03.0.8a26c2d6.v2.bin",
+    "sha256": "8a26c2d63d88c39ca1b738dfaaec81b640bdae58ed7e17308643fbe1ce4e1075",
+    "bytes": 699944
+  },
+  "format": {
+    "versionMajor": 2,
+    "versionMinor": 0,
+    "flags": {
+      "hasQuickTable": false,
+      "hasFrequency": false,
+      "quickDerivedDefault": true
+    }
+  },
+  "stats": {
+    "entryCount": 69988,
+    "duplicateOverrides": 0,
+    "rejectedRows": 0
+  },
+  "unicode": {
+    "minCodepoint": "U+3007",
+    "maxCodepoint": "U+2CBBE",
+    "includesNonBmpHan": true
+  },
+  "sources": [
+    {
+      "id": "cin-tables-cangjie",
+      "name": "chinese-opendesktop/cin-tables cangjie.cin (Han filtered)",
+      "license": "CC0-1.0",
+      "version": "master-2026-02-27",
+      "sha256": "8eb369f7c11fa96bbcabb68bbeb0e6df10991b34e0ca8795a553e30b677bc10d",
+      "url": "https://raw.githubusercontent.com/chinese-opendesktop/cin-tables/master/cangjie.cin"
+    }
+  ],
+  "build": {
+    "toolVersion": "dict-build/0.1.0",
+    "generatedAt": "2026-02-27T11:40:08.159Z",
+    "gitCommit": "unknown"
+  },
+  "compat": {
+    "minRuntimeSchema": 2,
+    "fallbackFormat": "v1-json-csv"
+  }
+}

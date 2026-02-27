@@ -1,0 +1,12 @@
+{
+  "schema": "cj-dict-sources@1",
+  "sources": [
+    {
+      "id": "cin-tables-cangjie",
+      "name": "chinese-opendesktop/cin-tables cangjie.cin (Han filtered)",
+      "license": "CC0-1.0",
+      "version": "master-2026-02-27",
+      "url": "https://raw.githubusercontent.com/chinese-opendesktop/cin-tables/master/cangjie.cin"
+    }
+  ]
+}
