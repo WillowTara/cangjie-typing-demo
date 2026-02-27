@@ -61,3 +61,47 @@ All commands passed on branch `pr/01-dict-v2-lookup-abstraction`.
 
 - `918d1d8` - PR10 data import (`core-dictionary.csv` + core artifacts)
 - `714bd88` - PR11 verifier + CI step
+
+## Post-release continuation (PR13-PR15)
+
+### Scope
+
+- PR13: add `public/dict/full-dictionary.csv` and full v2 artifacts (`full.2026.03.0.8a26c2d6.*`).
+- PR14: enforce source license/provenance metadata in build (`UNSPECIFIED` hard-fail) and extend artifact verifier/CI to `core + full`.
+- PR15: update README/DEPLOY/release/checklist evidence chain for PR13-PR14 and release continuity.
+
+### Verification Snapshot (PR13-PR15)
+
+```bash
+npm run dict:verify:core
+npm run dict:verify:full
+npm run check
+npm run test:e2e
+npm run build
+```
+
+All commands passed on branch `pr/01-dict-v2-lookup-abstraction`.
+
+### Artifacts (core + full)
+
+- `public/dict/core-dictionary.csv`
+- `public/dict/core-dictionary.sources.json`
+- `public/dict/core.2026.03.0.5b9218e9.v2.bin`
+- `public/dict/core.2026.03.0.5b9218e9.meta.json`
+- `public/dict/core.2026.03.0.5b9218e9.licenses.json`
+- `public/dict/full-dictionary.csv`
+- `public/dict/full-dictionary.sources.json`
+- `public/dict/full.2026.03.0.8a26c2d6.v2.bin`
+- `public/dict/full.2026.03.0.8a26c2d6.meta.json`
+- `public/dict/full.2026.03.0.8a26c2d6.licenses.json`
+
+### Traceability commits
+
+- `995b211` - PR13 full dataset and v2 artifacts
+- `6e2d7a2` - PR14 source metadata hardening + core/full verifier/CI
+
+### Continuity notes
+
+- Runtime default variant remains `core`; full rollout is config-gated by `VITE_DICTIONARY_VARIANT=full`.
+- Build now requires `*.sources.json` metadata (id/name/license/version/sha256) and rejects `UNSPECIFIED` licenses.
+- Release candidate gate requires both `npm run dict:verify:core` and `npm run dict:verify:full`.

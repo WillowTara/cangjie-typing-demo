@@ -1,6 +1,6 @@
 # 倉頡打字練習 - Cangjie Typing Practice Demo
 
-![Version](https://img.shields.io/badge/version-1.2.0-blue)
+![Version](https://img.shields.io/badge/version-1.2.2-blue)
 ![React](https://img.shields.io/badge/React-19.2+-61DAFB)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9+-3178C6)
 ![Vite](https://img.shields.io/badge/Vite-7.3+-646CFF)
@@ -69,7 +69,11 @@ newproject/
 │       ├── sample-dictionary.csv
 │       ├── sample-dictionary.json
 │       ├── core-dictionary.csv
-│       └── core.<version>.<hash>.v2/meta/licenses
+│       ├── core-dictionary.sources.json
+│       ├── full-dictionary.csv
+│       ├── full-dictionary.sources.json
+│       ├── core.<version>.<hash>.v2/meta/licenses
+│       └── full.<version>.<hash>.v2/meta/licenses
 ├── docs/
 │   ├── dictionary-v2-spec.md
 │   ├── dictionary-v2-checklist.md
@@ -194,11 +198,14 @@ npm run test:e2e
 # v2 binary smoke test
 npm run test:binary-smoke
 
-# 產出 v2 binary/meta/licenses
-npm run dict:build:v2 -- --input public/dict/sample-dictionary.json --variant core --version 2026.03.0
+# 產出 v2 binary/meta/licenses（需提供來源授權 metadata）
+npm run dict:build:v2 -- --input public/dict/core-dictionary.csv --variant core --version 2026.03.0 --sources public/dict/core-dictionary.sources.json
 
 # 驗證 core 產物一致性（meta/licenses/hash/entryCount）
 npm run dict:verify:core
+
+# 驗證 full 產物一致性（meta/licenses/hash/entryCount）
+npm run dict:verify:full
 
 # 匯出 mobile sqlite
 npm run dict:export:sqlite -- --input public/dict/sample-dictionary.json --output public/dict/dict.sqlite
@@ -241,7 +248,8 @@ npm run dict:export:sqlite -- --input public/dict/sample-dictionary.json --outpu
 ```typescript
 // 透過環境變數覆蓋字典來源（建議）
 // .env.local
-VITE_DICTIONARY_URL=/dict/full-dictionary.json
+VITE_DICTIONARY_URL=/dict/full.2026.03.0.8a26c2d6.v2.bin
+VITE_DICTIONARY_VARIANT=full
 
 // 由 src/config/runtime.ts 統一讀取
 // useDictionary 會自動載入並在失敗時 fallback
@@ -267,6 +275,11 @@ VITE_DICTIONARY_URL=/dict/full-dictionary.json
 - UI 靈感：Monkeytype (https://monkeytype.com/)
 
 ## 更新日誌
+
+### v1.2.2 (2026-02-27) - PR13-PR15 full 擴字與授權封版
+- ✅ PR13：新增 `public/dict/full-dictionary.csv`、`public/dict/full-dictionary.sources.json` 與 full v2 產物（`full.2026.03.0.8a26c2d6.*`）
+- ✅ PR14：`scripts/dict/build-v2.mts` 加入來源授權 metadata hard-fail（拒絕 `UNSPECIFIED`），`scripts/dict/verify-core-artifacts.mts` 擴展到 `core/full`，CI 新增 `npm run dict:verify:full`
+- ✅ PR15：更新 README/DEPLOY/release/checklist，補齊 full artifacts、驗證快照、traceability commits 與回滾路徑
 
 ### v1.1.2 (2026-02-27) - PR1 lookup 抽象落地
 - ✅ 完成 PR1 `lookup(char)` 抽象介面，`DictionaryLookup` 不再直接依賴 `Map.get`
