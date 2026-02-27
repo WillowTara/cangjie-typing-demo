@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { getRuntimeConfig } from '../../config/runtime'
 import {
   buildDictionaryIndex,
@@ -6,6 +6,7 @@ import {
   type DictionaryIndex,
   type DictionaryLookupFn,
 } from '../../lib/dictionary'
+import { createBinaryLookup, decodeDictionaryBinary } from '../../lib/dictionaryBinary'
 import { logger } from '../../observability/logger'
 import { FALLBACK_INDEX } from './fallbackDictionary'
 
@@ -18,28 +19,27 @@ export type DictionaryState = {
   loadError?: string
 }
 
+function isBinaryDictionaryUrl(url: string): boolean {
+  return url.toLowerCase().endsWith('.bin')
+}
+
+function fallbackLookup(char: string) {
+  return FALLBACK_INDEX.map.get(char)
+}
+
 export function useDictionary(): DictionaryState {
   const [dictionaryIndex, setDictionaryIndex] = useState<DictionaryIndex>(FALLBACK_INDEX)
+  const [lookup, setLookup] = useState<DictionaryLookupFn>(() => fallbackLookup)
   const [isLoading, setIsLoading] = useState(true)
   const [loadError, setLoadError] = useState<string | null>(null)
-
-  // Create lookup function from current index - this abstracts the Map.get away
-  const lookup = useCallback<DictionaryLookupFn>((char: string) => {
-    const entry = dictionaryIndex.map.get(char)
-    if (!entry) {
-      return undefined
-    }
-    return {
-      cangjie: entry.cangjie,
-      quick: entry.quick,
-    }
-  }, [dictionaryIndex])
 
   useEffect(() => {
     let isActive = true
     const { dictionaryUrl } = getRuntimeConfig()
 
     const fetchDictionary = async () => {
+      const loadStart = performance.now()
+
       try {
         setIsLoading(true)
         setLoadError(null)
@@ -49,7 +49,34 @@ export function useDictionary(): DictionaryState {
           throw new Error(`HTTP ${response.status}: ${response.statusText}`)
         }
 
+        if (isBinaryDictionaryUrl(dictionaryUrl)) {
+          const bytes = new Uint8Array(await response.arrayBuffer())
+          const decodeStart = performance.now()
+          const binary = decodeDictionaryBinary(bytes)
+          const binaryLookup = createBinaryLookup(binary)
+
+          if (!isActive) {
+            return
+          }
+
+          setDictionaryIndex({ map: new Map(), size: binary.header.entryCount })
+          setLookup(() => binaryLookup)
+
+          logger.info('Dictionary loaded from v2 binary', {
+            context: 'useDictionary',
+            metadata: {
+              dictionaryUrl,
+              entryCount: binary.header.entryCount,
+              decodeMs: Number((performance.now() - decodeStart).toFixed(2)),
+              totalLoadMs: Number((performance.now() - loadStart).toFixed(2)),
+            },
+          })
+
+          return
+        }
+
         const text = await response.text()
+        const parseStart = performance.now()
         const { entries, report } = parseDictionaryTextWithReport(dictionaryUrl, text)
 
         if (report.acceptedRows === 0) {
@@ -60,7 +87,19 @@ export function useDictionary(): DictionaryState {
           return
         }
 
-        setDictionaryIndex(buildDictionaryIndex(entries))
+        const nextIndex = buildDictionaryIndex(entries)
+        setDictionaryIndex(nextIndex)
+        setLookup(() => (char: string) => nextIndex.map.get(char))
+
+        logger.info('Dictionary loaded from text source', {
+          context: 'useDictionary',
+          metadata: {
+            dictionaryUrl,
+            acceptedRows: report.acceptedRows,
+            parseMs: Number((performance.now() - parseStart).toFixed(2)),
+            totalLoadMs: Number((performance.now() - loadStart).toFixed(2)),
+          },
+        })
       } catch (error) {
         if (!isActive) {
           return
@@ -72,10 +111,12 @@ export function useDictionary(): DictionaryState {
           error,
           metadata: {
             dictionaryUrl,
+            totalLoadMs: Number((performance.now() - loadStart).toFixed(2)),
           },
         })
         setLoadError(message)
         setDictionaryIndex(FALLBACK_INDEX)
+        setLookup(() => fallbackLookup)
       } finally {
         if (isActive) {
           setIsLoading(false)

@@ -79,8 +79,23 @@ type RawRow = {
   quick: unknown
 }
 
-const CJK_SINGLE_CHAR_PATTERN = /^[\u3400-\u9fff\uf900-\ufaff]$/u
 const CODE_PATTERN = /^[A-Z]{1,5}$/u
+
+function isHanCodePoint(codePoint: number): boolean {
+  return (
+    codePoint === 0x3007 ||
+    (codePoint >= 0x3400 && codePoint <= 0x4dbf) ||
+    (codePoint >= 0x4e00 && codePoint <= 0x9fff) ||
+    (codePoint >= 0xf900 && codePoint <= 0xfaff) ||
+    (codePoint >= 0x20000 && codePoint <= 0x2a6df) ||
+    (codePoint >= 0x2a700 && codePoint <= 0x2b73f) ||
+    (codePoint >= 0x2b740 && codePoint <= 0x2b81f) ||
+    (codePoint >= 0x2b820 && codePoint <= 0x2ceaf) ||
+    (codePoint >= 0x2ceb0 && codePoint <= 0x2ebef) ||
+    (codePoint >= 0x30000 && codePoint <= 0x3134f) ||
+    (codePoint >= 0x31350 && codePoint <= 0x323af)
+  )
+}
 
 function createReport(format: DictionaryFormat): DictionaryImportReport {
   return {
@@ -115,7 +130,12 @@ function normalizeChar(value: unknown): string | null {
   }
 
   const [char] = chars
-  if (!char || !CJK_SINGLE_CHAR_PATTERN.test(char)) {
+  if (!char) {
+    return null
+  }
+
+  const codePoint = char.codePointAt(0)
+  if (codePoint === undefined || !isHanCodePoint(codePoint)) {
     return null
   }
 
