@@ -1,6 +1,6 @@
 # 倉頡打字練習 - Cangjie Typing Practice Demo
 
-![Version](https://img.shields.io/badge/version-1.2.10-blue)
+![Version](https://img.shields.io/badge/version-1.2.11-blue)
 ![React](https://img.shields.io/badge/React-19.2+-61DAFB)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9+-3178C6)
 ![Vite](https://img.shields.io/badge/Vite-7.3+-646CFF)
@@ -17,7 +17,7 @@ Monkeytype 風格的倉頡與速成輸入法練習應用，同時提供字典查
   - CPM (每分鐘字元數)
   - 準確率 (Accuracy)
   - 進度百分比 (Progress)
-- **練習素材雙模式**：離線白名單（51 篇完整文章）/ 線上維基隨機完整條目
+- **練習素材雙模式**：離線白名單（51 篇人工錄入完整文章）/ 線上維基隨機完整條目
 - **授權可追溯**：素材顯示來源 URL、修訂 ID、作者連結、授權、是否改作
 - **視覺化回饋**：正確綠色、錯誤紅色、當前黃色標記
 
@@ -32,8 +32,8 @@ Monkeytype 風格的倉頡與速成輸入法練習應用，同時提供字典查
 
 - **Vercel**: https://cangjie-typing-demo.vercel.app
 - **GitHub**: https://github.com/WillowTara/cangjie-typing-demo
-- **最新測試連結（Production，快取破除）**: https://cangjie-typing-demo.vercel.app/?v=verify-20260304-2135
-- **最新封版基準 commit**: b51887e
+- **最新測試連結（Production，快取破除）**: https://cangjie-typing-demo.vercel.app/?v=verify-20260304-2158
+- **最新封版基準 commit**: 8760a55
 
 ## 技術架構
 
@@ -224,7 +224,7 @@ npm run dict:export:sqlite -- --input public/dict/sample-dictionary.json --outpu
 4. 部署完成後取得網址
 
 ### 部署後快速驗證（建議）
-1. 開啟 Production smoke test：`https://cangjie-typing-demo.vercel.app/?v=verify-20260304-2135`
+1. 開啟 Production smoke test：`https://cangjie-typing-demo.vercel.app/?v=verify-20260304-2158`
 2. 進入打字模式確認：素材來源可切換（離線白名單 / 線上維基隨機），且文章展示最多三行、輸入框保持可見
 3. 確認字典 binary 可直接存取：
    - `https://cangjie-typing-demo.vercel.app/dict/core.latest.v2.bin`
@@ -291,6 +291,12 @@ VITE_DICTIONARY_VARIANT=full
 - UI 靈感：Monkeytype (https://monkeytype.com/)
 
 ## 更新日誌
+
+### v1.2.11 (2026-03-04) - 離線白名單重錄與污染字清理封版
+- ✅ 重錄離線白名單完整文章模板，移除非預期提示語（如「完整收錄篇章」等）（`src/features/typing/constants.ts`）
+- ✅ 新增離線白名單污染字清理規則，避免 prompt 類內容再次混入（`src/features/typing/constants.ts`）
+- ✅ 新增回歸測試：逐篇檢查離線白名單不含污染關鍵詞，並驗證原文長度與正規化後字數（`src/App.test.tsx`）
+- ✅ 封版提交：`8760a55`
 
 ### v1.2.10 (2026-03-04) - 打字素材完整文章收錄封版
 - ✅ 離線白名單改為完整文章型態：每篇素材展開為多段長文，不再只用短摘要（`src/features/typing/constants.ts`）
