@@ -1,6 +1,6 @@
 # 倉頡打字練習 - Cangjie Typing Practice Demo
 
-![Version](https://img.shields.io/badge/version-1.2.2-blue)
+![Version](https://img.shields.io/badge/version-1.2.3-blue)
 ![React](https://img.shields.io/badge/React-19.2+-61DAFB)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9+-3178C6)
 ![Vite](https://img.shields.io/badge/Vite-7.3+-646CFF)
@@ -248,7 +248,7 @@ npm run dict:export:sqlite -- --input public/dict/sample-dictionary.json --outpu
 ```typescript
 // 透過環境變數覆蓋字典來源（建議）
 // .env.local
-VITE_DICTIONARY_URL=/dict/full.2026.03.0.8a26c2d6.v2.bin
+VITE_DICTIONARY_URL=/dict/full.2026.03.0.bee02cbc.v2.bin
 VITE_DICTIONARY_VARIANT=full
 
 // 由 src/config/runtime.ts 統一讀取
@@ -275,6 +275,12 @@ VITE_DICTIONARY_VARIANT=full
 - UI 靈感：Monkeytype (https://monkeytype.com/)
 
 ## 更新日誌
+
+### v1.2.3 (2026-03-04) - 主體常用區補齊
+- ✅ 補齊主體 Han 區（U+3007 / ExtA / URO / ExtB）缺字，`full-dictionary.csv` 由 69,988 提升至 70,275 筆
+- ✅ 主體區覆蓋率由 99.51% 提升至 99.9189%（缺口 344 -> 57）
+- ✅ `public/dict/full-dictionary.sources.json` 擴展為多來源追溯（`cin-tables cangjie` + `Unicode Unihan kCangjie` + `cin-tables cnscj`）
+- ✅ full 產物更新為 `full.2026.03.0.bee02cbc.*`，並更新 `scripts/dict/verify-core-artifacts.mts` 以驗證多來源 manifests 對齊
 
 ### v1.2.2 (2026-02-27) - PR13-PR15 full 擴字與授權封版
 - ✅ PR13：新增 `public/dict/full-dictionary.csv`、`public/dict/full-dictionary.sources.json` 與 full v2 產物（`full.2026.03.0.8a26c2d6.*`）
