@@ -1,6 +1,6 @@
 # 倉頡打字練習 - Cangjie Typing Practice Demo
 
-![Version](https://img.shields.io/badge/version-1.2.9-blue)
+![Version](https://img.shields.io/badge/version-1.2.10-blue)
 ![React](https://img.shields.io/badge/React-19.2+-61DAFB)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9+-3178C6)
 ![Vite](https://img.shields.io/badge/Vite-7.3+-646CFF)
@@ -17,7 +17,7 @@ Monkeytype 風格的倉頡與速成輸入法練習應用，同時提供字典查
   - CPM (每分鐘字元數)
   - 準確率 (Accuracy)
   - 進度百分比 (Progress)
-- **練習素材雙模式**：離線白名單（51 篇）/ 線上維基隨機切換
+- **練習素材雙模式**：離線白名單（51 篇完整文章）/ 線上維基隨機完整條目
 - **授權可追溯**：素材顯示來源 URL、修訂 ID、作者連結、授權、是否改作
 - **視覺化回饋**：正確綠色、錯誤紅色、當前黃色標記
 
@@ -32,8 +32,8 @@ Monkeytype 風格的倉頡與速成輸入法練習應用，同時提供字典查
 
 - **Vercel**: https://cangjie-typing-demo.vercel.app
 - **GitHub**: https://github.com/WillowTara/cangjie-typing-demo
-- **最新測試連結（Production，快取破除）**: https://cangjie-typing-demo.vercel.app/?v=verify-20260304-2055
-- **最新封版基準 commit**: 019a7c6
+- **最新測試連結（Production，快取破除）**: https://cangjie-typing-demo.vercel.app/?v=verify-20260304-2135
+- **最新封版基準 commit**: b51887e
 
 ## 技術架構
 
@@ -224,7 +224,7 @@ npm run dict:export:sqlite -- --input public/dict/sample-dictionary.json --outpu
 4. 部署完成後取得網址
 
 ### 部署後快速驗證（建議）
-1. 開啟 Production smoke test：`https://cangjie-typing-demo.vercel.app/?v=verify-20260304-2055`
+1. 開啟 Production smoke test：`https://cangjie-typing-demo.vercel.app/?v=verify-20260304-2135`
 2. 進入打字模式確認：素材來源可切換（離線白名單 / 線上維基隨機），且文章展示最多三行、輸入框保持可見
 3. 確認字典 binary 可直接存取：
    - `https://cangjie-typing-demo.vercel.app/dict/core.latest.v2.bin`
@@ -254,7 +254,7 @@ npm run dict:export:sqlite -- --input public/dict/sample-dictionary.json --outpu
 
 ### 練習素材
 - 離線白名單：51 篇可公開使用素材（實作含敏感關鍵字排除）
-- 線上維基隨機：每次「換一段」重新取得隨機條目摘要（顯示授權與來源資訊）
+- 線上維基隨機：每次「換一段」重新取得隨機條目完整內容（顯示授權與來源資訊）
 - 換段行為：離線模式抽下一篇白名單；線上模式重新拉取隨機文章
 
 ## 擴展建議
@@ -285,12 +285,20 @@ VITE_DICTIONARY_VARIANT=full
 
 ## 授權與鳴謝
 
-- 練習素材：離線白名單 + 維基百科隨機條目（CC BY-SA 4.0）
+- 練習素材：離線白名單完整文章 + 維基百科隨機完整條目（CC BY-SA 4.0）
 - 上架策略：離線白名單維持人工審核，避免敏感題材誤入
 - 字典資料：需自行準備版權合規的字典檔
 - UI 靈感：Monkeytype (https://monkeytype.com/)
 
 ## 更新日誌
+
+### v1.2.10 (2026-03-04) - 打字素材完整文章收錄封版
+- ✅ 離線白名單改為完整文章型態：每篇素材展開為多段長文，不再只用短摘要（`src/features/typing/constants.ts`）
+- ✅ 線上維基隨機改為完整條目抓取：移除 `exintro=1`，保留 `explaintext=1`，並加入 `grnfilterredir=nonredirects`（`src/features/typing/constants.ts`）
+- ✅ 線上候選策略強化：每次隨機抓取 5 篇候選頁再挑第一篇符合條件素材，降低回退離線機率（`src/features/typing/constants.ts`）
+- ✅ 前端練習文本顯示改為「全文字數 + 預覽」，避免長文重複渲染造成視覺負擔（`src/features/typing/TypingView.tsx`）
+- ✅ 回歸測試新增完整文章收錄檢查：離線全文、線上全文、API 參數與條件檢核（`src/App.test.tsx`）
+- ✅ 封版提交：`b51887e`
 
 ### v1.2.9 (2026-03-04) - 打字不限時與全文滾動封版
 - ✅ 新增打字不限時選項，時間欄位顯示 `∞`（`src/features/typing/TypingView.tsx`, `src/features/typing/utils.ts`）
