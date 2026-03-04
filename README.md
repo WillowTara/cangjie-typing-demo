@@ -1,6 +1,6 @@
 # 倉頡打字練習 - Cangjie Typing Practice Demo
 
-![Version](https://img.shields.io/badge/version-1.2.3-blue)
+![Version](https://img.shields.io/badge/version-1.2.6-blue)
 ![React](https://img.shields.io/badge/React-19.2+-61DAFB)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9+-3178C6)
 ![Vite](https://img.shields.io/badge/Vite-7.3+-646CFF)
@@ -31,6 +31,7 @@ Monkeytype 風格的倉頡與速成輸入法練習應用，同時提供字典查
 
 - **Vercel**: https://cangjie-typing-demo.vercel.app
 - **GitHub**: https://github.com/WillowTara/cangjie-typing-demo
+- **最新測試連結（快取破除）**: https://cangjie-typing-demo.vercel.app/?v=verify-20260304-1600
 
 ## 技術架構
 
@@ -220,6 +221,13 @@ npm run dict:export:sqlite -- --input public/dict/sample-dictionary.json --outpu
 3. Vercel 會自動偵測 Vite + React 專案
 4. 部署完成後取得網址
 
+### 部署後快速驗證（建議）
+1. 開啟 `https://cangjie-typing-demo.vercel.app/?v=verify-20260304-1600`
+2. 確認字典 binary 可直接存取：
+   - `https://cangjie-typing-demo.vercel.app/dict/core.latest.v2.bin`
+   - `https://cangjie-typing-demo.vercel.app/dict/full.latest.v2.bin`
+3. 若查碼大量顯示 `-`，先以無痕模式重開頁面，並檢查 console 是否出現 fallback warning
+
 ## 使用說明
 
 ### 打字練習模式
@@ -278,6 +286,11 @@ VITE_DICTIONARY_VARIANT=full
 - UI 靈感：Monkeytype (https://monkeytype.com/)
 
 ## 更新日誌
+
+### v1.2.6 (2026-03-04) - 部署查碼 CRC 修復
+- ✅ 修正 `scripts/dict/build-v2.mts`：寫入 v2 binary payload CRC，避免 `decodeDictionaryBinary` 因 CRC mismatch 失敗後回退 sample 字典
+- ✅ 強化 `scripts/dict/verify-core-artifacts.mts`：新增 binary decode 與 lookup probe，避免產出「可驗 metadata 但不可 decode」的壞檔
+- ✅ 更新部署 artifacts：`core.2026.03.0.3ace7ba1.*`、`full.2026.03.0.4f7b3650.*`，並維持 `core.latest.v2.bin` / `full.latest.v2.bin` 穩定入口
 
 ### v1.2.5 (2026-03-04) - 預設查碼切換到 full
 - ✅ runtime 預設 variant 由 `core` 改為 `full`，避免公開部署查字只命中 221 筆 core 字典
