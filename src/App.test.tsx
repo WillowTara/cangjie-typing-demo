@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import App from './App'
 import { encodeDictionaryBinary } from './lib/dictionaryBinary'
@@ -108,5 +108,73 @@ describe('App', () => {
     await user.type(input, '木')
 
     expect(screen.getAllByText('-').length).toBeGreaterThan(0)
+  })
+
+  it('keeps lookup rows in sync after replacing repeated characters', async () => {
+    const user = userEvent.setup()
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+    const { container } = render(<App />)
+
+    await user.click(screen.getByRole('button', { name: '查碼' }))
+    const input = screen.getByPlaceholderText('輸入中文字查詢倉頡/速成碼...')
+
+    await waitFor(() => {
+      expect(input).not.toBeDisabled()
+    })
+
+    await user.type(input, '日日')
+    await waitFor(() => {
+      expect(screen.getByText('2 字')).toBeInTheDocument()
+    })
+
+    let chars = Array.from(container.querySelectorAll('.lookup-item .lookup-char')).map(
+      (node) => node.textContent,
+    )
+    expect(chars).toEqual(['日', '日'])
+
+    await user.clear(input)
+    await user.type(input, '日月日木')
+    await waitFor(() => {
+      expect(screen.getByText('4 字')).toBeInTheDocument()
+    })
+
+    chars = Array.from(container.querySelectorAll('.lookup-item .lookup-char')).map(
+      (node) => node.textContent,
+    )
+    expect(chars).toEqual(['日', '月', '日', '木'])
+    expect(container.querySelectorAll('.lookup-item')).toHaveLength(4)
+
+    const hasDuplicateKeyWarning = consoleErrorSpy.mock.calls.some(
+      ([message]) => typeof message === 'string' && message.includes('same key'),
+    )
+    expect(hasDuplicateKeyWarning).toBe(false)
+    consoleErrorSpy.mockRestore()
+  })
+
+  it('uses committed IME text for lookup rows on composition end', async () => {
+    const user = userEvent.setup()
+    const { container } = render(<App />)
+
+    await user.click(screen.getByRole('button', { name: '查碼' }))
+    const input = screen.getByPlaceholderText('輸入中文字查詢倉頡/速成碼...')
+
+    await waitFor(() => {
+      expect(input).not.toBeDisabled()
+    })
+
+    fireEvent.compositionStart(input)
+    fireEvent.change(input, { target: { value: '手田' } })
+
+    ;(input as HTMLInputElement).value = '抽水抽水'
+    fireEvent.compositionEnd(input)
+
+    await waitFor(() => {
+      expect(screen.getByText('4 字')).toBeInTheDocument()
+    })
+
+    const chars = Array.from(container.querySelectorAll('.lookup-item .lookup-char')).map(
+      (node) => node.textContent,
+    )
+    expect(chars).toEqual(['抽', '水', '抽', '水'])
   })
 })
