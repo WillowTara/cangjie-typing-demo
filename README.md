@@ -1,6 +1,6 @@
 # 倉頡打字練習 - Cangjie Typing Practice Demo
 
-![Version](https://img.shields.io/badge/version-1.2.7-blue)
+![Version](https://img.shields.io/badge/version-1.2.8-blue)
 ![React](https://img.shields.io/badge/React-19.2+-61DAFB)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9+-3178C6)
 ![Vite](https://img.shields.io/badge/Vite-7.3+-646CFF)
@@ -17,7 +17,8 @@ Monkeytype 風格的倉頡與速成輸入法練習應用，同時提供字典查
   - CPM (每分鐘字元數)
   - 準確率 (Accuracy)
   - 進度百分比 (Progress)
-- **練習素材**：內建多種中文練習句子
+- **練習素材雙模式**：離線白名單（51 篇）/ 線上維基隨機切換
+- **授權可追溯**：素材顯示來源 URL、修訂 ID、作者連結、授權、是否改作
 - **視覺化回饋**：正確綠色、錯誤紅色、當前黃色標記
 
 ### 2. 字典查詢 (Dictionary Lookup)
@@ -31,8 +32,8 @@ Monkeytype 風格的倉頡與速成輸入法練習應用，同時提供字典查
 
 - **Vercel**: https://cangjie-typing-demo.vercel.app
 - **GitHub**: https://github.com/WillowTara/cangjie-typing-demo
-- **最新測試連結（Production，快取破除）**: https://cangjie-typing-demo.vercel.app/?v=verify-20260304-1830
-- **最新部署頁（Preview，含選字同步修正）**: https://cangjie-typing-demo-git-pr-01-d65444-kwoklkylky-5779s-projects.vercel.app/?v=verify-20260304-1815
+- **最新測試連結（Production，快取破除）**: https://cangjie-typing-demo.vercel.app/?v=verify-20260304-1945
+- **最新封版基準 commit**: bd7a9f4
 
 ## 技術架構
 
@@ -223,8 +224,8 @@ npm run dict:export:sqlite -- --input public/dict/sample-dictionary.json --outpu
 4. 部署完成後取得網址
 
 ### 部署後快速驗證（建議）
-1. 先開啟最新 Preview：`https://cangjie-typing-demo-git-pr-01-d65444-kwoklkylky-5779s-projects.vercel.app/?v=verify-20260304-1815`
-2. 再用 Production smoke test：`https://cangjie-typing-demo.vercel.app/?v=verify-20260304-1830`
+1. 開啟 Production smoke test：`https://cangjie-typing-demo.vercel.app/?v=verify-20260304-1945`
+2. 進入打字模式確認：素材來源可切換（離線白名單 / 線上維基隨機），且文章展示最多三行、輸入框保持可見
 3. 確認字典 binary 可直接存取：
    - `https://cangjie-typing-demo.vercel.app/dict/core.latest.v2.bin`
    - `https://cangjie-typing-demo.vercel.app/dict/full.latest.v2.bin`
@@ -252,8 +253,9 @@ npm run dict:export:sqlite -- --input public/dict/sample-dictionary.json --outpu
 - 涵蓋：基本筆畫、常用字、詞組
 
 ### 練習素材
-- 內建 4 個練習句子
-- 可點擊「換一段」切換不同句子
+- 離線白名單：51 篇可公開使用素材（實作含敏感關鍵字排除）
+- 線上維基隨機：每次「換一段」重新取得隨機條目摘要（顯示授權與來源資訊）
+- 換段行為：離線模式抽下一篇白名單；線上模式重新拉取隨機文章
 
 ## 擴展建議
 
@@ -269,7 +271,7 @@ VITE_DICTIONARY_VARIANT=full
 ```
 
 ### 2. 新增練習素材
-在 `PRACTICE_TEXTS` 陣列中新增練習句子
+在 `src/features/typing/constants.ts` 的 `OFFLINE_WHITELIST_PRACTICE_MATERIALS` 來源種子中新增條目，並同步維護來源授權資訊欄位
 
 ### 3. 加入排行榜
 - 使用 localStorage 儲存歷史成績
@@ -283,11 +285,19 @@ VITE_DICTIONARY_VARIANT=full
 
 ## 授權與鳴謝
 
-- 練習素材：原創白話文示範
+- 練習素材：離線白名單 + 維基百科隨機條目（CC BY-SA 4.0）
+- 上架策略：離線白名單維持人工審核，避免敏感題材誤入
 - 字典資料：需自行準備版權合規的字典檔
 - UI 靈感：Monkeytype (https://monkeytype.com/)
 
 ## 更新日誌
+
+### v1.2.8 (2026-03-04) - 打字素材白名單與展示可用性封版
+- ✅ 新增打字素材雙模式：離線白名單 + 線上維基隨機（`src/features/typing/constants.ts`, `src/features/typing/useTypingSession.ts`, `src/features/typing/index.ts`）
+- ✅ 新增素材來源資訊顯示：來源 URL / 修訂 ID / 作者連結 / 授權 / 是否改作（`src/features/typing/TypingView.tsx`, `src/App.tsx`, `src/App.css`）
+- ✅ 新增回歸測試：覆蓋線上素材切換與「換一段」重新抓取行為（`src/App.test.tsx`）
+- ✅ 修正文章展示區高度：最多三行並改為內部滾動，避免遮蔽輸入框（`src/App.css`，commit `bd7a9f4`）
+- ✅ 封版基準 commits：`3477ced`、`4552795`、`172f4a0`、`bd7a9f4`
 
 ### v1.2.7 (2026-03-04) - 查碼選字同步修正封版
 - ✅ 修正 `src/features/lookup/DictionaryLookup.tsx`：查字輸入新增 `onInput` + `onCompositionEnd` 同步，確保 IME 選字後結果以最終字串重算
