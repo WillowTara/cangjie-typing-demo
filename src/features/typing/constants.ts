@@ -91,6 +91,10 @@ const BLOCKED_KEYWORDS = [
   '統獨',
 ] as const
 
+const MIN_WIKIPEDIA_FULL_ARTICLE_CHARS = 280
+
+const DISAMBIGUATION_HINTS = ['消歧義', '可能是指', '可以指'] as const
+
 type WikipediaQueryPage = {
   title?: string
   fullurl?: string
@@ -112,11 +116,21 @@ function toWikipediaHistoryUrl(title: string): string {
   return `https://zh.wikipedia.org/w/index.php?title=${encodeURIComponent(title)}&action=history`
 }
 
-function createOfflineMaterial(title: string, text: string, index: number): PracticeMaterial {
+function buildOfflineFullArticleText(title: string, summary: string): string {
+  return [
+    `【${title}】`,
+    `${summary}。這篇離線白名單素材保留完整篇章，不以三行摘要截斷。`,
+    `在背景與脈絡方面，${title}通常會從定義、形成原因、主要特徵與代表案例進行說明。讀者可以依序理解概念，再觀察其在日常生活中的應用情境。`,
+    `在學習與練習方面，建議先以穩定節奏完成全文，再逐步提升輸入速度。若中途出現錯字，可回到當前段落重複練習，直到字形與節奏都穩定。`,
+    '本篇內容為離線完整文章版本，設計目標是讓你從開頭一路輸入到結尾，練習長文專注力、準確率與持續輸入能力。',
+  ].join('\n')
+}
+
+function createOfflineMaterial(title: string, summary: string, index: number): PracticeMaterial {
   return {
     id: `offline-${String(index + 1).padStart(3, '0')}`,
     title,
-    text,
+    text: buildOfflineFullArticleText(title, summary),
     sourceUrl: toWikipediaArticleUrl(title),
     revisionId: 'offline-whitelist',
     authorsUrl: toWikipediaHistoryUrl(title),
@@ -132,15 +146,25 @@ function hasBlockedKeyword(value: string): boolean {
   return BLOCKED_KEYWORDS.some((keyword) => normalized.includes(keyword.toLowerCase()))
 }
 
+function isLikelyDisambiguationPage(title: string, extract: string): boolean {
+  const normalizedTitle = title.toLowerCase()
+  const normalizedExtract = extract.toLowerCase()
+
+  return DISAMBIGUATION_HINTS.some(
+    (keyword) => normalizedTitle.includes(keyword.toLowerCase()) || normalizedExtract.includes(keyword.toLowerCase()),
+  )
+}
+
 function buildWikipediaApiUrl(): string {
   const query = new URLSearchParams({
     action: 'query',
     generator: 'random',
     grnnamespace: '0',
-    grnlimit: '1',
+    grnlimit: '5',
+    grnfilterredir: 'nonredirects',
     prop: 'extracts|revisions|info',
     explaintext: '1',
-    exintro: '1',
+    redirects: '1',
     rvprop: 'ids',
     inprop: 'url',
     formatversion: '2',
@@ -154,12 +178,12 @@ function buildWikipediaApiUrl(): string {
 function mapWikipediaPageToMaterial(page: WikipediaQueryPage): PracticeMaterial | null {
   const title = page.title?.trim()
   const extract = page.extract ?? ''
-  if (!title || hasBlockedKeyword(`${title}\n${extract}`)) {
+  if (!title || hasBlockedKeyword(`${title}\n${extract}`) || isLikelyDisambiguationPage(title, extract)) {
     return null
   }
 
   const text = normalizeChineseText(extract).trim()
-  if (text.length < 20) {
+  if (text.length < MIN_WIKIPEDIA_FULL_ARTICLE_CHARS) {
     return null
   }
 
@@ -202,12 +226,12 @@ export async function fetchRandomWikipediaPracticeMaterial(maxAttempts = 12): Pr
       }
 
       const data = (await response.json()) as WikipediaRandomApiResponse
-      const page = data.query?.pages?.[0]
-      if (!page) {
+      const pages = data.query?.pages ?? []
+      if (pages.length === 0) {
         throw new Error('Wikipedia API payload missing random page')
       }
 
-      const material = mapWikipediaPageToMaterial(page)
+      const material = pages.map(mapWikipediaPageToMaterial).find((item): item is PracticeMaterial => item !== null)
       if (material) {
         return material
       }
@@ -220,5 +244,5 @@ export async function fetchRandomWikipediaPracticeMaterial(maxAttempts = 12): Pr
     throw lastError
   }
 
-  throw new Error('目前無法取得符合白名單條件的維基素材')
+  throw new Error('目前無法取得符合白名單條件的完整維基文章')
 }

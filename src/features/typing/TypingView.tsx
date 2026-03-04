@@ -294,6 +294,10 @@ export function TypingView({
   onFocusChange,
   onInput,
 }: TypingViewProps) {
+  const previewLength = 120
+  const previewText = practiceText.slice(0, previewLength)
+  const hasMorePreview = practiceText.length > previewLength
+
   return (
     <>
       <ConfigBar
@@ -321,7 +325,10 @@ export function TypingView({
         isLoading={isSourceLoading}
         error={sourceError}
       />
-      <p className="source-text">練習文本：{practiceText}</p>
+      <p className="source-text">
+        練習文本：全文約 {expectedChars.length} 字。預覽：{previewText}
+        {hasMorePreview ? '…' : ''}
+      </p>
     </>
   )
 }

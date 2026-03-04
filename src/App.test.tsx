@@ -12,13 +12,15 @@ const MOCK_ENTRIES: DictionaryEntry[] = [
 ]
 
 const MOCK_DICTIONARY_JSON = JSON.stringify(MOCK_ENTRIES)
+const MOCK_WIKIPEDIA_FULL_EXTRACT =
+  '貓是小型食肉目哺乳動物常見於人類生活環境中具備靈活行動與敏銳感官。'.repeat(15)
 const MOCK_WIKIPEDIA_RANDOM = {
   query: {
     pages: [
       {
         title: '貓',
         fullurl: 'https://zh.wikipedia.org/wiki/%E8%B2%93',
-        extract: '貓是小型食肉目哺乳動物常見於人類生活環境中。',
+        extract: MOCK_WIKIPEDIA_FULL_EXTRACT,
         revisions: [{ revid: 123456789 }],
       },
     ],
@@ -31,6 +33,12 @@ const MOCK_CORE_BINARY_ARRAY_BUFFER = (() => {
   new Uint8Array(out).set(MOCK_CORE_BINARY_BODY)
   return out
 })()
+
+function readPracticeLengthFromPreview(): number {
+  const previewText = screen.getByText(/^練習文本：全文約/).textContent ?? ''
+  const match = previewText.match(/全文約\s*(\d+)\s*字/)
+  return match ? Number(match[1]) : 0
+}
 
 beforeEach(() => {
   vi.spyOn(globalThis, 'fetch').mockImplementation(async (input: RequestInfo | URL) => {
@@ -63,6 +71,16 @@ afterEach(() => {
 })
 
 describe('App', () => {
+  it('uses full-article offline material by default', async () => {
+    render(<App />)
+
+    await waitFor(() => {
+      expect(globalThis.fetch).toHaveBeenCalledWith('/dict/full.latest.v2.bin')
+    })
+
+    expect(readPracticeLengthFromPreview()).toBeGreaterThan(180)
+  })
+
   it('renders typing mode by default', async () => {
     render(<App />)
 
@@ -198,7 +216,7 @@ describe('App', () => {
     expect(chars).toEqual(['抽', '水', '抽', '水'])
   })
 
-  it('loads wikipedia material when switching to online source mode', async () => {
+  it('loads full wikipedia material when switching to online source mode', async () => {
     const user = userEvent.setup()
     render(<App />)
 
@@ -210,6 +228,17 @@ describe('App', () => {
       expect(screen.getByText('素材來源：線上維基隨機')).toBeInTheDocument()
       expect(screen.getByText('修訂ID：123456789')).toBeInTheDocument()
     })
+
+    expect(readPracticeLengthFromPreview()).toBeGreaterThan(280)
+
+    const apiCall = vi
+      .mocked(globalThis.fetch)
+      .mock.calls.find(([input]) => (typeof input === 'string' ? input : input.toString()).includes('zh.wikipedia.org/w/api.php'))
+
+    const apiUrl = typeof apiCall?.[0] === 'string' ? apiCall[0] : apiCall?.[0]?.toString() ?? ''
+    expect(apiUrl).toContain('grnlimit=5')
+    expect(apiUrl).toContain('grnfilterredir=nonredirects')
+    expect(apiUrl).not.toContain('exintro=1')
 
     expect(
       vi.mocked(globalThis.fetch).mock.calls.some(([input]) =>
@@ -281,19 +310,32 @@ describe('App', () => {
     }
   })
 
-  it('completes typing when full text is entered with extra trailing characters', async () => {
-    const user = userEvent.setup()
-    render(<App />)
+  it('completes typing when expected text is matched with extra trailing characters', () => {
+    vi.useFakeTimers()
 
-    const sourceText = screen.getByText(/^練習文本：/).textContent?.replace('練習文本：', '') ?? ''
-    expect(sourceText.length).toBeGreaterThan(0)
+    try {
+      const onComplete = vi.fn()
+      const { result } = renderHook(() =>
+        useTypingSession({
+          initialDuration: Number.POSITIVE_INFINITY,
+          practiceTexts: ['你好世界'],
+          onComplete,
+        }),
+      )
 
-    const input = screen.getByPlaceholderText('在這裡輸入中文...')
-    await user.type(input, `${sourceText}測`)
+      act(() => {
+        result.current.handleInput('你好世界測')
+      })
 
-    await waitFor(() => {
-      expect(screen.getByText('測試完成')).toBeInTheDocument()
-    })
+      act(() => {
+        vi.runOnlyPendingTimers()
+      })
+
+      expect(onComplete).toHaveBeenCalledTimes(1)
+      expect(result.current.stats.progress).toBe(100)
+    } finally {
+      vi.useRealTimers()
+    }
   })
 
   it('pauses typing timer updates when session becomes inactive', () => {
