@@ -73,7 +73,9 @@ newproject/
 │       ├── full-dictionary.csv
 │       ├── full-dictionary.sources.json
 │       ├── core.<version>.<hash>.v2/meta/licenses
-│       └── full.<version>.<hash>.v2/meta/licenses
+│       ├── full.<version>.<hash>.v2/meta/licenses
+│       ├── core.latest.v2.bin
+│       └── full.latest.v2.bin
 ├── docs/
 │   ├── dictionary-v2-spec.md
 │   ├── dictionary-v2-checklist.md
@@ -168,12 +170,13 @@ char,cangjie,quick
 建立 `.env.local`（或 `.env.development`）可覆蓋字典來源：
 
 ```bash
-VITE_DICTIONARY_URL=/dict/sample-dictionary.json
+VITE_DICTIONARY_URL=/dict/core.latest.v2.bin
 VITE_DICTIONARY_VARIANT=core
 ```
 
 - 所有執行期設定由 `src/config/runtime.ts` 集中管理
-- 未提供 `VITE_DICTIONARY_URL` 時，會回退到預設 `/dict/sample-dictionary.json`
+- 未提供 `VITE_DICTIONARY_URL` 時，會依 `VITE_DICTIONARY_VARIANT` 載入 `/dict/core.latest.v2.bin` 或 `/dict/full.latest.v2.bin`
+- 若指定 URL 載入失敗，會依序嘗試 variant 的 latest alias，最後回退到 `/dict/sample-dictionary.json`
 
 ### 安裝與啟動
 ```bash
@@ -275,6 +278,11 @@ VITE_DICTIONARY_VARIANT=full
 - UI 靈感：Monkeytype (https://monkeytype.com/)
 
 ## 更新日誌
+
+### v1.2.4 (2026-03-04) - 部署查碼回退修正
+- ✅ 將 runtime 預設字典改為 variant 對應的 stable alias（`core.latest.v2.bin` / `full.latest.v2.bin`），避免預設落到 sample 字典
+- ✅ `useDictionary` 新增候選來源重試鏈（設定 URL -> variant latest alias -> sample），降低舊版 hash 路徑失效造成的查碼大量缺失
+- ✅ `scripts/dict/build-v2.mts` 產物同步輸出 `${variant}.latest.v2.bin`，讓部署 URL 可長期穩定
 
 ### v1.2.3 (2026-03-04) - 主體常用區補齊
 - ✅ 補齊主體 Han 區（U+3007 / ExtA / URO / ExtB）缺字，`full-dictionary.csv` 由 69,988 提升至 70,275 筆
