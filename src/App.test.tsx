@@ -75,6 +75,7 @@ afterEach(() => {
 describe('App', () => {
   it('keeps offline whitelist articles within first three paragraphs without template rewrites', () => {
     const artifactKeywords = ['完整收錄篇章', '白名單素材', '三行摘要截斷', '本篇內容為離線完整文章版本', 'prompt']
+    const likelySimplifiedCharacters = ['这', '们', '发', '东', '应', '学', '国', '龙', '术', '广', '车', '书', '云', '气', '电', '门', '开', '长', '见', '观', '风', '飞', '马', '鸟', '鱼']
 
     for (const material of OFFLINE_WHITELIST_PRACTICE_MATERIALS) {
       const paragraphs = material.text
@@ -87,6 +88,10 @@ describe('App', () => {
 
       for (const keyword of artifactKeywords) {
         expect(material.text.toLowerCase()).not.toContain(keyword.toLowerCase())
+      }
+
+      for (const character of likelySimplifiedCharacters) {
+        expect(material.text).not.toContain(character)
       }
     }
   })

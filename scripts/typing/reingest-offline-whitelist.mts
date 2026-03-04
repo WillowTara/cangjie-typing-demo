@@ -57,6 +57,64 @@ const TITLES = [
   '程式設計',
 ] as const
 
+const CHINESE_VARIANT = 'zh-hant'
+
+const LIKELY_SIMPLIFIED_CHARACTERS = [
+  '这',
+  '们',
+  '发',
+  '东',
+  '应',
+  '学',
+  '国',
+  '龙',
+  '术',
+  '广',
+  '车',
+  '书',
+  '云',
+  '气',
+  '电',
+  '门',
+  '开',
+  '长',
+  '见',
+  '观',
+  '风',
+  '飞',
+  '马',
+  '鸟',
+  '鱼',
+] as const
+
+const SIMPLIFIED_TO_TRADITIONAL_MAP: Readonly<Record<(typeof LIKELY_SIMPLIFIED_CHARACTERS)[number], string>> = {
+  这: '這',
+  们: '們',
+  发: '發',
+  东: '東',
+  应: '應',
+  学: '學',
+  国: '國',
+  龙: '龍',
+  术: '術',
+  广: '廣',
+  车: '車',
+  书: '書',
+  云: '雲',
+  气: '氣',
+  电: '電',
+  门: '門',
+  开: '開',
+  长: '長',
+  见: '見',
+  观: '觀',
+  风: '風',
+  飞: '飛',
+  马: '馬',
+  鸟: '鳥',
+  鱼: '魚',
+}
+
 type WikipediaQueryPage = {
   title?: string
   extract?: string
@@ -79,6 +137,7 @@ type OfflineWhitelistSeed = {
 function splitParagraphs(text: string): string[] {
   return text
     .replace(/\r\n/g, '\n')
+    .replace(/^=+\s*[^=\n]+\s*=+\s*$/gmu, '')
     .trim()
     .split(/\n\s*\n/u)
     .map((paragraph) => paragraph.trim())
@@ -89,6 +148,16 @@ function toTemplateLiteral(value: string): string {
   return value.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$\{/g, '\\${')
 }
 
+function findLikelySimplifiedCharacters(text: string): string[] {
+  return LIKELY_SIMPLIFIED_CHARACTERS.filter((character) => text.includes(character))
+}
+
+function forceTraditionalCharacters(text: string): string {
+  return [...text]
+    .map((character) => SIMPLIFIED_TO_TRADITIONAL_MAP[character as keyof typeof SIMPLIFIED_TO_TRADITIONAL_MAP] ?? character)
+    .join('')
+}
+
 async function fetchArticleSeed(title: string): Promise<OfflineWhitelistSeed> {
   const query = new URLSearchParams({
     action: 'query',
@@ -97,6 +166,8 @@ async function fetchArticleSeed(title: string): Promise<OfflineWhitelistSeed> {
     explaintext: '1',
     redirects: '1',
     rvprop: 'ids',
+    variant: CHINESE_VARIANT,
+    uselang: CHINESE_VARIANT,
     formatversion: '2',
     format: 'json',
     origin: '*',
@@ -127,10 +198,17 @@ async function fetchArticleSeed(title: string): Promise<OfflineWhitelistSeed> {
   }
 
   const selected = paragraphs.slice(0, 3)
+  const selectedText = forceTraditionalCharacters(selected.join('\n\n'))
+  const likelySimplifiedCharacters = findLikelySimplifiedCharacters(selectedText)
+  if (likelySimplifiedCharacters.length > 0) {
+    throw new Error(
+      `Likely simplified Chinese remains for ${title}: ${likelySimplifiedCharacters.join(',')}`,
+    )
+  }
 
   return {
     title,
-    text: selected.join('\n\n'),
+    text: selectedText,
     revisionId: String(page.revisions?.[0]?.revid ?? 'unknown'),
     isAdapted: paragraphs.length > 3,
   }
