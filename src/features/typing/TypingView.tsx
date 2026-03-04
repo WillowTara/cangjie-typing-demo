@@ -25,6 +25,14 @@ type TypingViewProps = {
   onInput: (value: string) => void
 }
 
+const DURATION_OPTIONS: ReadonlyArray<{ value: number; label: string }> = [
+  { value: 15, label: '15' },
+  { value: 30, label: '30' },
+  { value: 60, label: '60' },
+  { value: 120, label: '120' },
+  { value: Number.POSITIVE_INFINITY, label: '不限時' },
+]
+
 function ConfigBar({
   duration,
   onDurationChange,
@@ -47,14 +55,14 @@ function ConfigBar({
       <div className="config-group">
         <span className="config-label">time</span>
         <div className="config-options">
-          {[15, 30, 60, 120].map((seconds) => (
+          {DURATION_OPTIONS.map((option) => (
             <button
-              key={seconds}
+              key={option.label}
               type="button"
-              className={`config-option ${duration === seconds ? 'active' : ''}`}
-              onClick={() => onDurationChange(seconds)}
+              className={`config-option ${duration === option.value ? 'active' : ''}`}
+              onClick={() => onDurationChange(option.value)}
             >
-              {seconds}
+              {option.label}
             </button>
           ))}
         </div>
@@ -166,6 +174,7 @@ function StatsBar({
 }
 
 function TypingArea({
+  practiceText,
   expectedChars,
   typedChars,
   inputValue,
@@ -173,6 +182,7 @@ function TypingArea({
   onFocusChange,
   onInput,
 }: {
+  practiceText: string
   expectedChars: string[]
   typedChars: string[]
   inputValue: string
@@ -181,12 +191,33 @@ function TypingArea({
   onInput: (value: string) => void
 }) {
   const inputRef = useRef<HTMLTextAreaElement>(null)
+  const targetTextRef = useRef<HTMLDivElement>(null)
+
+  const scrollTargetIndex =
+    expectedChars.length === 0 ? -1 : Math.min(typedChars.length, expectedChars.length - 1)
 
   useEffect(() => {
     if (isFocused && inputRef.current) {
       inputRef.current.focus()
     }
   }, [isFocused])
+
+  useEffect(() => {
+    const container = targetTextRef.current
+    if (!container) {
+      return
+    }
+
+    if (typedChars.length === 0) {
+      container.scrollTop = 0
+      return
+    }
+
+    const target = container.querySelector<HTMLElement>('[data-scroll-target="true"]')
+    if (target) {
+      target.scrollIntoView({ block: 'center', inline: 'nearest' })
+    }
+  }, [practiceText, typedChars.length])
 
   const handleContainerClick = () => {
     onFocusChange(true)
@@ -197,10 +228,11 @@ function TypingArea({
     <section className={`typing-area ${isFocused ? 'focused' : ''}`} onClick={handleContainerClick}>
       {!isFocused ? <p className="focus-prompt">點擊輸入框，切到中文輸入法開始練習</p> : null}
 
-      <div className="target-text" aria-label="練習文本">
+      <div ref={targetTextRef} className="target-text" aria-label="練習文本">
         {expectedChars.map((char, index) => {
           const typed = typedChars[index]
-          const isCurrent = index === typedChars.length
+          const isCurrent = index === typedChars.length && typedChars.length < expectedChars.length
+          const isScrollTarget = index === scrollTargetIndex
 
           let className = 'target-char'
           if (typeof typed !== 'undefined') {
@@ -210,7 +242,11 @@ function TypingArea({
           }
 
           return (
-            <span key={`${char}-${index}`} className={className}>
+            <span
+              key={`${char}-${index}`}
+              className={className}
+              data-scroll-target={isScrollTarget ? 'true' : undefined}
+            >
               {char}
               {isCurrent ? <span className="caret" /> : null}
             </span>
@@ -271,6 +307,7 @@ export function TypingView({
       />
       <StatsBar timeLeft={timeLeft} wpm={wpm} accuracy={accuracy} progress={progress} />
       <TypingArea
+        practiceText={practiceText}
         expectedChars={expectedChars}
         typedChars={typedChars}
         inputValue={inputValue}

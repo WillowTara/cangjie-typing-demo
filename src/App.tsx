@@ -50,6 +50,7 @@ function App() {
 
   const typing = useTypingSession({
     initialDuration: 60,
+    isActive: viewMode === 'typing',
     practiceTexts: [practiceSource.material.text],
     onComplete: handleTypingComplete,
   })

@@ -17,6 +17,7 @@ export type TypingStats = {
 
 type UseTypingSessionOptions = {
   initialDuration?: number
+  isActive?: boolean
   practiceTexts: readonly string[]
   onComplete: () => void
 }
@@ -49,6 +50,7 @@ export type PracticeSourceState = {
 
 export function useTypingSession({
   initialDuration = 60,
+  isActive = true,
   practiceTexts,
   onComplete,
 }: UseTypingSessionOptions): TypingSession {
@@ -102,12 +104,19 @@ export function useTypingSession({
   }
 
   useEffect(() => {
-    if (!isRunning) {
+    if (!isRunning || !isActive) {
       return undefined
     }
 
+    const hasTimeLimit = Number.isFinite(duration)
+
     const timer = window.setInterval(() => {
       setElapsedSeconds((prev) => prev + 1)
+
+      if (!hasTimeLimit) {
+        return
+      }
+
       setTimeLeft((prev) => {
         if (prev <= 1) {
           window.clearInterval(timer)
@@ -121,10 +130,10 @@ export function useTypingSession({
     return () => {
       window.clearInterval(timer)
     }
-  }, [isRunning])
+  }, [duration, isActive, isRunning])
 
   useEffect(() => {
-    if (timeLeft === 0 && isRunning) {
+    if (isActive && Number.isFinite(duration) && timeLeft === 0 && isRunning) {
       const timeoutId = window.setTimeout(() => {
         setIsRunning(false)
         setTestCompleted(true)
@@ -136,10 +145,14 @@ export function useTypingSession({
     }
 
     return undefined
-  }, [timeLeft, isRunning])
+  }, [duration, isActive, timeLeft, isRunning])
 
   useEffect(() => {
-    if (typedText === expectedText && expectedText.length > 0 && isRunning) {
+    const hasReachedExpectedLength = typedChars.length >= expectedChars.length
+    const matchesExpectedPrefix =
+      expectedChars.length > 0 && expectedChars.every((char, index) => typedChars[index] === char)
+
+    if (isActive && hasReachedExpectedLength && matchesExpectedPrefix && isRunning) {
       const timeoutId = window.setTimeout(() => {
         setIsRunning(false)
         setTestCompleted(true)
@@ -151,7 +164,7 @@ export function useTypingSession({
     }
 
     return undefined
-  }, [typedText, expectedText, isRunning])
+  }, [expectedChars, isActive, typedChars, isRunning])
 
   useEffect(() => {
     if (testCompleted) {
@@ -188,6 +201,10 @@ export function useTypingSession({
 
   const handleInput = (value: string) => {
     setInputValue(value)
+
+    if (!isActive) {
+      return
+    }
 
     if (!isRunning && !testCompleted && normalizeChineseText(value).length > 0) {
       setIsRunning(true)

@@ -5,8 +5,13 @@ export function normalizeChineseText(text: string): string {
 }
 
 export function formatTime(seconds: number): string {
-  const mins = Math.floor(seconds / 60)
-  const secs = seconds % 60
+  if (!Number.isFinite(seconds)) {
+    return '∞'
+  }
+
+  const safeSeconds = Math.max(0, Math.floor(seconds))
+  const mins = Math.floor(safeSeconds / 60)
+  const secs = safeSeconds % 60
   return `${mins}:${secs.toString().padStart(2, '0')}`
 }
 

@@ -1,7 +1,8 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, renderHook, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import App from './App'
+import { useTypingSession } from './features/typing/useTypingSession'
 import { encodeDictionaryBinary } from './lib/dictionaryBinary'
 import type { DictionaryEntry } from './lib/dictionary'
 
@@ -243,5 +244,98 @@ describe('App', () => {
         ).length
       expect(afterCalls).toBeGreaterThan(beforeCalls)
     })
+  })
+
+  it('supports unlimited duration mode', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    await user.click(screen.getByRole('button', { name: '不限時' }))
+
+    expect(screen.getByText('∞')).toBeInTheDocument()
+  })
+
+  it('auto-scrolls target text while typing', async () => {
+    const originalScrollIntoView = HTMLElement.prototype.scrollIntoView
+    const scrollIntoViewMock = vi.fn()
+
+    Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', {
+      configurable: true,
+      value: scrollIntoViewMock,
+    })
+
+    try {
+      render(<App />)
+      const input = screen.getByPlaceholderText('在這裡輸入中文...')
+
+      fireEvent.change(input, { target: { value: '測' } })
+
+      await waitFor(() => {
+        expect(scrollIntoViewMock).toHaveBeenCalled()
+      })
+    } finally {
+      Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', {
+        configurable: true,
+        value: originalScrollIntoView,
+      })
+    }
+  })
+
+  it('completes typing when full text is entered with extra trailing characters', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    const sourceText = screen.getByText(/^練習文本：/).textContent?.replace('練習文本：', '') ?? ''
+    expect(sourceText.length).toBeGreaterThan(0)
+
+    const input = screen.getByPlaceholderText('在這裡輸入中文...')
+    await user.type(input, `${sourceText}測`)
+
+    await waitFor(() => {
+      expect(screen.getByText('測試完成')).toBeInTheDocument()
+    })
+  })
+
+  it('pauses typing timer updates when session becomes inactive', () => {
+    vi.useFakeTimers()
+
+    try {
+      const onComplete = vi.fn()
+      const { result, rerender } = renderHook(
+        ({ isActive }: { isActive: boolean }) =>
+          useTypingSession({
+            initialDuration: 15,
+            isActive,
+            practiceTexts: ['測試內容'],
+            onComplete,
+          }),
+        {
+          initialProps: { isActive: true },
+        },
+      )
+
+      act(() => {
+        result.current.handleInput('測')
+      })
+
+      act(() => {
+        vi.advanceTimersByTime(3000)
+      })
+
+      const pausedAt = result.current.timeLeft
+
+      act(() => {
+        rerender({ isActive: false })
+      })
+
+      act(() => {
+        vi.advanceTimersByTime(120000)
+      })
+
+      expect(result.current.timeLeft).toBe(pausedAt)
+      expect(onComplete).not.toHaveBeenCalled()
+    } finally {
+      vi.useRealTimers()
+    }
   })
 })

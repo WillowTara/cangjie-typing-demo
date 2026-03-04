@@ -204,6 +204,7 @@
   max-height: calc(var(--target-line-height) * 3 + var(--target-row-gap) * 2);
   overflow-y: auto;
   overflow-x: hidden;
+  scroll-behavior: smooth;
   scrollbar-gutter: stable both-edges;
   line-height: 1.35;
   font-size: clamp(2.1rem, 5.6vw, 3.6rem);
