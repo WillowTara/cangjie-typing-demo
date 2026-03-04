@@ -192,12 +192,19 @@
 }
 
 .target-text {
+  --target-row-gap: 0.62rem;
+  --target-line-height: 1.35em;
   display: flex;
   flex-wrap: wrap;
-  gap: 0.62rem;
+  column-gap: var(--target-row-gap);
+  row-gap: var(--target-row-gap);
   align-items: center;
   align-content: flex-start;
-  min-height: 150px;
+  min-height: calc(var(--target-line-height) * 3 + var(--target-row-gap) * 2);
+  max-height: calc(var(--target-line-height) * 3 + var(--target-row-gap) * 2);
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-gutter: stable both-edges;
   line-height: 1.35;
   font-size: clamp(2.1rem, 5.6vw, 3.6rem);
 }
