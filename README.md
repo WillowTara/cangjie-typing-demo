@@ -170,12 +170,12 @@ char,cangjie,quick
 建立 `.env.local`（或 `.env.development`）可覆蓋字典來源：
 
 ```bash
-VITE_DICTIONARY_URL=/dict/core.latest.v2.bin
-VITE_DICTIONARY_VARIANT=core
+VITE_DICTIONARY_URL=/dict/full.latest.v2.bin
+VITE_DICTIONARY_VARIANT=full
 ```
 
 - 所有執行期設定由 `src/config/runtime.ts` 集中管理
-- 未提供 `VITE_DICTIONARY_URL` 時，會依 `VITE_DICTIONARY_VARIANT` 載入 `/dict/core.latest.v2.bin` 或 `/dict/full.latest.v2.bin`
+- 預設 `VITE_DICTIONARY_VARIANT=full`，未提供 `VITE_DICTIONARY_URL` 時會載入 `/dict/full.latest.v2.bin`
 - 若指定 URL 載入失敗，會依序嘗試 variant 的 latest alias，最後回退到 `/dict/sample-dictionary.json`
 
 ### 安裝與啟動
@@ -251,7 +251,7 @@ npm run dict:export:sqlite -- --input public/dict/sample-dictionary.json --outpu
 ```typescript
 // 透過環境變數覆蓋字典來源（建議）
 // .env.local
-VITE_DICTIONARY_URL=/dict/full.2026.03.0.bee02cbc.v2.bin
+VITE_DICTIONARY_URL=/dict/full.latest.v2.bin
 VITE_DICTIONARY_VARIANT=full
 
 // 由 src/config/runtime.ts 統一讀取
@@ -278,6 +278,10 @@ VITE_DICTIONARY_VARIANT=full
 - UI 靈感：Monkeytype (https://monkeytype.com/)
 
 ## 更新日誌
+
+### v1.2.5 (2026-03-04) - 預設查碼切換到 full
+- ✅ runtime 預設 variant 由 `core` 改為 `full`，避免公開部署查字只命中 221 筆 core 字典
+- ✅ 測試同步更新預設載入路徑為 `/dict/full.latest.v2.bin`
 
 ### v1.2.4 (2026-03-04) - 部署查碼回退修正
 - ✅ 將 runtime 預設字典改為 variant 對應的 stable alias（`core.latest.v2.bin` / `full.latest.v2.bin`），避免預設落到 sample 字典
