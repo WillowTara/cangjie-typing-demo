@@ -31,7 +31,7 @@ Monkeytype 風格的倉頡與速成輸入法練習應用，同時提供字典查
 
 - **Vercel**: https://cangjie-typing-demo.vercel.app
 - **GitHub**: https://github.com/WillowTara/cangjie-typing-demo
-- **最新測試連結（Production，快取破除）**: https://cangjie-typing-demo.vercel.app/?v=verify-20260304-1810
+- **最新測試連結（Production，快取破除）**: https://cangjie-typing-demo.vercel.app/?v=verify-20260304-1830
 - **最新部署頁（Preview，含選字同步修正）**: https://cangjie-typing-demo-git-pr-01-d65444-kwoklkylky-5779s-projects.vercel.app/?v=verify-20260304-1815
 
 ## 技術架構
@@ -224,7 +224,7 @@ npm run dict:export:sqlite -- --input public/dict/sample-dictionary.json --outpu
 
 ### 部署後快速驗證（建議）
 1. 先開啟最新 Preview：`https://cangjie-typing-demo-git-pr-01-d65444-kwoklkylky-5779s-projects.vercel.app/?v=verify-20260304-1815`
-2. 再用 Production smoke test：`https://cangjie-typing-demo.vercel.app/?v=verify-20260304-1810`
+2. 再用 Production smoke test：`https://cangjie-typing-demo.vercel.app/?v=verify-20260304-1830`
 3. 確認字典 binary 可直接存取：
    - `https://cangjie-typing-demo.vercel.app/dict/core.latest.v2.bin`
    - `https://cangjie-typing-demo.vercel.app/dict/full.latest.v2.bin`
