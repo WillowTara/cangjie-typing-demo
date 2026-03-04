@@ -1,6 +1,6 @@
 const LEGACY_SAMPLE_DICTIONARY_URL = '/dict/sample-dictionary.json'
 const DEFAULT_LOG_LEVEL = 'info' as const
-const DEFAULT_DICTIONARY_VARIANT = 'core' as const
+const DEFAULT_DICTIONARY_VARIANT = 'full' as const
 
 const DEFAULT_DICTIONARY_URL_BY_VARIANT = {
   core: '/dict/core.latest.v2.bin',

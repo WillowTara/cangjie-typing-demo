@@ -52,7 +52,7 @@ describe('App', () => {
     expect(screen.getByText('點擊輸入框，切到中文輸入法開始練習')).toBeInTheDocument()
 
     await waitFor(() => {
-      expect(globalThis.fetch).toHaveBeenCalledWith('/dict/core.latest.v2.bin')
+      expect(globalThis.fetch).toHaveBeenCalledWith('/dict/full.latest.v2.bin')
     })
   })
 
@@ -60,7 +60,7 @@ describe('App', () => {
     render(<App />)
 
     await waitFor(() => {
-      expect(globalThis.fetch).toHaveBeenCalledWith('/dict/core.latest.v2.bin')
+      expect(globalThis.fetch).toHaveBeenCalledWith('/dict/full.latest.v2.bin')
     })
   })
 
