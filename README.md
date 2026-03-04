@@ -1,6 +1,6 @@
 # 倉頡打字練習 - Cangjie Typing Practice Demo
 
-![Version](https://img.shields.io/badge/version-1.2.11-blue)
+![Version](https://img.shields.io/badge/version-1.2.12-blue)
 ![React](https://img.shields.io/badge/React-19.2+-61DAFB)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9+-3178C6)
 ![Vite](https://img.shields.io/badge/Vite-7.3+-646CFF)
@@ -17,7 +17,7 @@ Monkeytype 風格的倉頡與速成輸入法練習應用，同時提供字典查
   - CPM (每分鐘字元數)
   - 準確率 (Accuracy)
   - 進度百分比 (Progress)
-- **練習素材雙模式**：離線白名單（51 篇人工錄入完整文章）/ 線上維基隨機完整條目
+- **練習素材雙模式**：離線白名單（51 篇維基原文繁體快照，最多前三段）/ 線上維基隨機完整條目
 - **授權可追溯**：素材顯示來源 URL、修訂 ID、作者連結、授權、是否改作
 - **視覺化回饋**：正確綠色、錯誤紅色、當前黃色標記
 
@@ -32,8 +32,8 @@ Monkeytype 風格的倉頡與速成輸入法練習應用，同時提供字典查
 
 - **Vercel**: https://cangjie-typing-demo.vercel.app
 - **GitHub**: https://github.com/WillowTara/cangjie-typing-demo
-- **最新測試連結（Production，快取破除）**: https://cangjie-typing-demo.vercel.app/?v=verify-20260304-2158
-- **最新封版基準 commit**: 8760a55
+- **最新測試連結（Production，快取破除）**: https://cangjie-typing-demo.vercel.app/?v=verify-20260305-0010
+- **最新封版基準 commit**: 799c3ac
 
 ## 技術架構
 
@@ -66,7 +66,8 @@ newproject/
 │       └── dictionaryBinary.ts    # v2 binary codec（encode/decode/lookup）
 ├── e2e/                    # Playwright E2E 測試
 ├── scripts/
-│   └── dict/               # v2 build / verify / sqlite export 腳本
+│   ├── dict/               # v2 build / verify / sqlite export 腳本
+│   └── typing/             # 離線白名單重收錄腳本
 ├── public/
 │   └── dict/               # 外部字典檔案 (CSV/JSON)
 │       ├── sample-dictionary.csv
@@ -224,7 +225,7 @@ npm run dict:export:sqlite -- --input public/dict/sample-dictionary.json --outpu
 4. 部署完成後取得網址
 
 ### 部署後快速驗證（建議）
-1. 開啟 Production smoke test：`https://cangjie-typing-demo.vercel.app/?v=verify-20260304-2158`
+1. 開啟 Production smoke test：`https://cangjie-typing-demo.vercel.app/?v=verify-20260305-0010`
 2. 進入打字模式確認：素材來源可切換（離線白名單 / 線上維基隨機），且文章展示最多三行、輸入框保持可見
 3. 確認字典 binary 可直接存取：
    - `https://cangjie-typing-demo.vercel.app/dict/core.latest.v2.bin`
@@ -253,7 +254,7 @@ npm run dict:export:sqlite -- --input public/dict/sample-dictionary.json --outpu
 - 涵蓋：基本筆畫、常用字、詞組
 
 ### 練習素材
-- 離線白名單：51 篇可公開使用素材（實作含敏感關鍵字排除）
+- 離線白名單：51 篇維基原文繁體快照（每篇最多前三段，含敏感關鍵字排除）
 - 線上維基隨機：每次「換一段」重新取得隨機條目完整內容（顯示授權與來源資訊）
 - 換段行為：離線模式抽下一篇白名單；線上模式重新拉取隨機文章
 
@@ -271,7 +272,7 @@ VITE_DICTIONARY_VARIANT=full
 ```
 
 ### 2. 新增練習素材
-在 `src/features/typing/constants.ts` 的 `OFFLINE_WHITELIST_PRACTICE_MATERIALS` 來源種子中新增條目，並同步維護來源授權資訊欄位
+執行 `npm run typing:offline:reingest` 重新產生 `src/features/typing/offlineWhitelistSeeds.generated.ts`，再由 `src/features/typing/constants.ts` 載入
 
 ### 3. 加入排行榜
 - 使用 localStorage 儲存歷史成績
@@ -291,6 +292,12 @@ VITE_DICTIONARY_VARIANT=full
 - UI 靈感：Monkeytype (https://monkeytype.com/)
 
 ## 更新日誌
+
+### v1.2.12 (2026-03-05) - 離線白名單繁體重收錄與封版
+- ✅ 修正查碼 IME 選字同步：`compositionend` 後補一次 settled sync，避免最終選字晚到造成查字結果未更新（`src/features/lookup/DictionaryLookup.tsx`，`src/App.test.tsx`，commit `a5a15be`）
+- ✅ 離線白名單改為維基原文快照來源：每篇保留原文、最多前三段，並保存實際 revisionId（`src/features/typing/offlineWhitelistSeeds.generated.ts`，`src/features/typing/constants.ts`，commit `71f5a1d`）
+- ✅ 新增重收錄腳本並強制繁體產出（`zh-hant` + 常見簡體字防呆 + 章節標題行排除），並擴充回歸測試檢查（`scripts/typing/reingest-offline-whitelist.mts`，`src/App.test.tsx`，commit `799c3ac`）
+- ✅ 封版基準 commit：`799c3ac`
 
 ### v1.2.11 (2026-03-04) - 離線白名單重錄與污染字清理封版
 - ✅ 重錄離線白名單完整文章模板，移除非預期提示語（如「完整收錄篇章」等）（`src/features/typing/constants.ts`）
