@@ -1,6 +1,6 @@
 # 倉頡打字練習 - Cangjie Typing Practice Demo
 
-![Version](https://img.shields.io/badge/version-1.2.8-blue)
+![Version](https://img.shields.io/badge/version-1.2.9-blue)
 ![React](https://img.shields.io/badge/React-19.2+-61DAFB)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9+-3178C6)
 ![Vite](https://img.shields.io/badge/Vite-7.3+-646CFF)
@@ -11,7 +11,7 @@ Monkeytype 風格的倉頡與速成輸入法練習應用，同時提供字典查
 
 ### 1. 打字練習 (Typing Practice)
 - **倉頡/速成切換**：支援倉頡與速成兩種輸入法練習
-- **計時模式**：15 / 30 / 60 / 120 秒計時選擇
+- **計時模式**：15 / 30 / 60 / 120 秒 + 不限時
 - **即時統計**：
   - WPM (每分鐘字數)
   - CPM (每分鐘字元數)
@@ -32,8 +32,8 @@ Monkeytype 風格的倉頡與速成輸入法練習應用，同時提供字典查
 
 - **Vercel**: https://cangjie-typing-demo.vercel.app
 - **GitHub**: https://github.com/WillowTara/cangjie-typing-demo
-- **最新測試連結（Production，快取破除）**: https://cangjie-typing-demo.vercel.app/?v=verify-20260304-1945
-- **最新封版基準 commit**: bd7a9f4
+- **最新測試連結（Production，快取破除）**: https://cangjie-typing-demo.vercel.app/?v=verify-20260304-2055
+- **最新封版基準 commit**: 019a7c6
 
 ## 技術架構
 
@@ -224,7 +224,7 @@ npm run dict:export:sqlite -- --input public/dict/sample-dictionary.json --outpu
 4. 部署完成後取得網址
 
 ### 部署後快速驗證（建議）
-1. 開啟 Production smoke test：`https://cangjie-typing-demo.vercel.app/?v=verify-20260304-1945`
+1. 開啟 Production smoke test：`https://cangjie-typing-demo.vercel.app/?v=verify-20260304-2055`
 2. 進入打字模式確認：素材來源可切換（離線白名單 / 線上維基隨機），且文章展示最多三行、輸入框保持可見
 3. 確認字典 binary 可直接存取：
    - `https://cangjie-typing-demo.vercel.app/dict/core.latest.v2.bin`
@@ -235,7 +235,7 @@ npm run dict:export:sqlite -- --input public/dict/sample-dictionary.json --outpu
 
 ### 打字練習模式
 1. 點擊「打字」標籤進入練習模式
-2. 選擇計時長度（15/30/60/120 秒）
+2. 選擇計時長度（15/30/60/120 秒或不限時）
 3. 點擊輸入框，切換至中文輸入法
 4. 輸入與上方相同的文字（不需輸入空格）
 5. 系統即時顯示正確/錯誤/進度
@@ -291,6 +291,14 @@ VITE_DICTIONARY_VARIANT=full
 - UI 靈感：Monkeytype (https://monkeytype.com/)
 
 ## 更新日誌
+
+### v1.2.9 (2026-03-04) - 打字不限時與全文滾動封版
+- ✅ 新增打字不限時選項，時間欄位顯示 `∞`（`src/features/typing/TypingView.tsx`, `src/features/typing/utils.ts`）
+- ✅ 三行展示區改為隨輸入位置自動滾動，會持續跟到文章末尾（`src/features/typing/TypingView.tsx`, `src/App.css`）
+- ✅ 完成判定強化：輸入已覆蓋全文時即完成，避免尾端多打一字卡住（`src/features/typing/useTypingSession.ts`）
+- ✅ 離開打字頁時停用 typing session 計時與完成觸發，避免背景倒數誤跳結果頁（`src/App.tsx`, `src/features/typing/useTypingSession.ts`）
+- ✅ 回歸測試擴充：不限時顯示、自動滾動、超打完成、非 active 計時停駐（`src/App.test.tsx`）
+- ✅ 封版提交：`019a7c6`
 
 ### v1.2.8 (2026-03-04) - 打字素材白名單與展示可用性封版
 - ✅ 新增打字素材雙模式：離線白名單 + 線上維基隨機（`src/features/typing/constants.ts`, `src/features/typing/useTypingSession.ts`, `src/features/typing/index.ts`）
