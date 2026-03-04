@@ -3,8 +3,8 @@
   "dictVersion": "2026.03.0",
   "variant": "full",
   "artifact": {
-    "file": "full.2026.03.0.bee02cbc.v2.bin",
-    "sha256": "bee02cbc1054ac774505c1d2ef473146159a8dbfe6b19d40c4b8ae6f939758a0",
+    "file": "full.2026.03.0.4f7b3650.v2.bin",
+    "sha256": "4f7b3650a562b4a00361b727dff932e7c39af691bc70535b9fcb5604a9b9a1cb",
     "bytes": 702814
   },
   "format": {
@@ -54,7 +54,7 @@
   ],
   "build": {
     "toolVersion": "dict-build/0.1.0",
-    "generatedAt": "2026-03-04T08:04:58.616Z",
+    "generatedAt": "2026-03-04T09:21:08.401Z",
     "gitCommit": "unknown"
   },
   "compat": {
