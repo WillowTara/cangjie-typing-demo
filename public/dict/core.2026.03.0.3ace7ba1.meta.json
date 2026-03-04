@@ -3,8 +3,8 @@
   "dictVersion": "2026.03.0",
   "variant": "core",
   "artifact": {
-    "file": "core.2026.03.0.5b9218e9.v2.bin",
-    "sha256": "5b9218e962ace397e3997f5cd44659fde24f905c716873f484f1cf6ef2f71a77",
+    "file": "core.2026.03.0.3ace7ba1.v2.bin",
+    "sha256": "3ace7ba1302e23ab737446aed424b87bf004dd5866d0de3f7bb0c6de0461d8b1",
     "bytes": 3600
   },
   "format": {
@@ -32,13 +32,13 @@
       "name": "Core curated dictionary CSV",
       "license": "LicenseRef-CuratedData",
       "version": "2026.03.0",
-      "sha256": "0dd91ef43fb69964293e74d8fe7776a2010f4ad36a55489f99d7078d19f5b5c0",
+      "sha256": "1efeaef71c1b5620252af1cf269ea4d9ea0f0a702c17f1bb547962f6de47e438",
       "url": "local://public/dict/core-dictionary.csv"
     }
   ],
   "build": {
     "toolVersion": "dict-build/0.1.0",
-    "generatedAt": "2026-02-27T11:40:07.627Z",
+    "generatedAt": "2026-03-04T09:21:07.830Z",
     "gitCommit": "unknown"
   },
   "compat": {

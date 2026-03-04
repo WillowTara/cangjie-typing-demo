@@ -6,7 +6,7 @@
       "name": "Core curated dictionary CSV",
       "license": "LicenseRef-CuratedData",
       "version": "2026.03.0",
-      "sha256": "0dd91ef43fb69964293e74d8fe7776a2010f4ad36a55489f99d7078d19f5b5c0",
+      "sha256": "1efeaef71c1b5620252af1cf269ea4d9ea0f0a702c17f1bb547962f6de47e438",
       "url": "local://public/dict/core-dictionary.csv"
     }
   ]
