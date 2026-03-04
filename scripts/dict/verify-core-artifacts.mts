@@ -3,6 +3,7 @@
 import { createHash } from 'node:crypto'
 import { readdir, readFile } from 'node:fs/promises'
 import { join } from 'node:path'
+import { createBinaryLookup, decodeDictionaryBinary } from '../../src/lib/dictionaryBinary.ts'
 
 const CODE_PATTERN = /^[A-Z]{1,5}$/u
 
@@ -160,6 +161,37 @@ async function main(): Promise<void> {
   }
   if (artifactBytes.byteLength !== meta.artifact.bytes) {
     throw new Error('Artifact byte size mismatch between binary and meta')
+  }
+
+  const binary = decodeDictionaryBinary(artifactBytes)
+  if (binary.header.entryCount !== entries.length) {
+    throw new Error(
+      `Decoded entryCount mismatch: binary=${binary.header.entryCount}, normalized=${entries.length}`,
+    )
+  }
+
+  const binaryLookup = createBinaryLookup(binary)
+  const probeIndices = [0, Math.floor((entries.length - 1) / 2), entries.length - 1]
+  for (const index of probeIndices) {
+    const probe = entries[index]
+    if (!probe) {
+      continue
+    }
+
+    const result = binaryLookup(probe.char)
+    if (!result) {
+      throw new Error(`Binary lookup missing probe char at index ${index}`)
+    }
+    if (result.cangjie !== probe.cangjie) {
+      throw new Error(
+        `Binary lookup cangjie mismatch at index ${index}: expected=${probe.cangjie}, got=${result.cangjie}`,
+      )
+    }
+    if (result.quick !== probe.quick) {
+      throw new Error(
+        `Binary lookup quick mismatch at index ${index}: expected=${probe.quick}, got=${result.quick}`,
+      )
+    }
   }
 
   const shortHash = meta.artifact.sha256.slice(0, 8)

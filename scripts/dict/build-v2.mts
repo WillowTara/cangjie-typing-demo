@@ -43,6 +43,20 @@ function codeToSlot(code) {
   return out
 }
 
+function crc32(bytes: Uint8Array): number {
+  let crc = 0xffffffff
+
+  for (let offset = 0; offset < bytes.length; offset += 1) {
+    crc ^= bytes[offset] ?? 0
+    for (let bit = 0; bit < 8; bit += 1) {
+      const mask = -(crc & 1)
+      crc = (crc >>> 1) ^ (0xedb88320 & mask)
+    }
+  }
+
+  return (crc ^ 0xffffffff) >>> 0
+}
+
 function normalizeOptionalString(value: unknown): string | undefined {
   if (typeof value !== 'string') {
     return undefined
@@ -182,6 +196,9 @@ function buildBinary(entries: Array<{ char: string; cangjie: string; quick: stri
       codeToSlot(entries[i].quick).copy(out, quickOffset + i * SLOT_SIZE)
     }
   }
+
+  const payload = new Uint8Array(out.buffer, out.byteOffset + HEADER_SIZE, payloadBytes)
+  out.writeUInt32LE(crc32(payload), 44)
 
   return { out, hasQuickTable }
 }
