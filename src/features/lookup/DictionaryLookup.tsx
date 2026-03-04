@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import type { DictionaryLookupFn } from '../../lib/dictionary'
 
 function codeToEnglishKeys(code: string): string {
@@ -16,10 +16,34 @@ type DictionaryLookupProps = {
 
 export function DictionaryLookup({ lookup, isLoading, loadError }: DictionaryLookupProps) {
   const [input, setInput] = useState('')
+  const inputRef = useRef<HTMLInputElement>(null)
+  const settleTimerRef = useRef<number | null>(null)
 
   const syncInputValue = (value: string) => {
     setInput(value)
   }
+
+  const scheduleSettledInputSync = () => {
+    if (settleTimerRef.current !== null) {
+      window.clearTimeout(settleTimerRef.current)
+    }
+
+    settleTimerRef.current = window.setTimeout(() => {
+      const latestValue = inputRef.current?.value
+      if (typeof latestValue === 'string') {
+        syncInputValue(latestValue)
+      }
+      settleTimerRef.current = null
+    }, 0)
+  }
+
+  useEffect(() => {
+    return () => {
+      if (settleTimerRef.current !== null) {
+        window.clearTimeout(settleTimerRef.current)
+      }
+    }
+  }, [])
 
   const rows = useMemo(() => {
     if (!input.trim()) {
@@ -41,12 +65,15 @@ export function DictionaryLookup({ lookup, isLoading, loadError }: DictionaryLoo
     <section className="dictionary-lookup">
       <div className="lookup-input-container">
         <input
+          ref={inputRef}
           type="text"
           className="lookup-input"
           value={input}
           onChange={(event) => syncInputValue(event.currentTarget.value)}
-          onInput={(event) => syncInputValue(event.currentTarget.value)}
-          onCompositionEnd={(event) => syncInputValue(event.currentTarget.value)}
+          onCompositionEnd={(event) => {
+            syncInputValue(event.currentTarget.value)
+            scheduleSettledInputSync()
+          }}
           placeholder="輸入中文字查詢倉頡/速成碼..."
           disabled={isLoading}
         />

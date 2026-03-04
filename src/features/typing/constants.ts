@@ -95,14 +95,6 @@ const MIN_WIKIPEDIA_FULL_ARTICLE_CHARS = 280
 
 const DISAMBIGUATION_HINTS = ['消歧義', '可能是指', '可以指'] as const
 
-const OFFLINE_PROMPT_ARTIFACT_PATTERNS: readonly RegExp[] = [
-  /完整收錄篇章/g,
-  /白名單素材/g,
-  /三行摘要截斷/g,
-  /本篇內容為離線完整文章版本/g,
-  /prompt/gi,
-] as const
-
 type WikipediaQueryPage = {
   title?: string
   fullurl?: string
@@ -124,31 +116,40 @@ function toWikipediaHistoryUrl(title: string): string {
   return `https://zh.wikipedia.org/w/index.php?title=${encodeURIComponent(title)}&action=history`
 }
 
-function buildOfflineFullArticleText(title: string, summary: string): string {
-  const article = [
-    `【${title}】`,
-    `${summary}。`,
-    `在知識脈絡上，${title}常會從來源、特徵與分類角度被介紹，不同地區也會因環境與文化形成不同觀察重點。`,
-    `若進一步理解${title}，可以比較其歷史發展與現代應用，從實際案例掌握其變化規律，這樣更容易建立完整概念。`,
-    `在教育與日常層面，${title}不只是一個名詞，也連結到生活經驗與實作判斷；透過持續閱讀與整理，能逐步累積更穩定的理解。`,
-  ].join('\n')
+function keepFirstThreeParagraphs(articleText: string): { text: string; isAdapted: boolean } {
+  const normalized = articleText.replace(/\r\n/g, '\n').trim()
+  if (!normalized) {
+    return { text: '', isAdapted: false }
+  }
 
-  return OFFLINE_PROMPT_ARTIFACT_PATTERNS.reduce((text, pattern) => text.replace(pattern, ''), article)
-    .replace(/\n{3,}/g, '\n\n')
-    .trim()
+  const paragraphs = normalized
+    .split(/\n\s*\n/u)
+    .map((paragraph) => paragraph.trim())
+    .filter((paragraph) => paragraph.length > 0)
+
+  if (paragraphs.length <= 3) {
+    return { text: normalized, isAdapted: false }
+  }
+
+  return {
+    text: paragraphs.slice(0, 3).join('\n\n'),
+    isAdapted: true,
+  }
 }
 
-function createOfflineMaterial(title: string, summary: string, index: number): PracticeMaterial {
+function createOfflineMaterial(title: string, articleText: string, index: number): PracticeMaterial {
+  const reducedArticle = keepFirstThreeParagraphs(articleText)
+
   return {
     id: `offline-${String(index + 1).padStart(3, '0')}`,
     title,
-    text: buildOfflineFullArticleText(title, summary),
+    text: reducedArticle.text,
     sourceUrl: toWikipediaArticleUrl(title),
     revisionId: 'offline-whitelist',
     authorsUrl: toWikipediaHistoryUrl(title),
     license: WIKIPEDIA_LICENSE,
     licenseUrl: WIKIPEDIA_LICENSE_URL,
-    isAdapted: true,
+    isAdapted: reducedArticle.isAdapted,
     mode: 'offline',
   }
 }

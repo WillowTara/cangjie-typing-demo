@@ -73,12 +73,17 @@ afterEach(() => {
 })
 
 describe('App', () => {
-  it('keeps offline whitelist articles free of prompt artifacts', () => {
+  it('keeps offline whitelist articles within first three paragraphs without template rewrites', () => {
     const artifactKeywords = ['完整收錄篇章', '白名單素材', '三行摘要截斷', '本篇內容為離線完整文章版本', 'prompt']
 
     for (const material of OFFLINE_WHITELIST_PRACTICE_MATERIALS) {
-      expect(material.text.length).toBeGreaterThan(180)
-      expect(normalizeChineseText(material.text).length).toBeGreaterThan(140)
+      const paragraphs = material.text
+        .split(/\n\s*\n/u)
+        .map((paragraph) => paragraph.trim())
+        .filter((paragraph) => paragraph.length > 0)
+
+      expect(paragraphs.length).toBeLessThanOrEqual(3)
+      expect(normalizeChineseText(material.text).length).toBeGreaterThan(10)
 
       for (const keyword of artifactKeywords) {
         expect(material.text.toLowerCase()).not.toContain(keyword.toLowerCase())
@@ -86,14 +91,14 @@ describe('App', () => {
     }
   })
 
-  it('uses full-article offline material by default', async () => {
+  it('uses offline whitelist material by default', async () => {
     render(<App />)
 
     await waitFor(() => {
       expect(globalThis.fetch).toHaveBeenCalledWith('/dict/full.latest.v2.bin')
     })
 
-    expect(readPracticeLengthFromPreview()).toBeGreaterThan(140)
+    expect(readPracticeLengthFromPreview()).toBeGreaterThan(10)
   })
 
   it('renders typing mode by default', async () => {
@@ -229,6 +234,32 @@ describe('App', () => {
       (node) => node.textContent,
     )
     expect(chars).toEqual(['抽', '水', '抽', '水'])
+  })
+
+  it('reconciles lookup rows when final IME value lands after composition end', async () => {
+    const user = userEvent.setup()
+    const { container } = render(<App />)
+
+    await user.click(screen.getByRole('button', { name: '查碼' }))
+    const input = screen.getByPlaceholderText('輸入中文字查詢倉頡/速成碼...')
+
+    await waitFor(() => {
+      expect(input).not.toBeDisabled()
+    })
+
+    fireEvent.compositionStart(input)
+    fireEvent.change(input, { target: { value: '手田' } })
+
+    ;(input as HTMLInputElement).value = '手田'
+    fireEvent.compositionEnd(input)
+    ;(input as HTMLInputElement).value = '抽水'
+
+    await waitFor(() => {
+      const chars = Array.from(container.querySelectorAll('.lookup-item .lookup-char')).map(
+        (node) => node.textContent,
+      )
+      expect(chars).toEqual(['抽', '水'])
+    })
   })
 
   it('loads full wikipedia material when switching to online source mode', async () => {
