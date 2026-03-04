@@ -29,6 +29,7 @@
     "dict:verify:core": "node scripts/dict/verify-core-artifacts.mts",
     "dict:verify:full": "node scripts/dict/verify-core-artifacts.mts --variant full --input public/dict/full-dictionary.csv",
     "dict:export:sqlite": "node scripts/dict/export-sqlite.mts",
+    "typing:offline:reingest": "node scripts/typing/reingest-offline-whitelist.mts",
     "prepare": "husky"
   },
   "lint-staged": {

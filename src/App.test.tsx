@@ -83,7 +83,7 @@ describe('App', () => {
         .filter((paragraph) => paragraph.length > 0)
 
       expect(paragraphs.length).toBeLessThanOrEqual(3)
-      expect(normalizeChineseText(material.text).length).toBeGreaterThan(10)
+      expect(normalizeChineseText(material.text).length).toBeGreaterThanOrEqual(80)
 
       for (const keyword of artifactKeywords) {
         expect(material.text.toLowerCase()).not.toContain(keyword.toLowerCase())
@@ -98,7 +98,7 @@ describe('App', () => {
       expect(globalThis.fetch).toHaveBeenCalledWith('/dict/full.latest.v2.bin')
     })
 
-    expect(readPracticeLengthFromPreview()).toBeGreaterThan(10)
+    expect(readPracticeLengthFromPreview()).toBeGreaterThan(140)
   })
 
   it('renders typing mode by default', async () => {
