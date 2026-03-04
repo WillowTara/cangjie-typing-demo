@@ -11,6 +11,18 @@ const MOCK_ENTRIES: DictionaryEntry[] = [
 ]
 
 const MOCK_DICTIONARY_JSON = JSON.stringify(MOCK_ENTRIES)
+const MOCK_WIKIPEDIA_RANDOM = {
+  query: {
+    pages: [
+      {
+        title: '貓',
+        fullurl: 'https://zh.wikipedia.org/wiki/%E8%B2%93',
+        extract: '貓是小型食肉目哺乳動物常見於人類生活環境中。',
+        revisions: [{ revid: 123456789 }],
+      },
+    ],
+  },
+}
 const MOCK_CORE_BINARY = encodeDictionaryBinary(MOCK_ENTRIES)
 const MOCK_CORE_BINARY_BODY = new Uint8Array(MOCK_CORE_BINARY)
 const MOCK_CORE_BINARY_ARRAY_BUFFER = (() => {
@@ -27,6 +39,13 @@ beforeEach(() => {
       return new Response(MOCK_CORE_BINARY_ARRAY_BUFFER, {
         status: 200,
         headers: { 'Content-Type': 'application/octet-stream' },
+      })
+    }
+
+    if (requestUrl.includes('zh.wikipedia.org/w/api.php')) {
+      return new Response(JSON.stringify(MOCK_WIKIPEDIA_RANDOM), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
       })
     }
 
@@ -176,5 +195,53 @@ describe('App', () => {
       (node) => node.textContent,
     )
     expect(chars).toEqual(['抽', '水', '抽', '水'])
+  })
+
+  it('loads wikipedia material when switching to online source mode', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    expect(screen.getByText('素材來源：離線白名單')).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: '線上維基隨機' }))
+
+    await waitFor(() => {
+      expect(screen.getByText('素材來源：線上維基隨機')).toBeInTheDocument()
+      expect(screen.getByText('修訂ID：123456789')).toBeInTheDocument()
+    })
+
+    expect(
+      vi.mocked(globalThis.fetch).mock.calls.some(([input]) =>
+        (typeof input === 'string' ? input : input.toString()).includes('zh.wikipedia.org/w/api.php'),
+      ),
+    ).toBe(true)
+  })
+
+  it('rerolls wikipedia material from the same button', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    await user.click(screen.getByRole('button', { name: '線上維基隨機' }))
+
+    await waitFor(() => {
+      expect(screen.getByText('素材來源：線上維基隨機')).toBeInTheDocument()
+    })
+
+    const beforeCalls = vi
+      .mocked(globalThis.fetch)
+      .mock.calls.filter(([input]) =>
+        (typeof input === 'string' ? input : input.toString()).includes('zh.wikipedia.org/w/api.php'),
+      ).length
+
+    await user.click(screen.getByRole('button', { name: '換一段' }))
+
+    await waitFor(() => {
+      const afterCalls = vi
+        .mocked(globalThis.fetch)
+        .mock.calls.filter(([input]) =>
+          (typeof input === 'string' ? input : input.toString()).includes('zh.wikipedia.org/w/api.php'),
+        ).length
+      expect(afterCalls).toBeGreaterThan(beforeCalls)
+    })
   })
 })
