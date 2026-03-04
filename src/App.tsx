@@ -1,8 +1,8 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import './App.css'
 import { useDictionary } from './features/dictionary'
 import { DictionaryLookup } from './features/lookup'
-import { PRACTICE_TEXTS, ResultScreen, TypingView, useTypingSession } from './features/typing'
+import { ResultScreen, TypingView, usePracticeSource, useTypingSession } from './features/typing'
 
 type ViewMode = 'typing' | 'lookup' | 'result'
 
@@ -42,6 +42,7 @@ function Header({
 
 function App() {
   const [viewMode, setViewMode] = useState<ViewMode>('typing')
+  const practiceSource = usePracticeSource()
 
   const handleTypingComplete = useCallback(() => {
     setViewMode('result')
@@ -49,15 +50,32 @@ function App() {
 
   const typing = useTypingSession({
     initialDuration: 60,
-    practiceTexts: PRACTICE_TEXTS,
+    practiceTexts: [practiceSource.material.text],
     onComplete: handleTypingComplete,
   })
+
+  const currentPracticeText = typing.practiceText
+  const replacePracticeText = typing.replacePracticeText
+
+  useEffect(() => {
+    if (practiceSource.material.text !== currentPracticeText) {
+      replacePracticeText(practiceSource.material.text)
+    }
+  }, [currentPracticeText, practiceSource.material.text, replacePracticeText])
 
   const { lookup, isLoading: dictLoading, loadError } = useDictionary()
 
   const handleRestart = () => {
     typing.restart()
     setViewMode('typing')
+  }
+
+  const handleReroll = () => {
+    void practiceSource.reroll()
+  }
+
+  const handleSourceModeChange = (mode: 'offline' | 'online') => {
+    void practiceSource.switchMode(mode)
   }
 
   return (
@@ -78,8 +96,13 @@ function App() {
             inputValue={typing.inputValue}
             isFocused={typing.isFocused}
             onDurationChange={typing.changeDuration}
-            onReroll={typing.reroll}
+            onReroll={handleReroll}
             onRestart={typing.restart}
+            sourceMode={practiceSource.mode}
+            sourceMaterial={practiceSource.material}
+            isSourceLoading={practiceSource.isLoading}
+            sourceError={practiceSource.loadError}
+            onSourceModeChange={handleSourceModeChange}
             onFocusChange={typing.setIsFocused}
             onInput={typing.handleInput}
           />
