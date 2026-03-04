@@ -234,11 +234,13 @@ async function main() {
 
   const base = `${variant}.${dictVersion}.${shortHash}`
   const binName = `${base}.v2.bin`
+  const latestBinName = `${variant}.latest.v2.bin`
   const metaName = `${base}.meta.json`
   const licensesName = `${base}.licenses.json`
 
   await mkdir(outputDir, { recursive: true })
   await writeFile(join(outputDir, binName), out)
+  await writeFile(join(outputDir, latestBinName), out)
 
   const minCodepoint = entries[0].codepoint
   const maxCodepoint = entries[entries.length - 1].codepoint
