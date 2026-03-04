@@ -1,5 +1,5 @@
 {
-  "schema": "cj-dict-sources@1",
+  "schema": "cj-dict-licenses@1",
   "sources": [
     {
       "id": "cin-tables-cangjie",

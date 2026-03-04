@@ -5260,6 +5260,7 @@ char,cangjie,quick
 䢉,HWMMV,HV
 䢊,YND,YD
 䢋,YML,YL
+䢌,YJB,YB
 䢍,YYHS,YS
 䢎,YMT,YT
 䢏,IYYJ,IJ
@@ -6581,6 +6582,15 @@ char,cangjie,quick
 䶳,OBYHN,ON
 䶴,FOOMB,FB
 䶵,OBHYU,OU
+䶷,RHU,RU
+䶸,RHI,RI
+䶹,UL,UL
+䶺,BOB,BB
+䶻,BLBU,BU
+䶼,BCIP,BP
+䶽,BUCE,BE
+䶾,HONO,HO
+䶿,OIHU,OU
 一,M,M
 丁,MN,MN
 丂,MVS,MS
@@ -6741,6 +6751,7 @@ char,cangjie,quick
 亝,IIIM,IM
 亞,MLLM,MM
 亟,MEM,MM
+亠,XY,XY
 亡,YV,YV
 亢,YHN,YN
 亣,YLL,YL
@@ -6938,7 +6949,9 @@ char,cangjie,quick
 佣,OBQ,OQ
 佤,OMVN,ON
 佥,OMFM,OM
+佦,XOMR,XR
 佧,OYMY,OY
+佨,OPRU,OU
 佩,OHNB,OB
 佪,OWR,OR
 佫,OHER,OR
@@ -7065,6 +7078,7 @@ char,cangjie,quick
 俤,OCNH,OH
 俥,OJWJ,OJ
 俦,OQKI,OI
+俧,XOGP,XP
 俨,OMTH,OH
 俩,OMOB,OB
 俪,OMBB,OB
@@ -7152,6 +7166,7 @@ char,cangjie,quick
 值,OJBM,OM
 倽,OOMR,OR
 倾,OPMO,OO
+倿,OYTV,OV
 偀,OTLK,OK
 偁,OBGB,OB
 偂,OTBN,ON
@@ -7254,6 +7269,7 @@ char,cangjie,quick
 傣,OQKE,OE
 傤,OJIQ,OQ
 傥,OFBU,OU
+傦,OBBB,OB
 傧,OJOC,OC
 储,OIVA,OA
 傩,OEOG,OG
@@ -7358,6 +7374,7 @@ char,cangjie,quick
 儌,OHSK,OK
 儍,OUCE,OE
 儎,OJIJ,OJ
+儏,OYED,OD
 儐,OJMC,OC
 儑,OAVF,OF
 儒,OMBB,OB
@@ -7469,6 +7486,7 @@ char,cangjie,quick
 兼,TXC,TC
 兽,CWMR,CR
 兾,CWTC,CC
+兿,TQII,TI
 冀,LPWTC,LC
 冁,CJSTV,CV
 冂,LS,LS
@@ -7512,6 +7530,7 @@ char,cangjie,quick
 冨,BMRW,BW
 冩,BHXF,BF
 冪,BTAB,BB
+冫,IM,IM
 冬,HEY,HY
 冭,KIM,KM
 冮,IMM,IM
@@ -7658,6 +7677,7 @@ char,cangjie,quick
 刻,YOLN,YN
 刼,GISK,GK
 刽,OILN,ON
+刾,KTLN,KN
 刿,UNLN,UN
 剀,UULN,UN
 剁,HDLN,HN
@@ -7844,6 +7864,7 @@ char,cangjie,quick
 勶,HKKS,HS
 勷,YVKS,YS
 勸,TGKS,TS
+勹,XP,XP
 勺,PI,PI
 勻,PMM,PM
 勼,PKN,PN
@@ -7886,6 +7907,7 @@ char,cangjie,quick
 匡,SMG,SG
 匢,SPHH,SH
 匣,SWL,SL
+匤,SMGI,SI
 匥,SIT,ST
 匦,SPQN,SN
 匧,SKOO,SO
@@ -7950,6 +7972,7 @@ char,cangjie,quick
 卢,YS,YS
 卣,YWS,YS
 卤,YWK,YK
+卥,YWKK,YK
 卦,GGY,GY
 卧,SLY,SY
 卨,YBR,YR
@@ -8003,6 +8026,7 @@ char,cangjie,quick
 厘,MWG,MG
 厙,MJWJ,MJ
 厚,MAND,MD
+厛,MRHL,ML
 厜,MHJG,MG
 厝,MTA,MA
 厞,MLMY,MY
@@ -8399,6 +8423,7 @@ char,cangjie,quick
 唥,RIMI,RI
 唦,REFH,RH
 唧,RAIL,RL
+唨,RNLM,RM
 唩,RHDV,RV
 唪,RQKQ,RQ
 唫,RC,RC
@@ -8602,6 +8627,7 @@ char,cangjie,quick
 嗱,ROMQ,RQ
 嗲,RCKN,RN
 嗳,RBBE,RE
+嗴,RTUI,RI
 嗵,RYNB,RB
 嗶,RWTJ,RJ
 嗷,RGSK,RK
@@ -8645,6 +8671,7 @@ char,cangjie,quick
 嘝,RNBJ,RJ
 嘞,RTJS,RS
 嘟,RJAL,RL
+嘠,RMBI,RI
 嘡,RFBG,RG
 嘢,RWGN,RN
 嘣,RUBB,RB
@@ -8757,6 +8784,8 @@ char,cangjie,quick
 嚎,RYRO,RO
 嚏,RJBO,RO
 嚐,RFBA,RA
+嚑,RHGF,RF
+嚒,RIDI,RI
 嚓,RJBF,RF
 嚔,RJBO,RO
 嚕,RNWA,RA
@@ -8786,6 +8815,7 @@ char,cangjie,quick
 嚭,GRMFR,GR
 嚮,VLHBR,VR
 嚯,RMBG,RG
+嚰,RIDR,RR
 嚱,RYTI,RI
 嚲,YDRRJ,YJ
 嚳,HBHGR,HR
@@ -8793,6 +8823,9 @@ char,cangjie,quick
 嚵,RNRI,RI
 嚶,RBCV,RV
 嚷,RYRV,RV
+嚸,RWFR,RR
+嚹,ROUD,RD
+嚺,RYWO,RO
 嚻,RRMCR,RR
 嚼,RBWI,RI
 嚽,RGKC,RC
@@ -8802,6 +8835,7 @@ char,cangjie,quick
 囁,RSJJ,RJ
 囂,RRMCR,RR
 囃,RYDG,RG
+囄,RYBG,RG
 囅,RJSTV,RV
 囆,RTWI,RI
 囇,RMMP,RP
@@ -8950,6 +8984,7 @@ char,cangjie,quick
 坖,MMUG,MG
 块,GDK,GK
 坘,GMVM,GM
+坙,MVVG,MG
 坚,LEG,LG
 坛,GMMI,GI
 坜,GMKS,GS
@@ -8998,6 +9033,7 @@ char,cangjie,quick
 垇,GSSU,GU
 垈,OPG,OG
 垉,GPRU,GU
+垊,GRVP,GP
 型,MNG,MG
 垌,GBMR,GR
 垍,GHBU,GU
@@ -9130,8 +9166,11 @@ char,cangjie,quick
 堌,GWJR,GR
 堍,GNUI,GI
 堎,GGCE,GE
+堏,DSG,DG
 堐,GMGG,GG
 堑,PLG,PG
+堒,GAPP,GP
+堓,GUMJ,GJ
 堔,GBCD,GD
 堕,NBG,NG
 堖,GVVW,GW
@@ -9183,6 +9222,7 @@ char,cangjie,quick
 塄,GWLS,GS
 塅,GHJE,GE
 塆,GYCN,GN
+塇,GJMM,GM
 塈,AUG,AG
 塉,GFCB,GB
 塊,GHI,GI
@@ -9266,6 +9306,7 @@ char,cangjie,quick
 墘,GJJN,GN
 墙,GGCW,GW
 墚,GEID,GD
+墛,GSFI,GI
 墜,NOG,NG
 墝,GGGU,GU
 增,GCWA,GA
@@ -9366,6 +9407,7 @@ char,cangjie,quick
 壽,GNMI,GI
 壾,GTSS,GS
 壿,GTWI,GI
+夀,QMRDI,QI
 夁,GWLW,GW
 夂,HE,HE
 夃,NHSE,NE
@@ -9382,6 +9424,7 @@ char,cangjie,quick
 夎,OGHE,OE
 夏,MUHE,ME
 夐,NBBUE,NE
+夑,FFHE,FE
 夒,MCHE,ME
 夓,HCHE,HE
 夔,TCHE,TE
@@ -9441,6 +9484,7 @@ char,cangjie,quick
 奊,GGVK,GK
 奋,KW,KW
 奌,YRK,YK
+奍,FQLL,FL
 奎,KGG,KG
 奏,QKMK,QK
 奐,NBK,NK
@@ -9828,7 +9872,9 @@ char,cangjie,quick
 嫎,VYBS,VS
 嫏,VIIL,VL
 嫐,VWSV,VV
+嫑,MFMWV,MV
 嫒,VBBE,VE
+嫓,VNBP,VP
 嫔,VJOC,VC
 嫕,VSKP,VP
 嫖,VMWF,VF
@@ -9976,6 +10022,7 @@ char,cangjie,quick
 孤,NDHIO,NO
 孥,VEND,VD
 学,FBND,FD
+孧,VSND,VD
 孨,NDNDD,ND
 孩,NDYVO,NO
 孪,YCND,YD
@@ -10161,6 +10208,7 @@ char,cangjie,quick
 尞,KCAF,KF
 尟,AOFH,AH
 尠,TVFH,TH
+尡,FUAPP,FP
 尢,KU,KU
 尣,CHU,CU
 尤,IKU,IU
@@ -10214,6 +10262,7 @@ char,cangjie,quick
 屔,OMSP,OP
 展,STV,SV
 屖,SYTJ,SJ
+屗,SUDI,SI
 屘,SUND,SD
 屙,SNLR,SR
 屚,SMEB,SB
@@ -10245,6 +10294,7 @@ char,cangjie,quick
 屴,UKS,US
 屵,UM,UM
 屶,USH,UH
+屷,UNHS,US
 屸,UM,UM
 屹,UON,UN
 屺,USU,UU
@@ -10338,6 +10388,7 @@ char,cangjie,quick
 峒,UBMR,UR
 峓,UKN,UN
 峔,UJKP,UP
+峕,UYA,UA
 峖,UJV,UV
 峗,UNMU,UU
 峘,UMAM,UM
@@ -10497,6 +10548,7 @@ char,cangjie,quick
 嵲,UHUD,UD
 嵳,UTHM,UM
 嵴,UFCB,UB
+嵵,UAGI,UI
 嵶,UNMM,UM
 嵷,UHOO,UO
 嵸,UHOO,UO
@@ -10521,6 +10573,7 @@ char,cangjie,quick
 嶋,UHAF,UF
 嶌,UHAF,UF
 嶍,USMA,UA
+嶎,USFI,UI
 嶏,UMMU,UU
 嶐,UNLM,UM
 嶑,UNAO,UO
@@ -10543,6 +10596,7 @@ char,cangjie,quick
 嶢,UGGU,UU
 嶣,UOGF,UF
 嶤,UGGU,UU
+嶥,XUMTO,XO
 嶦,UNCR,UR
 嶧,UWLJ,UJ
 嶨,HBU,HU
@@ -10559,6 +10613,7 @@ char,cangjie,quick
 嶳,UMOG,UG
 嶴,HBKU,HU
 嶵,UWLY,UY
+嶶,UHOK,UK
 嶷,UPKO,UO
 嶸,UFFD,UD
 嶹,UGNI,UI
@@ -10567,6 +10622,7 @@ char,cangjie,quick
 嶼,UHXC,UC
 嶽,UKHK,UK
 嶾,UBMP,UP
+嶿,UMBB,UB
 巀,UFGI,UI
 巁,UMTB,UB
 巂,UOGB,UB
@@ -10732,6 +10788,7 @@ char,cangjie,quick
 幢,LBYTG,LG
 幣,FKLB,FB
 幤,FKLB,FB
+幥,LBFBQ,LQ
 幦,SJLB,SB
 幧,LBRRD,LD
 幨,LBNCR,LR
@@ -10743,6 +10800,7 @@ char,cangjie,quick
 幮,LBIGI,LI
 幯,LBHAL,LL
 幰,LBJQP,LP
+幱,LBANW,LW
 干,MJ,MJ
 平,MFJ,MJ
 年,OQ,OQ
@@ -10762,6 +10820,7 @@ char,cangjie,quick
 庂,IO,IO
 広,II,II
 庄,IG,IG
+庅,XIHI,XI
 庆,IK,IK
 庇,IPP,IP
 庈,IOMN,IN
@@ -10833,6 +10892,7 @@ char,cangjie,quick
 廊,IIIL,IL
 廋,IHXE,IE
 廌,IXF,IF
+廍,IYRL,IL
 廎,IPMC,IC
 廏,IHPE,IE
 廐,IHPU,IU
@@ -10864,6 +10924,7 @@ char,cangjie,quick
 廪,IYWF,IF
 廫,IBSH,IH
 廬,IYPT,IT
+廭,IHDC,IC
 廮,IBCV,IV
 廯,INFQ,IQ
 廰,ISJP,IP
@@ -11030,11 +11091,13 @@ char,cangjie,quick
 徑,HOMVM,HM
 徒,HOGYO,HO
 従,HOTYO,HO
+徔,HOTIO,HO
 徕,HODT,HT
 徖,HOJMF,HF
 得,HOAMI,HI
 徘,HOLMY,HY
 徙,HOYLO,HO
+徚,HODWF,HF
 徛,HOKMR,HR
 徜,HOFBR,HR
 徝,HOJBM,HM
@@ -11066,6 +11129,7 @@ char,cangjie,quick
 德,HOJWP,HP
 徸,HOYTG,HG
 徹,HOPBK,HK
+徺,HOGGU,HU
 徻,HOOMA,HA
 徼,HOHSK,HK
 徽,HOUFK,HK
@@ -11428,6 +11492,7 @@ char,cangjie,quick
 愢,PWP,PP
 愣,PWLS,PS
 愤,PJTO,PO
+愥,PTLK,PK
 愦,PLMO,PO
 愧,PHI,PI
 愨,GEP,GP
@@ -11470,6 +11535,7 @@ char,cangjie,quick
 慍,PWOT,PT
 慎,PJBC,PC
 慏,PBAC,PC
+慐,MCP,MP
 慑,PSJE,PE
 慒,PTWA,PA
 慓,PMWF,PF
@@ -11600,6 +11666,7 @@ char,cangjie,quick
 懐,PYWV,PV
 懑,EBP,EP
 懒,PDLO,PO
+懓,PBBE,PE
 懔,PYWF,PF
 懕,MKP,MP
 懖,CRP,CP
@@ -11807,6 +11874,7 @@ char,cangjie,quick
 抠,QSK,QK
 抡,QOP,QP
 抢,QOSU,QU
+抣,XXQPM,XM
 护,QHS,QS
 报,QSLE,QE
 抦,QMOB,QB
@@ -11999,6 +12067,7 @@ char,cangjie,quick
 捡,QOMM,QM
 换,QNBK,QK
 捣,QHSU,QU
+捤,QSHU,QU
 捥,QJNU,QU
 捦,QC,QC
 捧,QQKQ,QQ
@@ -12080,6 +12149,7 @@ char,cangjie,quick
 掳,QYPS,QS
 掴,QWMG,QG
 掵,QOML,QL
+掶,QILO,QO
 掷,QTKL,QL
 掸,QCWJ,QJ
 掹,QNDT,QT
@@ -12156,6 +12226,7 @@ char,cangjie,quick
 搀,QNUY,QY
 搁,QLSR,QR
 搂,QFDV,QV
+搃,QCRP,QP
 搄,QPMM,QM
 搅,QFBU,QU
 搆,QTTB,QB
@@ -12225,6 +12296,7 @@ char,cangjie,quick
 摆,QWLI,QI
 摇,QBOU,QU
 摈,QJOC,QC
+摉,XQJCN,XN
 摊,QEOG,QG
 摋,QKDE,QE
 摌,QYHM,QM
@@ -12333,6 +12405,7 @@ char,cangjie,quick
 撳,QCNO,QO
 撴,QYDK,QK
 撵,QQOQ,QQ
+撶,QTMJ,QJ
 撷,QGRO,QO
 撸,QNWA,QA
 撹,QFBU,QU
@@ -12432,6 +12505,7 @@ char,cangjie,quick
 攗,QIPD,QD
 攘,QYRV,QV
 攙,QNRI,QI
+攚,QFFR,QR
 攛,QJCU,QU
 攜,QUOB,QB
 攝,QSJJ,QJ
@@ -12887,6 +12961,7 @@ char,cangjie,quick
 曟,AAAV,AV
 曠,AITC,AC
 曡,AAAM,AM
+曢,AJKF,AF
 曣,ATLF,AF
 曤,AMBG,AG
 曥,AYPT,AT
@@ -12918,6 +12993,7 @@ char,cangjie,quick
 替,QOA,QA
 最,ASJE,AE
 朁,MUA,MA
+朂,ASJS,AS
 會,OMWA,OA
 朄,LLDWF,LF
 朅,GIAPV,GV
@@ -12932,6 +13008,7 @@ char,cangjie,quick
 朎,BOMI,BI
 朏,BUU,BU
 朐,BPR,BR
+朑,BPT,BT
 朒,BOBO,BO
 朓,BLMO,BO
 朔,TUB,TB
@@ -12951,6 +13028,7 @@ char,cangjie,quick
 朢,SBHG,SG
 朣,BYTG,BG
 朤,BBBB,BB
+朥,BFFS,BS
 朦,BTBO,BO
 朧,BYBP,BP
 木,D,D
@@ -13077,6 +13155,7 @@ char,cangjie,quick
 枡,DHT,DT
 枢,DSK,DK
 枣,DBY,DY
+枤,DIK,DK
 枥,DMKS,DS
 枦,DHS,DS
 枧,DBHU,DU
@@ -13084,6 +13163,7 @@ char,cangjie,quick
 枩,DCI,DI
 枪,DOSU,DU
 枫,DHNK,DK
+枬,DBY,DY
 枭,HSID,HD
 枮,DYR,DR
 枯,DJR,DR
@@ -13173,6 +13253,7 @@ char,cangjie,quick
 栃,DHMS,DS
 栄,FBD,FD
 栅,DBBM,DM
+栆,KLY,KY
 标,DMMF,DF
 栈,DIJ,DJ
 栉,DTSL,DL
@@ -13182,6 +13263,7 @@ char,cangjie,quick
 栍,DHQM,DM
 栎,DHVD,DD
 栏,DTMM,DM
+栐,DINE,DE
 树,DEDI,DI
 栒,DPA,DA
 栓,DOMG,DG
@@ -13255,9 +13337,11 @@ char,cangjie,quick
 桗,DNSD,DD
 桘,DHRR,DR
 桙,DIHQ,DQ
+桚,DVVN,DN
 桛,DYMY,DY
 桜,DFV,DV
 桝,DNIQ,DQ
+桞,DNIL,DL
 桟,DIQ,DQ
 桠,DMTC,DC
 桡,DPKU,DU
@@ -13460,8 +13544,10 @@ char,cangjie,quick
 椦,DFQS,DS
 椧,DOML,DL
 椨,DIOI,DI
+椩,DILO,DO
 椪,DTTC,DC
 椫,DCWJ,DJ
+椬,DJBM,DM
 椭,DNLB,DB
 椮,DIKH,DH
 椯,DUMB,DB
@@ -13718,6 +13804,7 @@ char,cangjie,quick
 横,DTWC,DC
 樫,DSEG,DG
 樬,DHWP,DP
+樭,DTCG,DG
 樮,DMWF,DF
 樯,DGCW,DW
 樰,DMBS,DS
@@ -13791,8 +13878,10 @@ char,cangjie,quick
 橴,DYPF,DF
 橵,DTBK,DK
 橶,DJJI,DI
+橷,DLPN,DN
 橸,DAAA,DA
 橹,DNWA,DA
+橺,DANA,DA
 橻,DNGG,DG
 橼,DVMO,DO
 橽,DYGQ,DQ
@@ -13872,6 +13961,7 @@ char,cangjie,quick
 櫇,DDEC,DC
 櫈,DNON,DN
 櫉,DMGI,DI
+櫊,DANR,DR
 櫋,DHUS,DS
 櫌,DMBE,DE
 櫍,DHLC,DC
@@ -13899,6 +13989,7 @@ char,cangjie,quick
 櫣,DTYJ,DJ
 櫤,DHTN,DN
 櫥,DIGI,DI
+櫦,DIXE,DE
 櫧,DYRA,DA
 櫨,DYPT,DT
 櫩,DANX,DX
@@ -13913,6 +14004,7 @@ char,cangjie,quick
 櫲,DNNO,DO
 櫳,DYBP,DP
 櫴,DDLC,DC
+櫵,DTOF,DF
 櫶,DJQP,DP
 櫷,DNXU,DU
 櫸,DHCQ,DQ
@@ -13936,6 +14028,8 @@ char,cangjie,quick
 權,DTRG,DG
 欋,DBUG,DG
 欌,DTIS,DS
+欍,DTOX,DX
+欎,DDBAI,DI
 欏,DWLG,DG
 欐,DMMP,DP
 欑,DHUC,DC
@@ -14141,6 +14235,8 @@ char,cangjie,quick
 毙,PPMNP,PP
 毚,NRPPI,NI
 毛,HQU,HU
+毜,HUF,HF
+毝,HUHHH,HH
 毞,PPHQU,PU
 毟,FHHQU,FU
 毠,KRHQU,KU
@@ -14165,6 +14261,7 @@ char,cangjie,quick
 毳,HUHUU,HU
 毴,HULMY,HY
 毵,IHHQU,IU
+毶,HUIKH,HH
 毷,AUHQU,AU
 毸,HUWP,HP
 毹,ONHQU,OU
@@ -14204,6 +14301,7 @@ char,cangjie,quick
 氛,ONCSH,OH
 氜,ONA,OA
 氝,ONOB,OB
+氞,ONMOB,OB
 氟,ONLLN,ON
 氠,ONLWL,OL
 氡,ONHEY,OY
@@ -14272,6 +14370,7 @@ char,cangjie,quick
 池,EPD,ED
 污,EMMS,ES
 汢,EG,EG
+汣,XENO,XO
 汤,ENSH,EH
 汥,EJE,EE
 汦,EHVP,EP
@@ -14593,6 +14692,7 @@ char,cangjie,quick
 涢,ERBO,EO
 涣,ENBK,EK
 涤,EHED,ED
+涥,EYRN,EN
 润,ELSG,EG
 涧,ELSA,EA
 涨,ENPO,EO
@@ -14698,6 +14798,7 @@ char,cangjie,quick
 渌,ENME,EE
 渍,EQMO,EO
 渎,EJNK,EK
+渏,EKMR,ER
 渐,EPQL,EL
 渑,ERLU,EU
 渒,EHHJ,EJ
@@ -14806,6 +14907,7 @@ char,cangjie,quick
 湹,EMWG,EG
 湺,EORD,ED
 湻,EYRA,EA
+湼,EHXM,EM
 湽,EVMW,EW
 湾,EYCN,EN
 湿,EATC,EC
@@ -14813,11 +14915,14 @@ char,cangjie,quick
 溁,DTBD,DD
 溂,EDLN,EN
 溃,ELMO,EO
+溄,EUHQ,EQ
 溅,EBOJ,EJ
 溆,EODE,EE
 溇,EFDV,EV
 溈,EIKF,EF
 溉,EAIU,EU
+溊,ERSE,EE
+溋,ENST,ET
 溌,ENOP,EP
 溍,EMIA,EA
 溎,EDGG,EG
@@ -15006,8 +15111,11 @@ char,cangjie,quick
 潅,EOKG,EG
 潆,ETBF,EF
 潇,ETLL,EL
+潈,XEWLO,XO
+潉,EUAP,EP
 潊,EODE,EE
 潋,EOMK,EK
+潌,EJCG,EG
 潍,EVMG,EG
 潎,EFBK,EK
 潏,ENHB,EB
@@ -15084,9 +15192,11 @@ char,cangjie,quick
 澖,EAND,ED
 澗,EANA,EA
 澘,EDDA,EA
+澙,XEHXF,XF
 澚,EHBS,ES
 澛,ENWA,EA
 澜,ELSW,EW
+澝,EJPB,EB
 澞,EYPK,EK
 澟,EYWD,ED
 澠,ERXU,EU
@@ -15177,6 +15287,7 @@ char,cangjie,quick
 濵,EJAC,EC
 濶,EANR,ER
 濷,EETB,EB
+濸,ETOR,ER
 濹,EWGG,EG
 濺,EBCI,EI
 濻,ENLC,EC
@@ -15229,6 +15340,8 @@ char,cangjie,quick
 瀪,OKHAE,OE
 瀫,EGFE,EE
 瀬,EDLC,EC
+瀭,XEJJN,XN
+瀮,EMBD,ED
 瀯,EFFR,ER
 瀰,ENMB,EB
 瀱,EWLN,EN
@@ -15274,6 +15387,7 @@ char,cangjie,quick
 灙,EFBF,EF
 灚,EHBU,EU
 灛,EANJ,EJ
+灜,EYRN,EN
 灝,EAFC,EC
 灞,EMBB,EB
 灟,ESEI,EI
@@ -15372,6 +15486,7 @@ char,cangjie,quick
 炼,FPNF,FF
 炽,FRC,FC
 炾,FRHU,FU
+炿,XFHBY,XY
 烀,FHFD,FD
 烁,FHVD,FD
 烂,FTMM,FM
@@ -15409,10 +15524,12 @@ char,cangjie,quick
 烢,FJHP,FP
 烣,FMF,FF
 烤,FJKS,FS
+烥,FSLL,FL
 烦,FMBO,FO
 烧,FPKU,FU
 烨,FOPJ,FJ
 烩,FOMI,FI
+烪,FTK,FK
 烫,EHF,EF
 烬,FSOY,FY
 热,QIF,QF
@@ -15451,6 +15568,8 @@ char,cangjie,quick
 焎,QLF,QF
 焏,NEF,NF
 焐,FMMR,FR
+焑,XFWD,XD
+焒,FRR,FR
 焓,FOMR,FR
 焔,FNLA,FA
 焕,FNBK,FK
@@ -15489,8 +15608,11 @@ char,cangjie,quick
 然,BKF,BF
 焷,FHHJ,FJ
 焸,AAF,AF
+焹,FBTV,FV
 焺,FAHT,FT
+焻,FAA,FA
 焼,FJTU,FU
+焽,ABF,AF
 焾,FOMP,FP
 焿,FILO,FO
 煀,FSUU,FU
@@ -15542,9 +15664,13 @@ char,cangjie,quick
 煮,JAF,JF
 煯,FPPA,FA
 煰,FRRR,FR
+煱,FBBR,FR
 煲,ODF,OF
 煳,FJRB,FB
 煴,FABT,FT
+煵,FJBJ,FJ
+煶,FAMO,FO
+煷,FYRU,FU
 煸,FHSB,FB
 煹,FTTB,FB
 煺,FYTO,FO
@@ -15572,8 +15698,10 @@ char,cangjie,quick
 熐,FBAC,FC
 熑,FTXC,FC
 熒,FFBF,FF
+熓,FHRF,FF
 熔,FJCR,FR
 熕,FMBC,FC
+熖,FBHX,FX
 熗,FOMR,FR
 熘,FHHW,FW
 熙,SUF,SF
@@ -15644,6 +15772,8 @@ char,cangjie,quick
 燚,FFFF,FF
 燛,SSF,SF
 燜,FANP,FP
+燝,FAYF,FF
+燞,XOOF,XF
 營,FFBRR,FR
 燠,FHBK,FK
 燡,FWLJ,FJ
@@ -15691,6 +15821,7 @@ char,cangjie,quick
 爋,FHFS,FS
 爌,FITC,FC
 爍,FVID,FD
+爎,FJKF,FF
 爏,FMDM,FM
 爐,FYPT,FT
 爑,FTOF,FF
@@ -15700,6 +15831,7 @@ char,cangjie,quick
 爕,FFF,FF
 爖,FYBP,FP
 爗,FATQ,FQ
+爘,FYEV,FV
 爙,FYRV,FV
 爚,FOMB,FB
 爛,FANW,FW
@@ -16002,6 +16134,8 @@ char,cangjie,quick
 獄,KHYRK,KK
 獅,KHHRB,KB
 獆,KHHAJ,KJ
+獇,KHTUI,KI
+獈,KHTCT,KT
 獉,KHQKD,KD
 獊,KHOMR,KR
 獋,KHHUJ,KJ
@@ -16168,6 +16302,7 @@ char,cangjie,quick
 珬,MGIHM,MM
 班,MGILG,MG
 珮,MGHNB,MB
+珯,MGJKP,MP
 珰,MGFSM,MM
 珱,MGFV,MV
 珲,MGBPQ,MQ
@@ -16202,6 +16337,7 @@ char,cangjie,quick
 琏,MGYPQ,MQ
 琐,MGFBO,MO
 琑,MGFB,MB
+琒,MGHEJ,MJ
 琓,MGJMU,MU
 琔,MGJMO,MO
 琕,MGHHJ,MJ
@@ -16242,6 +16378,7 @@ char,cangjie,quick
 琸,MGYAJ,MJ
 琹,MGD,MD
 琺,MGEGI,MI
+琻,MGC,MC
 琼,MGYRF,MF
 琽,MGJKA,MA
 琾,MGWOL,ML
@@ -16323,6 +16460,7 @@ char,cangjie,quick
 璊,MGTLB,MB
 璋,MGYTJ,MJ
 璌,MGJMC,MC
+璍,MGTMJ,MJ
 璎,MGBOV,MV
 璏,MGVMP,MP
 璐,MGRMR,MR
@@ -16345,6 +16483,7 @@ char,cangjie,quick
 璡,MGYOG,MG
 璢,MGMLW,MW
 璣,MGVIO,MO
+璤,MGJIP,MP
 璥,MGTRK,MK
 璦,MGBBE,ME
 璧,SJMGI,SI
@@ -16360,6 +16499,7 @@ char,cangjie,quick
 璱,MGMGH,MH
 璲,MGYTO,MO
 璳,MGHDC,MC
+璴,MGDDO,MO
 璵,MGHXC,MC
 璶,MGLMT,MT
 璷,MGISK,MK
@@ -16806,9 +16946,11 @@ char,cangjie,quick
 癰,KVUG,KG
 癱,KTOG,KG
 癲,KJCC,KC
+癳,KWWF,KF
 癴,KVFQ,KQ
 癵,KVFB,KB
 癶,NIHO,NO
+癷,NOMJ,NJ
 癸,NOMK,NK
 癹,NOHNE,NE
 発,NOMKP,NP
@@ -16877,6 +17019,7 @@ char,cangjie,quick
 皹,DEBJJ,DJ
 皺,PUDHE,PE
 皻,YMDHE,YE
+皼,XGTDH,XH
 皽,YMDHE,YE
 皾,GCDHE,GE
 皿,BT,BT
@@ -17225,9 +17368,12 @@ char,cangjie,quick
 砖,MRQVI,MI
 砗,MRPQ,MQ
 砘,MRPU,MU
+砙,MRMVN,MN
 砚,MRBHU,MU
+砛,MROIN,MN
 砜,MRHNK,MK
 砝,MRGI,MI
+砞,MRDJ,MJ
 砟,MRHS,MS
 砠,MRBM,MM
 砡,MRMGI,MI
@@ -17258,6 +17404,7 @@ char,cangjie,quick
 砺,MRMMS,MS
 砻,IPMR,IR
 砼,MROM,MM
+砽,MRBQ,MQ
 砾,MRHVD,MD
 砿,MRII,MI
 础,MRUU,MU
@@ -17279,9 +17426,12 @@ char,cangjie,quick
 硐,MRBMR,MR
 硑,MRTT,MT
 硒,MRMCW,MW
+硓,MRJKP,MP
+硔,MRTC,MC
 硕,MRMBO,MO
 硖,MRKT,MT
 硗,MRPKU,MU
+硘,MRWR,MR
 硙,MRUSU,MU
 硚,MRHKL,ML
 硛,MRYLC,MC
@@ -17376,6 +17526,7 @@ char,cangjie,quick
 碴,MRDAM,MM
 碵,MRYBC,MC
 碶,MRQHK,MK
+碷,MRHJU,MU
 碸,MRHNI,MI
 碹,MRJMM,MM
 確,MROBG,MG
@@ -17408,6 +17559,7 @@ char,cangjie,quick
 磕,MRGIT,MT
 磖,MRSMA,MA
 磗,MRIBI,MI
+磘,MRBOU,MU
 磙,MRYCV,MV
 磚,MRJII,MI
 磛,JLMR,JR
@@ -17429,6 +17581,7 @@ char,cangjie,quick
 磫,MRHOO,MO
 磬,GEMR,GR
 磭,MRMVB,MB
+磮,MRUOB,MB
 磯,MRVIO,MO
 磰,MRTGR,MR
 磱,MRFFS,MS
@@ -17480,6 +17633,7 @@ char,cangjie,quick
 礟,MRSFK,MK
 礠,MRTVP,MP
 礡,MRTII,MI
+礢,MRTOV,MV
 礣,MRTWI,MI
 礤,MRTBF,MF
 礥,MRSEC,MC
@@ -17522,6 +17676,7 @@ char,cangjie,quick
 祊,IFYHS,IS
 祋,IFHNE,IE
 祌,IFL,IL
+祍,IFHG,IG
 祎,IFQS,IS
 祏,IFMR,IR
 祐,IFKR,IR
@@ -17578,6 +17733,7 @@ char,cangjie,quick
 禃,IFJBM,IM
 禄,IFNME,IE
 禅,IFCWJ,IJ
+禆,IFHHJ,IJ
 禇,IFJKA,IA
 禈,IFBJJ,IJ
 禉,IFTCW,IW
@@ -17596,6 +17752,7 @@ char,cangjie,quick
 禖,IFTMD,ID
 禗,IFWP,IP
 禘,IFYBB,IB
+禙,IFLPB,IB
 禚,IFTGF,IF
 禛,IFJBC,IC
 禜,FFBMF,FF
@@ -17605,6 +17762,7 @@ char,cangjie,quick
 禠,IFHYU,IU
 禡,IFSQF,IF
 禢,IFASM,IM
+禣,IFIBI,II
 禤,IFWLM,IM
 禥,IFTCG,IG
 禦,HLMMF,HF
@@ -17629,6 +17787,7 @@ char,cangjie,quick
 禹,HLIB,HB
 禺,WIB,WB
 离,YUKB,YB
+禼,YWKB,YB
 禽,OYUB,OB
 禾,HD,HD
 禿,HDHU,HU
@@ -17644,6 +17803,7 @@ char,cangjie,quick
 秉,HDL,HL
 秊,HDHJ,HJ
 秋,HDF,HF
+秌,FHD,FD
 种,HDL,HL
 秎,HDCSH,HH
 秏,HDHQU,HU
@@ -17732,6 +17892,7 @@ char,cangjie,quick
 稢,HDIRM,HM
 稣,NMHD,ND
 稤,HDYRF,HF
+稥,HDFA,HA
 稦,HDDMQ,HQ
 稧,HDQHK,HK
 稨,HDHSB,HB
@@ -17861,6 +18022,7 @@ char,cangjie,quick
 窤,JCAPP,JP
 窥,JCQOU,JU
 窦,JCJNK,JK
+窧,JCYAJ,JJ
 窨,JCYTA,JA
 窩,JCBBR,JR
 窪,JCEGG,JG
@@ -18004,6 +18166,7 @@ char,cangjie,quick
 笴,HMNR,HR
 笵,HESU,HU
 笶,HOK,HK
+笷,HHHL,HL
 笸,HSR,HR
 笹,HPT,HT
 笺,HIJ,HJ
@@ -18037,6 +18200,7 @@ char,cangjie,quick
 策,HDB,HB
 筗,HOL,HL
 筘,HQR,HR
+筙,HQD,HD
 筚,HPPJ,HJ
 筛,HLLB,HB
 筜,HFSM,HM
@@ -18155,6 +18319,7 @@ char,cangjie,quick
 篍,HHDF,HF
 篎,HBUH,HH
 篏,HTMO,HO
+篐,HDSB,HB
 篑,HLMO,HO
 篒,HOMV,HV
 篓,HFDV,HV
@@ -18249,8 +18414,10 @@ char,cangjie,quick
 簬,HRMR,HR
 簭,HMCR,HR
 簮,HQOA,HA
+簯,HDTC,HC
 簰,HLNJ,HJ
 簱,HYSC,HC
+簲,HBHJ,HJ
 簳,HJJJ,HJ
 簴,HYPC,HC
 簵,HJJR,HR
@@ -18266,6 +18433,7 @@ char,cangjie,quick
 簿,HEII,HI
 籀,HQHW,HW
 籁,HDLO,HO
+籂,HOIB,HB
 籃,HSMT,HT
 籄,HSLC,HC
 籅,HHXC,HC
@@ -18277,6 +18445,7 @@ char,cangjie,quick
 籋,HMFB,HB
 籌,HGNI,HI
 籍,HQDA,HA
+籎,HPKO,HO
 籏,HYSC,HC
 籐,HBFE,HE
 籑,HBUV,HV
@@ -18302,6 +18471,7 @@ char,cangjie,quick
 籥,HOMB,HB
 籦,HCHG,HG
 籧,HYYO,HO
+籨,HOOO,HO
 籩,HYHS,HS
 籪,HPIL,HL
 籫,HHUC,HC
@@ -18434,6 +18604,7 @@ char,cangjie,quick
 糪,SJFD,SD
 糫,FDWLV,FV
 糬,FDWLA,FA
+糭,FDUCE,FE
 糮,FDSMT,FT
 糯,FDMBB,FB
 糰,FDWJI,FI
@@ -18660,8 +18831,10 @@ char,cangjie,quick
 緍,VFHPA,VA
 緎,VFIRM,VM
 総,VFCIP,VP
+緐,OYHVF,OF
 緑,VFNME,VE
 緒,VFJKA,VA
+緓,VFTLK,VK
 緔,VFFBR,VR
 緕,VFYKL,VL
 緖,VFJKA,VA
@@ -18713,6 +18886,7 @@ char,cangjie,quick
 縄,VFWLV,VV
 縅,VFIHV,VV
 縆,VFPMM,VM
+縇,VFJMM,VM
 縈,FFBVF,FF
 縉,VFMIA,VA
 縊,VFTCT,VT
@@ -18805,6 +18979,7 @@ char,cangjie,quick
 繡,VFLX,VX
 繢,VFLMC,VC
 繣,VFLGM,VM
+繤,XTBUF,XF
 繥,VFGRR,VR
 繦,VFNRI,VI
 繧,VFMBI,VI
@@ -19024,6 +19199,7 @@ char,cangjie,quick
 缽,OUDM,OM
 缾,OUTT,OT
 缿,OUHMR,OR
+罀,OULMO,OO
 罁,OUBTU,OU
 罂,BOOJU,BU
 罃,FFBOU,FU
@@ -19217,6 +19393,7 @@ char,cangjie,quick
 翿,GISMM,GM
 耀,FUSMG,FG
 老,JKP,JP
+耂,JK,JK
 考,JKMVS,JS
 耄,JPHQU,JU
 者,JKA,JA
@@ -19279,6 +19456,7 @@ char,cangjie,quick
 耾,SJKI,SI
 耿,SJF,SF
 聀,SJI,SI
+聁,SJCSH,SH
 聂,SJEE,SE
 聃,SJGB,SB
 聄,SJOHH,SH
@@ -19296,6 +19474,7 @@ char,cangjie,quick
 聐,SJGR,SR
 聑,SJSJ,SJ
 聒,SJHJR,SR
+聓,MNSJ,MJ
 联,SJTK,SK
 聕,SJHGR,SR
 聖,SRHG,SG
@@ -19311,6 +19490,7 @@ char,cangjie,quick
 聠,SJTT,ST
 聡,SJCIP,SP
 聢,SJJMO,SO
+聣,SJHXU,SU
 聤,SJYRN,SN
 聥,SJHLB,SB
 聦,SJPQP,SP
@@ -19398,6 +19578,7 @@ char,cangjie,quick
 肸,BCJ,BJ
 肹,BCMS,BS
 肺,BJB,BB
+肻,YBB,YB
 肼,BTT,BT
 肽,BKI,BI
 肾,LEB,LB
@@ -19794,6 +19975,7 @@ char,cangjie,quick
 艅,HYOMD,HD
 艆,HYIAV,HV
 艇,HYNEG,HG
+艈,HYYIU,HU
 艉,HYSHU,HU
 艊,HYHAB,HB
 艋,HYNDT,HT
@@ -19995,6 +20177,7 @@ char,cangjie,quick
 茏,TIKP,TP
 茐,TPQ,TQ
 茑,THSM,TM
+茒,TNIL,TL
 茓,TJC,TC
 茔,TBG,TG
 茕,TBNJ,TJ
@@ -20074,6 +20257,7 @@ char,cangjie,quick
 荟,TOMI,TI
 荠,TYKL,TL
 荡,TENH,TH
+荢,TJMD,TD
 荣,TBD,TD
 荤,TBPQ,TQ
 荥,TBE,TE
@@ -20261,8 +20445,10 @@ char,cangjie,quick
 萛,TBUT,TT
 萜,TLBR,TR
 萝,TWLN,TN
+萞,TBOP,TP
 萟,THDI,TI
 萠,TBB,TB
+萡,TEHA,TA
 萢,TEPU,TU
 萣,TJMO,TO
 萤,TBLI,TI
@@ -20451,8 +20637,11 @@ char,cangjie,quick
 蓛,TDBK,TK
 蓜,TMWU,TU
 蓝,TLIT,TT
+蓞,TBHX,TX
 蓟,TNMN,TN
 蓠,TYUB,TB
+蓡,TESE,TE
+蓢,TIIB,TB
 蓣,TNNO,TO
 蓤,TIME,TE
 蓥,TBC,TC
@@ -20597,6 +20786,7 @@ char,cangjie,quick
 蕰,TEAT,TT
 蕱,THDB,TB
 蕲,TCJL,TL
+蕳,TANA,TA
 蕴,TVMT,TT
 蕵,TNIV,TV
 蕶,TMBI,TI
@@ -20693,6 +20883,7 @@ char,cangjie,quick
 藑,TNBK,TK
 藒,THDV,TV
 藓,TNFQ,TQ
+藔,TJKF,TF
 藕,TQDB,TB
 藖,TSEC,TC
 藗,TYDO,TO
@@ -20725,6 +20916,7 @@ char,cangjie,quick
 藲,TDSR,TR
 藳,TYRD,TD
 藴,TVFT,TT
+藵,TODV,TV
 藶,TMDM,TM
 藷,TYRA,TA
 藸,TMOA,TA
@@ -20790,6 +20982,7 @@ char,cangjie,quick
 蘴,TUJT,TT
 蘵,TSJA,TA
 蘶,THVI,TI
+蘷,TMCE,TE
 蘸,TMGF,TF
 蘹,TPYV,TV
 蘺,TYBG,TG
@@ -20803,6 +20996,7 @@ char,cangjie,quick
 虂,TMBR,TR
 虃,TEOM,TM
 虄,TLIM,TM
+虅,TBFF,TF
 虆,TWWF,TF
 虇,TNTG,TG
 虈,TRRR,TR
@@ -20847,6 +21041,7 @@ char,cangjie,quick
 虯,LIVL,LL
 虰,LIMN,LN
 虱,NMLI,NI
+虲,LIY,LY
 虳,LIPI,LI
 虴,LIHP,LP
 虵,LIPD,LD
@@ -21062,6 +21257,7 @@ char,cangjie,quick
 蝇,LIRWU,LU
 蝈,LIWMG,LG
 蝉,LICWJ,LJ
+蝊,LIJMO,LO
 蝋,LIFHN,LN
 蝌,LIHDJ,LJ
 蝍,LIAIL,LL
@@ -21152,9 +21348,11 @@ char,cangjie,quick
 螢,FFBLI,FI
 螣,BFQI,BI
 螤,YILWO,YO
+螥,LIOIR,LR
 螦,LIQMF,LF
 螧,LIJPA,LA
 螨,LITMB,LB
+螩,LIOLD,LD
 螪,LIYCB,LB
 螫,GKLI,GI
 螬,LITWA,LA
@@ -21230,6 +21428,7 @@ char,cangjie,quick
 蟲,LILII,LI
 蟳,LISMI,LI
 蟴,TLLI,TI
+蟵,LIMMI,LI
 蟶,LISRG,LG
 蟷,LIFBW,LW
 蟸,MOLII,MI
@@ -21292,6 +21491,7 @@ char,cangjie,quick
 蠱,LILIT,LT
 蠲,TTWLI,TI
 蠳,LIBCV,LV
+蠴,XLITW,XW
 蠵,LIUOB,LB
 蠶,MUALI,MI
 蠷,LIBUG,LG
@@ -21319,6 +21519,7 @@ char,cangjie,quick
 衍,HOEMN,HN
 衎,HOMJN,HN
 衏,HOMUN,HN
+衐,HOSSN,HN
 衑,HOOIN,HN
 衒,HOYIN,HN
 術,HOIDN,HN
@@ -21373,6 +21574,7 @@ char,cangjie,quick
 袄,LHK,LK
 袅,HSIV,HV
 袆,LQS,LS
+袇,LBY,LY
 袈,KRYHV,KV
 袉,LJP,LP
 袊,LOMI,LI
@@ -21577,6 +21779,7 @@ char,cangjie,quick
 襑,LSMI,LI
 襒,LFBK,LK
 襓,LGGU,LU
+襔,LTLB,LB
 襕,LLSW,LW
 襖,LHBK,LK
 襗,LWLJ,LJ
@@ -21624,6 +21827,7 @@ char,cangjie,quick
 要,MWV,MV
 覂,MWHIO,MO
 覃,MWAJ,MJ
+覄,MWOIK,MK
 覅,MVPHH,MH
 覆,MWHOE,ME
 覇,MBTJB,MB
@@ -22006,6 +22210,7 @@ char,cangjie,quick
 謀,YRTMD,YD
 謁,YRAPV,YV
 謂,YRWB,YB
+謃,YRAHM,YM
 謄,BFQR,BR
 謅,YRPUU,YU
 謆,YRHSM,YM
@@ -22340,6 +22545,7 @@ char,cangjie,quick
 豏,MTTXC,MC
 豐,UJMRT,UT
 豑,TTCNH,TH
+豒,UTCNH,UH
 豓,UTKIT,UT
 豔,UTGIT,UT
 豕,MSHO,MO
@@ -22473,6 +22679,7 @@ char,cangjie,quick
 賕,BCIJE,BE
 賖,BCOMD,BD
 賗,BCLL,BL
+賘,BCIGI,BI
 賙,BCBGR,BR
 賚,DOBUC,DC
 賛,QOBUC,QC
@@ -22524,6 +22731,7 @@ char,cangjie,quick
 贉,BCMWJ,BJ
 贊,HUBUC,HC
 贋,MGBUC,MC
+贌,BCTCO,BO
 贍,BCNCR,BR
 贎,BCTWB,BB
 贏,YRBBN,YN
@@ -22535,6 +22743,7 @@ char,cangjie,quick
 贕,HHSLC,HC
 贖,BCGWC,BC
 贗,MFBUC,MC
+贘,BCFBC,BC
 贙,YUBUC,YC
 贚,BCYBP,BP
 贛,YJHEC,YC
@@ -22686,6 +22895,7 @@ char,cangjie,quick
 趭,GOOGF,GF
 趮,GORRD,GD
 趯,GOSMG,GG
+趰,GOMFB,GB
 趱,GOHUO,GO
 趲,GOHUC,GC
 足,RYO,RO
@@ -22953,6 +23163,7 @@ char,cangjie,quick
 躹,HHPFD,HD
 躺,HHFBR,HR
 躻,HHJCM,HM
+躼,HHSMV,HV
 躽,HHSAV,HV
 躾,HHTGK,HK
 躿,HHILE,HE
@@ -22977,6 +23188,7 @@ char,cangjie,quick
 軒,JJMJ,JJ
 軓,JJHNI,JI
 軔,JJSHI,JI
+軕,XXJJU,XU
 軖,JJMG,JG
 軗,JJHNE,JE
 軘,JJPU,JU
@@ -23189,6 +23401,7 @@ char,cangjie,quick
 辧,YJSHJ,YJ
 辨,YJILJ,YJ
 辩,YJIVJ,YJ
+辪,YRYTJ,YJ
 辫,YJVMJ,YJ
 辬,YJYKJ,YJ
 辭,BBYTJ,BJ
@@ -23430,6 +23643,7 @@ char,cangjie,quick
 邙,YVNL,YL
 邚,VNL,VL
 邛,MNL,ML
+邜,NINL,NL
 邝,INL,IL
 邞,QONL,QL
 邟,YNNL,YL
@@ -23818,6 +24032,7 @@ char,cangjie,quick
 鈞,CPMM,CM
 鈟,CNL,CL
 鈠,CHNE,CE
+鈡,CL,CL
 鈢,CD,CD
 鈣,CMYS,CS
 鈤,CA,CA
@@ -23827,6 +24042,7 @@ char,cangjie,quick
 鈨,CMMU,CU
 鈩,CHS,CS
 鈪,CMSU,CU
+鈫,CYK,CK
 鈬,CSO,CO
 鈭,YPC,YC
 鈮,CSP,CP
@@ -23959,6 +24175,7 @@ char,cangjie,quick
 銭,CIQ,CQ
 銮,YCC,YC
 銯,CVIF,CF
+銰,CTK,CK
 銱,CRLB,CB
 銲,CAMJ,CJ
 銳,CCRU,CU
@@ -24026,6 +24243,8 @@ char,cangjie,quick
 鋱,CIPP,CP
 鋲,COMC,CC
 鋳,CQKI,CI
+鋴,CJRU,CU
+鋵,CHDU,CU
 鋶,CPIV,CV
 鋷,CSJE,CE
 鋸,CSJR,CR
@@ -24099,8 +24318,10 @@ char,cangjie,quick
 錼,CKMF,CF
 錽,CMFE,CE
 錾,PLC,PC
+錿,CYPU,CU
 鍀,CAMI,CI
 鍁,CHLO,CO
+鍂,CC,CC
 鍃,CPHP,CP
 鍄,CYRF,CF
 鍅,CEGI,CI
@@ -24168,6 +24389,7 @@ char,cangjie,quick
 鎃,CEHV,CV
 鎄,CYRV,CV
 鎅,CWOL,CL
+鎆,CTBN,CN
 鎇,CAHU,CU
 鎈,CTHM,CM
 鎉,CASM,CM
@@ -24221,6 +24443,9 @@ char,cangjie,quick
 鎹,CYTK,CK
 鎺,CIFM,CM
 鎻,CVVC,CC
+鎼,CYPQ,CQ
+鎽,CUHJ,CJ
+鎾,CABT,CT
 鎿,CYPQ,CQ
 鏀,CYWI,CI
 鏁,CVVD,CD
@@ -24269,7 +24494,10 @@ char,cangjie,quick
 鏬,CYPD,CD
 鏭,CHDP,CP
 鏮,CILE,CE
+鏯,CKKK,CK
 鏰,CUBB,CB
+鏱,CYTJ,CJ
+鏲,CYVQ,CQ
 鏳,CCWA,CA
 鏴,CRMR,CR
 鏵,CTMQ,CQ
@@ -24317,6 +24545,9 @@ char,cangjie,quick
 鐟,CQOA,CA
 鐠,CTCA,CA
 鐡,CJIT,CT
+鐢,DDC,DC
+鐣,CFBQ,CQ
+鐤,CBUL,CL
 鐥,CTGR,CR
 鐦,CANT,CT
 鐧,CANA,CA
@@ -24382,6 +24613,8 @@ char,cangjie,quick
 鑣,CIPF,CF
 鑤,CATE,CE
 鑥,CNWA,CA
+鑦,CSEC,CC
+鑧,CJTI,CI
 鑨,CYBP,CP
 鑩,CMGR,CR
 鑪,CYPT,CT
@@ -24685,6 +24918,7 @@ char,cangjie,quick
 閔,ANYK,AK
 閕,ANMVH,AH
 閖,ANE,AE
+閗,ANYJ,AJ
 閘,ANWL,AL
 閙,ANYLB,AB
 閚,ANYT,AT
@@ -24739,6 +24973,7 @@ char,cangjie,quick
 闋,ANNOK,AK
 闌,ANDWF,AF
 闍,ANJKA,AA
+闎,ANHAE,AE
 闏,ANHNI,AI
 闐,ANJBC,AC
 闑,ANHUD,AD
@@ -24763,6 +24998,7 @@ char,cangjie,quick
 闤,ANWLV,AV
 闥,ANYGQ,AQ
 闦,ANTWT,AT
+闧,ANYGV,AV
 门,LS,LS
 闩,LSM,LM
 闪,LSO,LO
@@ -25102,6 +25338,7 @@ char,cangjie,quick
 霸,MBTJB,MB
 霹,MBSRJ,MJ
 霺,MBHOK,MK
+霻,MBTWT,MT
 霼,MIOND,MD
 霽,MBYX,MX
 霾,MBBHG,MG
@@ -25119,6 +25356,7 @@ char,cangjie,quick
 靊,MBUJT,MT
 靋,MBEMM,MM
 靌,MBJMC,MC
+靍,MBOGF,MF
 靎,MBCHF,MF
 靏,MBJGF,MF
 靐,MWMWW,MW
@@ -25525,6 +25763,7 @@ char,cangjie,quick
 飡,IMOMV,IV
 飢,OIHN,ON
 飣,OIMN,ON
+飤,OIO,OO
 飥,OIHP,OP
 飦,OIMJ,OJ
 飧,NIOMV,NV
@@ -25566,6 +25805,7 @@ char,cangjie,quick
 餋,FQOMV,FV
 餌,OISJ,OJ
 餍,MIKV,MV
+餎,OIHER,OR
 餏,OIYHV,OV
 餐,YEOMV,YV
 餑,OIJBD,OD
@@ -25617,6 +25857,7 @@ char,cangjie,quick
 餿,OIHXE,OE
 饀,OIBHX,OX
 饁,OIGIT,OT
+饂,OIABT,OT
 饃,OITAK,OK
 饄,OIFBG,OG
 饅,OIAWE,OE
@@ -26091,6 +26332,7 @@ char,cangjie,quick
 鬚,SHHHC,SC
 鬛,SHWKV,SV
 鬜,SHANB,SB
+鬝,SHANA,SA
 鬞,SHTWV,SV
 鬟,SHWLV,SV
 鬠,SHOMA,SA
@@ -26213,6 +26455,7 @@ char,cangjie,quick
 鮕,NFJR,NR
 鮖,NFMR,NR
 鮗,NFHEY,NY
+鮘,XNFOI,XI
 鮙,NFSMM,NM
 鮚,NFGR,NR
 鮛,NFYMF,NF
@@ -26645,6 +26888,7 @@ char,cangjie,quick
 鵆,HOHFN,HN
 鵇,OQHAF,OF
 鵈,SJHAF,SF
+鵉,YCHAF,YF
 鵊,KOHAF,KF
 鵋,SPHAF,SF
 鵌,HFOMD,HD
@@ -27249,6 +27493,47 @@ char,cangjie,quick
 龣,OBVNE,OE
 龤,OBPPA,OA
 龥,OBMBC,OC
+龦,FFBB,FB
+龧,AAJA,AA
+龨,SOG,SG
+龩,TTJL,TL
+龪,GOO,GO
+龫,JJOMJ,JJ
+龬,CBTV,CV
+龭,SFWTC,SC
+龮,SFSMC,SC
+龯,CIH,CH
+龰,YO,YO
+龱,WK,WK
+龲,CIJJ,CJ
+龳,GGGCG,GG
+龴,NI,NI
+龵,HQ,HQ
+龶,QM,QM
+龷,TM,TM
+龸,FB,FB
+龹,FQ,FQ
+龺,JAJ,JJ
+龻,VFYRF,VF
+龼,GYBU,GU
+龽,FNWF,FF
+龾,DHPFD,DD
+龿,TOGG,TG
+鿀,TSEW,TW
+鿁,YRTC,YC
+鿂,JJHAF,JF
+鿃,BUKOO,BO
+鿄,EKD,ED
+鿅,IFMBL,IL
+鿆,IFKE,IE
+鿇,ONSD,OD
+鿈,HOSO,HO
+鿉,HOMDM,HM
+鿊,TEYM,TM
+鿋,LGRR,LR
+鿌,EYAF,EF
+鿐,NFEMW,NW
+鿑,IMMGI,II
 鿫,ONHBK,OK
 鿬,MRW,MW
 龜,HXU,HU
@@ -55346,6 +55631,7 @@ char,cangjie,quick
 𦶹,TITR,TR
 𦶺,TJAK,TK
 𦶻,TIKT,TT
+𦶼,TEYH,TH
 𦶽,TNLF,TF
 𦶾,TMGG,TG
 𦶿,TEED,TD
@@ -56029,6 +56315,7 @@ char,cangjie,quick
 𧁥,TLBF,TF
 𧁦,TWLF,TF
 𧁧,TBLF,TF
+𧁨,THDK,TK
 𧁩,THDI,TI
 𧁪,TOGU,TU
 𧁫,TORD,TD
