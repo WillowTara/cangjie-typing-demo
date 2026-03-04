@@ -17,6 +17,10 @@ type DictionaryLookupProps = {
 export function DictionaryLookup({ lookup, isLoading, loadError }: DictionaryLookupProps) {
   const [input, setInput] = useState('')
 
+  const syncInputValue = (value: string) => {
+    setInput(value)
+  }
+
   const rows = useMemo(() => {
     if (!input.trim()) {
       return []
@@ -40,7 +44,9 @@ export function DictionaryLookup({ lookup, isLoading, loadError }: DictionaryLoo
           type="text"
           className="lookup-input"
           value={input}
-          onChange={(event) => setInput(event.target.value)}
+          onChange={(event) => syncInputValue(event.currentTarget.value)}
+          onInput={(event) => syncInputValue(event.currentTarget.value)}
+          onCompositionEnd={(event) => syncInputValue(event.currentTarget.value)}
           placeholder="輸入中文字查詢倉頡/速成碼..."
           disabled={isLoading}
         />
@@ -52,8 +58,8 @@ export function DictionaryLookup({ lookup, isLoading, loadError }: DictionaryLoo
 
       {rows.length > 0 ? (
         <div className="lookup-results">
-          {rows.map((row) => (
-            <article key={`${row.char}-${row.cangjie}-${row.quick}`} className="lookup-item">
+          {rows.map((row, index) => (
+            <article key={`${index}-${row.char}`} className="lookup-item">
               <span className="lookup-char">{row.char}</span>
               <div className="lookup-codes">
                 <div className="code-row">
