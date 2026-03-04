@@ -1,4 +1,10 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import {
+  fetchRandomWikipediaPracticeMaterial,
+  pickRandomOfflinePracticeMaterial,
+  type PracticeMaterial,
+  type PracticeSourceMode,
+} from './constants'
 import { normalizeChineseText, randomPracticeText } from './utils'
 
 export type TypingStats = {
@@ -28,7 +34,17 @@ export type TypingSession = {
   handleInput: (value: string) => void
   changeDuration: (nextDuration: number) => void
   reroll: () => void
+  replacePracticeText: (nextText: string) => void
   restart: () => void
+}
+
+export type PracticeSourceState = {
+  mode: PracticeSourceMode
+  material: PracticeMaterial
+  isLoading: boolean
+  loadError?: string
+  switchMode: (mode: PracticeSourceMode) => Promise<void>
+  reroll: () => Promise<void>
 }
 
 export function useTypingSession({
@@ -154,6 +170,17 @@ export function useTypingSession({
     setIsFocused(true)
   }
 
+  const replacePracticeText = (nextText: string) => {
+    const normalized = normalizeChineseText(nextText)
+    if (normalized.length === 0) {
+      return
+    }
+
+    setPracticeText(nextText)
+    resetTypingState(duration)
+    setIsFocused(true)
+  }
+
   const restart = () => {
     resetTypingState(duration)
     setIsFocused(true)
@@ -180,6 +207,78 @@ export function useTypingSession({
     handleInput,
     changeDuration,
     reroll,
+    replacePracticeText,
     restart,
+  }
+}
+
+export function usePracticeSource(): PracticeSourceState {
+  const [mode, setMode] = useState<PracticeSourceMode>('offline')
+  const [material, setMaterial] = useState<PracticeMaterial>(() => pickRandomOfflinePracticeMaterial())
+  const [isLoading, setIsLoading] = useState(false)
+  const [loadError, setLoadError] = useState<string | null>(null)
+  const requestIdRef = useRef(0)
+
+  const loadMaterialByMode = useCallback(
+    async (nextMode: PracticeSourceMode, currentId?: string) => {
+      const requestId = requestIdRef.current + 1
+      requestIdRef.current = requestId
+
+      setIsLoading(true)
+      setLoadError(null)
+
+      if (nextMode === 'offline') {
+        const nextMaterial = pickRandomOfflinePracticeMaterial(currentId)
+        if (requestId !== requestIdRef.current) {
+          return
+        }
+
+        setMaterial(nextMaterial)
+        setIsLoading(false)
+        return
+      }
+
+      try {
+        const nextMaterial = await fetchRandomWikipediaPracticeMaterial()
+        if (requestId !== requestIdRef.current) {
+          return
+        }
+
+        setMaterial(nextMaterial)
+      } catch {
+        if (requestId !== requestIdRef.current) {
+          return
+        }
+
+        setMaterial(pickRandomOfflinePracticeMaterial(currentId))
+        setLoadError('線上維基素材載入失敗，已回退離線白名單。')
+      } finally {
+        if (requestId === requestIdRef.current) {
+          setIsLoading(false)
+        }
+      }
+    },
+    [],
+  )
+
+  const switchMode = useCallback(
+    async (nextMode: PracticeSourceMode) => {
+      setMode(nextMode)
+      await loadMaterialByMode(nextMode)
+    },
+    [loadMaterialByMode],
+  )
+
+  const reroll = useCallback(async () => {
+    await loadMaterialByMode(mode, material.id)
+  }, [loadMaterialByMode, material.id, mode])
+
+  return {
+    mode,
+    material,
+    isLoading,
+    loadError: loadError ?? undefined,
+    switchMode,
+    reroll,
   }
 }
