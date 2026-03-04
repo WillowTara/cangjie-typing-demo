@@ -120,7 +120,6 @@ async function main(): Promise<void> {
   const sourceText = await readFile(input, 'utf8')
   const rows = parseCsvRows(sourceText)
   const entries = normalizeEntries(rows)
-  const sourceSha = sha256Hex(sourceText)
 
   const files = await readdir(dictDir)
   const metaFile = findMetaFile(files, variant, version)
@@ -233,11 +232,32 @@ async function main(): Promise<void> {
     }
   }
 
-  if (meta.sources[0]?.sha256 !== sourceSha) {
-    throw new Error('Source SHA-256 mismatch between CSV and meta.sources[0]')
+  if (meta.sources.length !== licenses.sources.length) {
+    throw new Error('Source list length mismatch between meta and licenses manifest')
   }
-  if (licenses.sources[0]?.sha256 !== sourceSha) {
-    throw new Error('Source SHA-256 mismatch between CSV and licenses manifest')
+
+  for (let index = 0; index < meta.sources.length; index += 1) {
+    const metaSource = meta.sources[index]
+    const licenseSource = licenses.sources[index]
+    if (!metaSource || !licenseSource) {
+      throw new Error(`Missing source pair at index ${index}`)
+    }
+
+    if (metaSource.id !== licenseSource.id) {
+      throw new Error(`Source id mismatch at index ${index}`)
+    }
+    if (metaSource.name !== licenseSource.name) {
+      throw new Error(`Source name mismatch at index ${index}`)
+    }
+    if (metaSource.license !== licenseSource.license) {
+      throw new Error(`Source license mismatch at index ${index}`)
+    }
+    if (metaSource.version !== licenseSource.version) {
+      throw new Error(`Source version mismatch at index ${index}`)
+    }
+    if (metaSource.sha256 !== licenseSource.sha256) {
+      throw new Error(`Source sha256 mismatch at index ${index}`)
+    }
   }
 
   if (meta.stats.entryCount !== entries.length) {
