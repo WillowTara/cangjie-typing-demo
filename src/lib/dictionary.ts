@@ -11,6 +11,29 @@ export type DictionaryIndex = {
   size: number
 }
 
+// Lookup abstraction - allows UI to query without knowing storage implementation
+/**
+ * Result of a dictionary lookup for a single character.
+ */
+export type LookupResult = {
+  cangjie: string
+  quick: string
+}
+
+/**
+ * Abstract lookup function - UI uses this to query dictionary.
+ * This decouples UI from concrete storage (Map vs binary index).
+ */
+export type DictionaryLookupFn = (char: string) => LookupResult | undefined
+
+/**
+ * Dictionary source interface - provides lookup abstraction.
+ */
+export type DictionarySource = {
+  lookup: DictionaryLookupFn
+  size: number
+}
+
 export type DictionaryFormat = 'csv' | 'json'
 
 export type DictionaryIssueCode =
@@ -56,8 +79,23 @@ type RawRow = {
   quick: unknown
 }
 
-const CJK_SINGLE_CHAR_PATTERN = /^[\u3400-\u9fff\uf900-\ufaff]$/u
 const CODE_PATTERN = /^[A-Z]{1,5}$/u
+
+function isHanCodePoint(codePoint: number): boolean {
+  return (
+    codePoint === 0x3007 ||
+    (codePoint >= 0x3400 && codePoint <= 0x4dbf) ||
+    (codePoint >= 0x4e00 && codePoint <= 0x9fff) ||
+    (codePoint >= 0xf900 && codePoint <= 0xfaff) ||
+    (codePoint >= 0x20000 && codePoint <= 0x2a6df) ||
+    (codePoint >= 0x2a700 && codePoint <= 0x2b73f) ||
+    (codePoint >= 0x2b740 && codePoint <= 0x2b81f) ||
+    (codePoint >= 0x2b820 && codePoint <= 0x2ceaf) ||
+    (codePoint >= 0x2ceb0 && codePoint <= 0x2ebef) ||
+    (codePoint >= 0x30000 && codePoint <= 0x3134f) ||
+    (codePoint >= 0x31350 && codePoint <= 0x323af)
+  )
+}
 
 function createReport(format: DictionaryFormat): DictionaryImportReport {
   return {
@@ -92,7 +130,12 @@ function normalizeChar(value: unknown): string | null {
   }
 
   const [char] = chars
-  if (!char || !CJK_SINGLE_CHAR_PATTERN.test(char)) {
+  if (!char) {
+    return null
+  }
+
+  const codePoint = char.codePointAt(0)
+  if (codePoint === undefined || !isHanCodePoint(codePoint)) {
     return null
   }
 

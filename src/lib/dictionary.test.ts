@@ -69,6 +69,15 @@ describe('dictionary.ts - CSV parsing', () => {
     expect(entries[0].char).toBe('日')
   })
 
+  it('accepts non-BMP Han characters and U+3007', () => {
+    const csv = `𠮷,ONF,OF
+〇,A,A`
+    const entries = parseDictionaryCsv(csv)
+    expect(entries).toHaveLength(2)
+    expect(entries[0].char).toBe('𠮷')
+    expect(entries[1].char).toBe('〇')
+  })
+
   it('rejects cangjie codes over 5 letters', () => {
     const csv = `日,ABCDEF,A
 月,B,B` // 6 letters - invalid, but one valid row

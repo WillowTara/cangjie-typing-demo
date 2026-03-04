@@ -53,7 +53,7 @@ function App() {
     onComplete: handleTypingComplete,
   })
 
-  const { dictionaryIndex, isLoading: dictLoading, loadError } = useDictionary()
+  const { lookup, isLoading: dictLoading, loadError } = useDictionary()
 
   const handleRestart = () => {
     typing.restart()
@@ -86,7 +86,7 @@ function App() {
         ) : null}
 
         {viewMode === 'lookup' ? (
-          <DictionaryLookup dictionaryIndex={dictionaryIndex} isLoading={dictLoading} loadError={loadError} />
+          <DictionaryLookup lookup={lookup} isLoading={dictLoading} loadError={loadError} />
         ) : null}
 
         {viewMode === 'result' ? (

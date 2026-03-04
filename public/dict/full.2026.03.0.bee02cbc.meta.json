@@ -1,0 +1,64 @@
+{
+  "schema": "cj-dict-meta@2",
+  "dictVersion": "2026.03.0",
+  "variant": "full",
+  "artifact": {
+    "file": "full.2026.03.0.bee02cbc.v2.bin",
+    "sha256": "bee02cbc1054ac774505c1d2ef473146159a8dbfe6b19d40c4b8ae6f939758a0",
+    "bytes": 702814
+  },
+  "format": {
+    "versionMajor": 2,
+    "versionMinor": 0,
+    "flags": {
+      "hasQuickTable": false,
+      "hasFrequency": false,
+      "quickDerivedDefault": true
+    }
+  },
+  "stats": {
+    "entryCount": 70275,
+    "duplicateOverrides": 0,
+    "rejectedRows": 0
+  },
+  "unicode": {
+    "minCodepoint": "U+3007",
+    "maxCodepoint": "U+2CBBE",
+    "includesNonBmpHan": true
+  },
+  "sources": [
+    {
+      "id": "cin-tables-cangjie",
+      "name": "chinese-opendesktop/cin-tables cangjie.cin (Han filtered)",
+      "license": "CC0-1.0",
+      "version": "master-2026-02-27",
+      "sha256": "8eb369f7c11fa96bbcabb68bbeb0e6df10991b34e0ca8795a553e30b677bc10d",
+      "url": "https://raw.githubusercontent.com/chinese-opendesktop/cin-tables/master/cangjie.cin"
+    },
+    {
+      "id": "unicode-unihan-kcangjie",
+      "name": "Unicode UCD Unihan kCangjie",
+      "license": "Unicode-3.0",
+      "version": "UCD-latest-2026-03-04",
+      "sha256": "f7a48b2b545acfaa77b2d607ae28747404ce02baefee16396c5d2d7a8ef34b5e",
+      "url": "https://www.unicode.org/Public/UCD/latest/ucd/Unihan.zip"
+    },
+    {
+      "id": "cin-tables-cnscj",
+      "name": "chinese-opendesktop/cin-tables cnscj.cin",
+      "license": "CC0-1.0",
+      "version": "master-2026-03-04",
+      "sha256": "9aeaf604cfbe41cd962e493463c250b1c8e070c74c8a629587b144820c9138cc",
+      "url": "https://raw.githubusercontent.com/chinese-opendesktop/cin-tables/master/cnscj.cin"
+    }
+  ],
+  "build": {
+    "toolVersion": "dict-build/0.1.0",
+    "generatedAt": "2026-03-04T08:04:58.616Z",
+    "gitCommit": "unknown"
+  },
+  "compat": {
+    "minRuntimeSchema": 2,
+    "fallbackFormat": "v1-json-csv"
+  }
+}

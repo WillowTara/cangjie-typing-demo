@@ -1,0 +1,13 @@
+{
+  "schema": "cj-dict-licenses@1",
+  "sources": [
+    {
+      "id": "core-curated-local",
+      "name": "Core curated dictionary CSV",
+      "license": "LicenseRef-CuratedData",
+      "version": "2026.03.0",
+      "sha256": "0dd91ef43fb69964293e74d8fe7776a2010f4ad36a55489f99d7078d19f5b5c0",
+      "url": "local://public/dict/core-dictionary.csv"
+    }
+  ]
+}

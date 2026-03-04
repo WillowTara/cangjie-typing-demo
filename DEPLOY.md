@@ -54,9 +54,15 @@
 ```
 newproject/
 ├── dist/                 # npm run build 產出
-├── public/dict/          # 範例字典
+├── public/dict/          # 範例、core/full 字典與產物
 │   ├── sample-dictionary.csv
-│   └── sample-dictionary.json
+│   ├── sample-dictionary.json
+│   ├── core-dictionary.csv
+│   ├── core-dictionary.sources.json
+│   ├── full-dictionary.csv
+│   ├── full-dictionary.sources.json
+│   ├── core.<version>.<hash>.v2/meta/licenses
+│   └── full.<version>.<hash>.v2/meta/licenses
 ├── src/
 │   ├── App.tsx           # 主應用程式
 │   ├── App.css           # 樣式
@@ -83,6 +89,12 @@ npm run check
 # E2E 測試
 npm run test:e2e
 
+# 字典 core 產物一致性驗證
+npm run dict:verify:core
+
+# 字典 full 產物一致性驗證
+npm run dict:verify:full
+
 # 預覽本地部署
 npm run preview
 ```
@@ -96,6 +108,32 @@ npm run preview
 ## 後續更新
 
 每次推送更新到 GitHub main 分支，Vercel 會自動重新部署。
+
+## 封版與 GitHub 備份流程
+
+```bash
+# 1) 品質關卡
+npm run check
+npm run test:e2e
+npm run build
+npm run dict:verify:core
+npm run dict:verify:full
+
+# 2) （可選）重建字典 artifacts
+npm run dict:build:v2 -- --input public/dict/core-dictionary.csv --variant core --version 2026.03.0 --sources public/dict/core-dictionary.sources.json
+npm run dict:build:v2 -- --input public/dict/full-dictionary.csv --variant full --version 2026.03.0 --sources public/dict/full-dictionary.sources.json
+
+# 3) 封版 commit
+git add .
+git commit -m "release: freeze v1.2.2 full dictionary expansion"
+
+# 4) 推送到 GitHub（備份）
+git push origin <branch>
+
+# 5) 可選：打 tag
+git tag -a v1.2.2 -m "release v1.2.2"
+git push origin v1.2.2
+```
 
 ---
 

@@ -56,52 +56,104 @@ Related Spec: `docs/dictionary-v2-spec.md`
 
 ## 5. Runtime 整合（本 repo）
 
-- [ ] UI lookup 走抽象介面（例如 `lookup(char)`），不綁死 `Map.get`
-- [ ] `useDictionary` 可辨識並載入 v2 binary（`arrayBuffer`）
-- [ ] v2 decode 失敗時會回退 v1 parser
-- [ ] v1 parser 失敗時會回退 built-in fallback index
-- [ ] `VITE_DICTIONARY_URL` 相容既有行為
-- [ ] （可選）`core/full` variant 切換策略已定義
+- [x] UI lookup 走抽象介面（例如 `lookup(char)`），不綁死 `Map.get`
+- [x] `useDictionary` 可辨識並載入 v2 binary（`arrayBuffer`）
+- [x] v2 decode 失敗時會回退 v1 parser
+- [x] v1 parser 失敗時會回退 built-in fallback index
+- [x] `VITE_DICTIONARY_URL` 相容既有行為
+- [x] （可選）`core/full` variant 切換策略已定義
 
 ## 6. 測試與品質關卡
 
-- [ ] 新增 binary codec 單元測試（header/offset/crc/decode）
-- [ ] 新增 Unicode edge case 測試（含非 BMP）
-- [ ] 新增 migration parity 測試（v1 vs v2 查詢結果一致）
-- [ ] `npm run check` 通過
-- [ ] `npm run test:e2e` 通過
-- [ ] `npm run build` 通過
+- [x] 新增 binary codec 單元測試（header/offset/crc/decode）
+- [x] 新增 Unicode edge case 測試（含非 BMP）
+- [x] 新增 migration parity 測試（v1 vs v2 查詢結果一致）
+- [x] `npm run check` 通過
+- [x] `npm run test:e2e` 通過
+- [x] `npm run build` 通過
 
 ## 7. PR 拆分與驗收（建議）
 
 ### PR1: Lookup 抽象介面
-- [ ] 完成 lookup interface 抽象，UI 不直接依賴 `Map`
+- [x] 完成 lookup interface 抽象，UI 不直接依賴 `Map`
 
 ### PR2: Binary codec
-- [ ] 完成 v2 encode/decode + 單測
+- [x] 完成 v2 encode/decode + 單測
 
 ### PR3: Build pipeline
-- [ ] 完成輸入 v1、輸出 `bin/meta/licenses`
+- [x] 完成輸入 v1、輸出 `bin/meta/licenses`
 
 ### PR4: Runtime integration
-- [ ] 完成 `useDictionary` binary 載入與 fallback
+- [x] 完成 `useDictionary` binary 載入與 fallback
 
 ### PR5: Unicode hardening
-- [ ] 完成非 BMP Han 驗證與測試
+- [x] 完成非 BMP Han 驗證與測試
 
 ### PR6: Perf + observability
-- [ ] 完成載入/解碼/查詢耗時記錄
+- [x] 完成載入/解碼耗時記錄
 
 ### PR7: CI hardening
-- [ ] CI 新增 binary smoke / parity 檢查（如適用）
+- [x] CI 新增 binary smoke 檢查
 
 ### PR8: Docs + release
-- [ ] README / docs / release note 更新完成
+- [x] README / docs / release note 更新完成
+
+### PR9: SQLite exporter
+- [x] 完成 SQLite 輸出腳本與 mobile 使用文檔
+
+### PR10: Core 常用字資料集
+- [x] 新增 core 常用字字典與 v2 產物（`core-dictionary.csv` + `core.*.v2/meta/licenses`）
+
+### PR11: Artifact verification + CI evidence
+- [x] 新增 core artifact 驗證腳本並接入 CI（`npm run dict:verify:core`）
+
+### PR12: Docs + release continuity
+- [x] 更新 README / DEPLOY / release 文件，補齊 PR10-PR11 驗證證據鏈
 
 ## 8. Release 前最後檢查
 
-- [ ] 產物檔名帶 hash，且與 meta 一致
-- [ ] spec 與實作一致（無規格漂移）
-- [ ] 來源授權資料可追溯
-- [ ] rollback 路徑可用（可切回 v1）
-- [ ] 版本標記與 changelog 已更新
+- [x] 產物檔名帶 hash，且與 meta 一致
+- [x] spec 與實作一致（無規格漂移）
+- [x] 來源授權資料可追溯
+- [x] rollback 路徑可用（可切回 v1）
+- [x] 版本標記與 changelog 已更新
+
+## 9. Progress Notes
+
+- 2026-02-27: PR1 `lookup` 抽象完成（`src/App.tsx`、`src/features/dictionary/useDictionary.ts`、`src/features/lookup/DictionaryLookup.tsx`、`src/lib/dictionary.ts`）。
+- 2026-02-27: PR1 分支品質關卡已通過：`npm run check`、`npm run test:e2e`、`npm run build`。
+- 2026-02-27: 補齊測試/清單必做項：新增 migration parity 測試（`src/lib/dictionaryBinary.test.ts`），並重跑 `npm run check`、`npm run test:e2e`、`npm run build`、`npm run dict:build:v2 -- --input public/dict/sample-dictionary.json --variant core --version 2026.03.0 --out-dir dist/dict-v2`、`npm run dict:export:sqlite -- --input public/dict/sample-dictionary.json --output dist/dict-v2/dict.sqlite`。
+- 2026-02-27: PR11 新增 `scripts/dict/verify-core-artifacts.mts`，並在 CI 加入 `npm run dict:verify:core`，驗證 `core-dictionary.csv` 與 `core.*.v2/meta/licenses` 一致性（sha256/entryCount/duplicateOverrides/hash filename）。
+- 2026-02-27: PR12 更新 `README.md`、`DEPLOY.md`、`docs/release-v1.2.0.md`，記錄 PR10-PR11 scope、驗證命令與 artifacts traceability。
+- 2026-02-27: PR13 新增 `public/dict/full-dictionary.csv`（由 `chinese-opendesktop/cin-tables` 轉換並過濾 Han codepoint），並產生 `full.2026.03.0.8a26c2d6.*` 產物。
+- 2026-02-27: PR14 將 `scripts/dict/build-v2.mts` 改為讀取 `*.sources.json` 並對 `UNSPECIFIED` 授權 hard-fail；`scripts/dict/verify-core-artifacts.mts` 擴展為 core/full 驗證，CI 新增 `npm run dict:verify:full`。
+- 2026-02-27: PR15 更新 `README.md`、`DEPLOY.md`、`docs/release-v1.2.0.md` 與本清單，補齊 PR13-PR14 的 full artifacts、驗證快照、traceability commits 與回滾路徑說明。
+
+## 10. PR13-PR15 全量擴字啟動計畫
+
+### PR13: Full 字集資料與 artifacts
+- [x] 新增 full 字集來源檔（建議：`public/dict/full-dictionary.csv`）
+- [x] 產出 `full.<dictVersion>.<hash>.v2.bin` / `meta.json` / `licenses.json`
+- [x] 保持預設變體為 `core`（不改 `DEFAULT_DICTIONARY_VARIANT`）
+- [x] 驗證：`npm run dict:build:v2 -- --input public/dict/full-dictionary.csv --variant full --version <dictVersion>`
+- [x] 驗證：`npm run test:binary-smoke`
+- [x] 驗證：`npm run build`
+
+### PR14: 授權與來源追溯 hardening
+- [x] build 在來源授權資訊缺漏時 fail（不得接受 `UNSPECIFIED`）
+- [x] verifier 從 core-only 擴展成可驗證 `core/full`
+- [x] 新增 `npm run dict:verify:full`（或等效 `dict:verify:all`）
+- [x] CI 加入 full artifacts 驗證步驟
+- [x] 驗證：`npm run dict:verify:core` + `npm run dict:verify:full`
+- [x] 驗證：`npm run check`、`npm run test:e2e`、`npm run build`
+
+### PR15: Release continuity 與封版文檔
+- [x] 更新 `README.md`、`DEPLOY.md`、`docs/release-v1.2.0.md` 的 full 擴字證據鏈
+- [x] 記錄 full artifacts 檔名、驗證快照、traceability commits
+- [x] 明確標註回滾路徑（`full -> core -> built-in fallback`）
+- [x] 驗證：`npm run dict:verify:core`、`npm run dict:verify:full`、`npm run check`、`npm run test:e2e`、`npm run build`
+
+### 啟動完成定義
+- [x] PR13/PR14/PR15 均可獨立驗收與回滾
+- [x] `core/full` 產物都可由 CI 重現驗證
+- [x] 文檔可獨立支援下一次 merge/release（不依賴聊天上下文）

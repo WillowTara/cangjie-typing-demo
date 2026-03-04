@@ -1,17 +1,20 @@
 import { useMemo, useState } from 'react'
-import type { DictionaryIndex } from '../../lib/dictionary'
+import type { DictionaryLookupFn } from '../../lib/dictionary'
 
 function codeToEnglishKeys(code: string): string {
   return code.split('').join(' ')
 }
 
 type DictionaryLookupProps = {
-  dictionaryIndex: DictionaryIndex
+  /** Abstract lookup function - the preferred way to query */
+  lookup: DictionaryLookupFn
+  /** @deprecated Provided for backward compatibility */
+  dictionaryIndex?: never
   isLoading?: boolean
   loadError?: string
 }
 
-export function DictionaryLookup({ dictionaryIndex, isLoading, loadError }: DictionaryLookupProps) {
+export function DictionaryLookup({ lookup, isLoading, loadError }: DictionaryLookupProps) {
   const [input, setInput] = useState('')
 
   const rows = useMemo(() => {
@@ -20,7 +23,7 @@ export function DictionaryLookup({ dictionaryIndex, isLoading, loadError }: Dict
     }
 
     return Array.from(input).map((char) => {
-      const entry = dictionaryIndex.map.get(char)
+      const entry = lookup(char)
       return {
         char,
         cangjie: entry?.cangjie ?? '-',
@@ -28,7 +31,7 @@ export function DictionaryLookup({ dictionaryIndex, isLoading, loadError }: Dict
         cangjieKeys: entry ? codeToEnglishKeys(entry.cangjie) : '-',
       }
     })
-  }, [input, dictionaryIndex])
+  }, [input, lookup])
 
   return (
     <section className="dictionary-lookup">

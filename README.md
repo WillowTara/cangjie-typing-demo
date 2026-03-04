@@ -1,6 +1,6 @@
 # 倉頡打字練習 - Cangjie Typing Practice Demo
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue)
+![Version](https://img.shields.io/badge/version-1.2.3-blue)
 ![React](https://img.shields.io/badge/React-19.2+-61DAFB)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9+-3178C6)
 ![Vite](https://img.shields.io/badge/Vite-7.3+-646CFF)
@@ -59,12 +59,27 @@ newproject/
 │   │   └── typing/         # 打字流程與狀態管理
 │   ├── observability/      # logger、全域錯誤攔截、ErrorBoundary
 │   └── lib/
-│       └── dictionary.ts   # 字典解析與驗證核心
+│       ├── dictionary.ts          # 字典解析與驗證核心
+│       └── dictionaryBinary.ts    # v2 binary codec（encode/decode/lookup）
 ├── e2e/                    # Playwright E2E 測試
+├── scripts/
+│   └── dict/               # v2 build / verify / sqlite export 腳本
 ├── public/
 │   └── dict/               # 外部字典檔案 (CSV/JSON)
 │       ├── sample-dictionary.csv
-│       └── sample-dictionary.json
+│       ├── sample-dictionary.json
+│       ├── core-dictionary.csv
+│       ├── core-dictionary.sources.json
+│       ├── full-dictionary.csv
+│       ├── full-dictionary.sources.json
+│       ├── core.<version>.<hash>.v2/meta/licenses
+│       ├── full.<version>.<hash>.v2/meta/licenses
+│       ├── core.latest.v2.bin
+│       └── full.latest.v2.bin
+├── docs/
+│   ├── dictionary-v2-spec.md
+│   ├── dictionary-v2-checklist.md
+│   └── mobile-dict.md
 ├── index.html
 ├── package.json
 ├── vite.config.ts
@@ -155,11 +170,13 @@ char,cangjie,quick
 建立 `.env.local`（或 `.env.development`）可覆蓋字典來源：
 
 ```bash
-VITE_DICTIONARY_URL=/dict/sample-dictionary.json
+VITE_DICTIONARY_URL=/dict/full.latest.v2.bin
+VITE_DICTIONARY_VARIANT=full
 ```
 
 - 所有執行期設定由 `src/config/runtime.ts` 集中管理
-- 未提供 `VITE_DICTIONARY_URL` 時，會回退到預設 `/dict/sample-dictionary.json`
+- 預設 `VITE_DICTIONARY_VARIANT=full`，未提供 `VITE_DICTIONARY_URL` 時會載入 `/dict/full.latest.v2.bin`
+- 若指定 URL 載入失敗，會依序嘗試 variant 的 latest alias，最後回退到 `/dict/sample-dictionary.json`
 
 ### 安裝與啟動
 ```bash
@@ -180,6 +197,21 @@ npm run check
 
 # E2E 測試
 npm run test:e2e
+
+# v2 binary smoke test
+npm run test:binary-smoke
+
+# 產出 v2 binary/meta/licenses（需提供來源授權 metadata）
+npm run dict:build:v2 -- --input public/dict/core-dictionary.csv --variant core --version 2026.03.0 --sources public/dict/core-dictionary.sources.json
+
+# 驗證 core 產物一致性（meta/licenses/hash/entryCount）
+npm run dict:verify:core
+
+# 驗證 full 產物一致性（meta/licenses/hash/entryCount）
+npm run dict:verify:full
+
+# 匯出 mobile sqlite
+npm run dict:export:sqlite -- --input public/dict/sample-dictionary.json --output public/dict/dict.sqlite
 ```
 
 ### Vercel 部署
@@ -219,7 +251,8 @@ npm run test:e2e
 ```typescript
 // 透過環境變數覆蓋字典來源（建議）
 // .env.local
-VITE_DICTIONARY_URL=/dict/full-dictionary.json
+VITE_DICTIONARY_URL=/dict/full.latest.v2.bin
+VITE_DICTIONARY_VARIANT=full
 
 // 由 src/config/runtime.ts 統一讀取
 // useDictionary 會自動載入並在失敗時 fallback
@@ -235,6 +268,7 @@ VITE_DICTIONARY_URL=/dict/full-dictionary.json
 ### 4. Dictionary v2 規格與落地清單
 - 規格草案：`docs/dictionary-v2-spec.md`
 - 實作清單：`docs/dictionary-v2-checklist.md`
+- 封版說明：`docs/release-v1.2.0.md`
 - 建議流程：先更新規格，再依清單拆 PR 實作，避免 migration 規則在開發中遺漏
 
 ## 授權與鳴謝
@@ -244,6 +278,46 @@ VITE_DICTIONARY_URL=/dict/full-dictionary.json
 - UI 靈感：Monkeytype (https://monkeytype.com/)
 
 ## 更新日誌
+
+### v1.2.5 (2026-03-04) - 預設查碼切換到 full
+- ✅ runtime 預設 variant 由 `core` 改為 `full`，避免公開部署查字只命中 221 筆 core 字典
+- ✅ 測試同步更新預設載入路徑為 `/dict/full.latest.v2.bin`
+
+### v1.2.4 (2026-03-04) - 部署查碼回退修正
+- ✅ 將 runtime 預設字典改為 variant 對應的 stable alias（`core.latest.v2.bin` / `full.latest.v2.bin`），避免預設落到 sample 字典
+- ✅ `useDictionary` 新增候選來源重試鏈（設定 URL -> variant latest alias -> sample），降低舊版 hash 路徑失效造成的查碼大量缺失
+- ✅ `scripts/dict/build-v2.mts` 產物同步輸出 `${variant}.latest.v2.bin`，讓部署 URL 可長期穩定
+
+### v1.2.3 (2026-03-04) - 主體常用區補齊
+- ✅ 補齊主體 Han 區（U+3007 / ExtA / URO / ExtB）缺字，`full-dictionary.csv` 由 69,988 提升至 70,275 筆
+- ✅ 主體區覆蓋率由 99.51% 提升至 99.9189%（缺口 344 -> 57）
+- ✅ `public/dict/full-dictionary.sources.json` 擴展為多來源追溯（`cin-tables cangjie` + `Unicode Unihan kCangjie` + `cin-tables cnscj`）
+- ✅ full 產物更新為 `full.2026.03.0.bee02cbc.*`，並更新 `scripts/dict/verify-core-artifacts.mts` 以驗證多來源 manifests 對齊
+
+### v1.2.2 (2026-02-27) - PR13-PR15 full 擴字與授權封版
+- ✅ PR13：新增 `public/dict/full-dictionary.csv`、`public/dict/full-dictionary.sources.json` 與 full v2 產物（`full.2026.03.0.8a26c2d6.*`）
+- ✅ PR14：`scripts/dict/build-v2.mts` 加入來源授權 metadata hard-fail（拒絕 `UNSPECIFIED`），`scripts/dict/verify-core-artifacts.mts` 擴展到 `core/full`，CI 新增 `npm run dict:verify:full`
+- ✅ PR15：更新 README/DEPLOY/release/checklist，補齊 full artifacts、驗證快照、traceability commits 與回滾路徑
+
+### v1.1.2 (2026-02-27) - PR1 lookup 抽象落地
+- ✅ 完成 PR1 `lookup(char)` 抽象介面，`DictionaryLookup` 不再直接依賴 `Map.get`
+- ✅ `useDictionary` 對外提供 `lookup`，並保留 `dictionaryIndex` 相容欄位
+- ✅ 在 `pr/01-dict-v2-lookup-abstraction` 分支完成驗證：`npm run check`、`npm run test:e2e`、`npm run build`
+
+### v1.2.0 (2026-02-27) - PR2-PR9 dictionary v2 落地
+- ✅ PR2：新增 `src/lib/dictionaryBinary.ts` 與 `src/lib/dictionaryBinary.test.ts`（v2 binary codec + smoke）
+- ✅ PR3：新增 `scripts/dict/build-v2.mts`、`scripts/dict/schema.ts`，可產出 `bin/meta/licenses`
+- ✅ PR4：`src/features/dictionary/useDictionary.ts` 支援 `.bin` 載入並保留 fallback chain
+- ✅ PR5：`src/lib/dictionary.ts` 升級 Han 驗證，支援非 BMP Han 與 U+3007
+- ✅ PR6：字典載入新增 load/parse/decode 耗時紀錄（`logger`）
+- ✅ PR7：CI 新增 `npm run test:binary-smoke`
+- ✅ PR8：README 與 docs 補齊 v2 / mobile 產物流
+- ✅ PR9：新增 `scripts/dict/export-sqlite.mts` 與 `docs/mobile-dict.md`
+
+### v1.2.1 (2026-02-27) - PR10-PR12 core 字典與驗證鏈補齊
+- ✅ PR10：新增 `public/dict/core-dictionary.csv` 與 core v2 產物（`core.2026.03.0.5b9218e9.*`）
+- ✅ PR11：新增 `scripts/dict/verify-core-artifacts.mts`，並在 CI 加入 `npm run dict:verify:core`
+- ✅ PR12：更新 release/readme/deploy 文件，補齊 PR10-PR11 驗證與交接紀錄
 
 ### v1.1.1 (2026-02-27) - v2 規格文件化
 - ✅ 新增 `docs/dictionary-v2-spec.md`（bin/meta/migration 規格草案）

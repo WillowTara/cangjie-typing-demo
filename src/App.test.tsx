@@ -2,19 +2,39 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import App from './App'
+import { encodeDictionaryBinary } from './lib/dictionaryBinary'
+import type { DictionaryEntry } from './lib/dictionary'
 
-const MOCK_DICTIONARY_JSON = JSON.stringify([
+const MOCK_ENTRIES: DictionaryEntry[] = [
   { char: '日', cangjie: 'A', quick: 'A' },
   { char: '月', cangjie: 'B', quick: 'B' },
-])
+]
+
+const MOCK_DICTIONARY_JSON = JSON.stringify(MOCK_ENTRIES)
+const MOCK_CORE_BINARY = encodeDictionaryBinary(MOCK_ENTRIES)
+const MOCK_CORE_BINARY_BODY = new Uint8Array(MOCK_CORE_BINARY)
+const MOCK_CORE_BINARY_ARRAY_BUFFER = (() => {
+  const out = new ArrayBuffer(MOCK_CORE_BINARY_BODY.byteLength)
+  new Uint8Array(out).set(MOCK_CORE_BINARY_BODY)
+  return out
+})()
 
 beforeEach(() => {
-  vi.spyOn(globalThis, 'fetch').mockResolvedValue(
-    new Response(MOCK_DICTIONARY_JSON, {
+  vi.spyOn(globalThis, 'fetch').mockImplementation(async (input: RequestInfo | URL) => {
+    const requestUrl = typeof input === 'string' ? input : input.toString()
+
+    if (requestUrl.toLowerCase().endsWith('.bin')) {
+      return new Response(MOCK_CORE_BINARY_ARRAY_BUFFER, {
+        status: 200,
+        headers: { 'Content-Type': 'application/octet-stream' },
+      })
+    }
+
+    return new Response(MOCK_DICTIONARY_JSON, {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
-    }),
-  )
+    })
+  })
 })
 
 afterEach(() => {
@@ -32,7 +52,7 @@ describe('App', () => {
     expect(screen.getByText('點擊輸入框，切到中文輸入法開始練習')).toBeInTheDocument()
 
     await waitFor(() => {
-      expect(globalThis.fetch).toHaveBeenCalledWith('/dict/sample-dictionary.json')
+      expect(globalThis.fetch).toHaveBeenCalledWith('/dict/full.latest.v2.bin')
     })
   })
 
@@ -40,7 +60,7 @@ describe('App', () => {
     render(<App />)
 
     await waitFor(() => {
-      expect(globalThis.fetch).toHaveBeenCalledWith('/dict/sample-dictionary.json')
+      expect(globalThis.fetch).toHaveBeenCalledWith('/dict/full.latest.v2.bin')
     })
   })
 
