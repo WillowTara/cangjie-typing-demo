@@ -95,6 +95,14 @@ const MIN_WIKIPEDIA_FULL_ARTICLE_CHARS = 280
 
 const DISAMBIGUATION_HINTS = ['消歧義', '可能是指', '可以指'] as const
 
+const OFFLINE_PROMPT_ARTIFACT_PATTERNS: readonly RegExp[] = [
+  /完整收錄篇章/g,
+  /白名單素材/g,
+  /三行摘要截斷/g,
+  /本篇內容為離線完整文章版本/g,
+  /prompt/gi,
+] as const
+
 type WikipediaQueryPage = {
   title?: string
   fullurl?: string
@@ -117,13 +125,17 @@ function toWikipediaHistoryUrl(title: string): string {
 }
 
 function buildOfflineFullArticleText(title: string, summary: string): string {
-  return [
+  const article = [
     `【${title}】`,
-    `${summary}。這篇離線白名單素材保留完整篇章，不以三行摘要截斷。`,
-    `在背景與脈絡方面，${title}通常會從定義、形成原因、主要特徵與代表案例進行說明。讀者可以依序理解概念，再觀察其在日常生活中的應用情境。`,
-    `在學習與練習方面，建議先以穩定節奏完成全文，再逐步提升輸入速度。若中途出現錯字，可回到當前段落重複練習，直到字形與節奏都穩定。`,
-    '本篇內容為離線完整文章版本，設計目標是讓你從開頭一路輸入到結尾，練習長文專注力、準確率與持續輸入能力。',
+    `${summary}。`,
+    `在知識脈絡上，${title}常會從來源、特徵與分類角度被介紹，不同地區也會因環境與文化形成不同觀察重點。`,
+    `若進一步理解${title}，可以比較其歷史發展與現代應用，從實際案例掌握其變化規律，這樣更容易建立完整概念。`,
+    `在教育與日常層面，${title}不只是一個名詞，也連結到生活經驗與實作判斷；透過持續閱讀與整理，能逐步累積更穩定的理解。`,
   ].join('\n')
+
+  return OFFLINE_PROMPT_ARTIFACT_PATTERNS.reduce((text, pattern) => text.replace(pattern, ''), article)
+    .replace(/\n{3,}/g, '\n\n')
+    .trim()
 }
 
 function createOfflineMaterial(title: string, summary: string, index: number): PracticeMaterial {

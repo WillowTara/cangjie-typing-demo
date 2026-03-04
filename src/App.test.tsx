@@ -2,6 +2,8 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { act, fireEvent, render, renderHook, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import App from './App'
+import { OFFLINE_WHITELIST_PRACTICE_MATERIALS } from './features/typing'
+import { normalizeChineseText } from './features/typing/utils'
 import { useTypingSession } from './features/typing/useTypingSession'
 import { encodeDictionaryBinary } from './lib/dictionaryBinary'
 import type { DictionaryEntry } from './lib/dictionary'
@@ -71,6 +73,19 @@ afterEach(() => {
 })
 
 describe('App', () => {
+  it('keeps offline whitelist articles free of prompt artifacts', () => {
+    const artifactKeywords = ['完整收錄篇章', '白名單素材', '三行摘要截斷', '本篇內容為離線完整文章版本', 'prompt']
+
+    for (const material of OFFLINE_WHITELIST_PRACTICE_MATERIALS) {
+      expect(material.text.length).toBeGreaterThan(180)
+      expect(normalizeChineseText(material.text).length).toBeGreaterThan(140)
+
+      for (const keyword of artifactKeywords) {
+        expect(material.text.toLowerCase()).not.toContain(keyword.toLowerCase())
+      }
+    }
+  })
+
   it('uses full-article offline material by default', async () => {
     render(<App />)
 
@@ -78,7 +93,7 @@ describe('App', () => {
       expect(globalThis.fetch).toHaveBeenCalledWith('/dict/full.latest.v2.bin')
     })
 
-    expect(readPracticeLengthFromPreview()).toBeGreaterThan(180)
+    expect(readPracticeLengthFromPreview()).toBeGreaterThan(140)
   })
 
   it('renders typing mode by default', async () => {
