@@ -1,6 +1,6 @@
 # 倉頡打字練習 - Cangjie Typing Practice Demo
 
-![Version](https://img.shields.io/badge/version-1.2.6-blue)
+![Version](https://img.shields.io/badge/version-1.2.7-blue)
 ![React](https://img.shields.io/badge/React-19.2+-61DAFB)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9+-3178C6)
 ![Vite](https://img.shields.io/badge/Vite-7.3+-646CFF)
@@ -31,7 +31,8 @@ Monkeytype 風格的倉頡與速成輸入法練習應用，同時提供字典查
 
 - **Vercel**: https://cangjie-typing-demo.vercel.app
 - **GitHub**: https://github.com/WillowTara/cangjie-typing-demo
-- **最新測試連結（快取破除）**: https://cangjie-typing-demo.vercel.app/?v=verify-20260304-1755
+- **最新測試連結（Production，快取破除）**: https://cangjie-typing-demo.vercel.app/?v=verify-20260304-1810
+- **最新部署頁（Preview，含選字同步修正）**: https://cangjie-typing-demo-git-pr-01-d65444-kwoklkylky-5779s-projects.vercel.app/?v=verify-20260304-1815
 
 ## 技術架構
 
@@ -222,11 +223,12 @@ npm run dict:export:sqlite -- --input public/dict/sample-dictionary.json --outpu
 4. 部署完成後取得網址
 
 ### 部署後快速驗證（建議）
-1. 開啟 `https://cangjie-typing-demo.vercel.app/?v=verify-20260304-1755`
-2. 確認字典 binary 可直接存取：
+1. 先開啟最新 Preview：`https://cangjie-typing-demo-git-pr-01-d65444-kwoklkylky-5779s-projects.vercel.app/?v=verify-20260304-1815`
+2. 再用 Production smoke test：`https://cangjie-typing-demo.vercel.app/?v=verify-20260304-1810`
+3. 確認字典 binary 可直接存取：
    - `https://cangjie-typing-demo.vercel.app/dict/core.latest.v2.bin`
    - `https://cangjie-typing-demo.vercel.app/dict/full.latest.v2.bin`
-3. 若查碼大量顯示 `-`，先以無痕模式重開頁面，並檢查 console 是否出現 fallback warning
+4. 若查碼大量顯示 `-`，先以無痕模式重開頁面，並檢查 console 是否出現 fallback warning
 
 ## 使用說明
 
@@ -286,6 +288,12 @@ VITE_DICTIONARY_VARIANT=full
 - UI 靈感：Monkeytype (https://monkeytype.com/)
 
 ## 更新日誌
+
+### v1.2.7 (2026-03-04) - 查碼選字同步修正封版
+- ✅ 修正 `src/features/lookup/DictionaryLookup.tsx`：查字輸入新增 `onInput` + `onCompositionEnd` 同步，確保 IME 選字後結果以最終字串重算
+- ✅ 修正 `src/features/lookup/DictionaryLookup.tsx`：查字列表 key 改為含 index，避免重複字造成 React 節點錯誤重用
+- ✅ 新增 `src/App.test.tsx` 回歸測試：覆蓋「重複字替換」與「composition end 提交」兩種同步場景
+- ✅ 封版提交：`af3e981`（branch: `pr/01-dict-v2-lookup-abstraction`）
 
 ### v1.2.6 (2026-03-04) - 部署查碼 CRC 修復
 - ✅ 修正 `scripts/dict/build-v2.mts`：寫入 v2 binary payload CRC，避免 `decodeDictionaryBinary` 因 CRC mismatch 失敗後回退 sample 字典
