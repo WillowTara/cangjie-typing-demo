@@ -1,0 +1,32 @@
+{
+  "schema": "cj-pronunciation-meta@1",
+  "dictVersion": "2026.03.0",
+  "artifact": {
+    "file": "pronunciation.2026.03.0.a0b774bd.v1.json",
+    "sha256": "68f013e2c250f48816daa4b41f19b4786d31f6b98705cb95b0d0efba7d2ee016",
+    "bytes": 15647241
+  },
+  "stats": {
+    "entryCount": 41304,
+    "readingCount": 52299,
+    "sourceRowCount": 55343,
+    "filteredRowCount": 52299,
+    "dictionaryCharCount": 70275,
+    "dictionaryCoverageRatio": 0.587748
+  },
+  "sources": [
+    {
+      "id": "unicode-unihan-readings",
+      "name": "Unicode Unihan_Readings",
+      "license": "Unicode License V3",
+      "version": "latest",
+      "sha256": "575e69c9ad85a4737a889a4f94cbd987042a90a1a6cc16dd3f4ed995c715b17c",
+      "url": "https://www.unicode.org/Public/UCD/latest/ucd/Unihan.zip"
+    }
+  ],
+  "build": {
+    "toolVersion": "pronunciation-build/0.2.0",
+    "generatedAt": "2026-03-07T21:57:18.813Z",
+    "gitCommit": "unknown"
+  }
+}

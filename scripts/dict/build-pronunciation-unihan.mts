@@ -28,9 +28,142 @@ type InputRow = {
   source?: string
 }
 
+type UnihanField = 'kMandarin' | 'kHanyuPinyin' | 'kHanyuPinlu'
+
+type ReadingCandidate = {
+  pinyinAscii: string
+  source: UnihanField
+  primary: number
+  secondary: number
+  tertiary: number
+}
+
+const UNIHAN_FIELDS: ReadonlySet<UnihanField> = new Set(['kMandarin', 'kHanyuPinyin', 'kHanyuPinlu'])
+
+const PINYIN_TONE_MARKS = new Map<string, readonly [base: string, tone: string]>([
+  ['ā', ['a', '1']],
+  ['á', ['a', '2']],
+  ['ǎ', ['a', '3']],
+  ['à', ['a', '4']],
+  ['ē', ['e', '1']],
+  ['é', ['e', '2']],
+  ['ě', ['e', '3']],
+  ['è', ['e', '4']],
+  ['ī', ['i', '1']],
+  ['í', ['i', '2']],
+  ['ǐ', ['i', '3']],
+  ['ì', ['i', '4']],
+  ['ō', ['o', '1']],
+  ['ó', ['o', '2']],
+  ['ǒ', ['o', '3']],
+  ['ò', ['o', '4']],
+  ['ū', ['u', '1']],
+  ['ú', ['u', '2']],
+  ['ǔ', ['u', '3']],
+  ['ù', ['u', '4']],
+  ['ǖ', ['v', '1']],
+  ['ǘ', ['v', '2']],
+  ['ǚ', ['v', '3']],
+  ['ǜ', ['v', '4']],
+  ['ü', ['v', '5']],
+  ['ê', ['e', '5']],
+])
+
+const PINYIN_VOWEL_TONE_MARKS: Record<string, readonly [string, string, string, string]> = {
+  a: ['ā', 'á', 'ǎ', 'à'],
+  e: ['ē', 'é', 'ě', 'è'],
+  i: ['ī', 'í', 'ǐ', 'ì'],
+  o: ['ō', 'ó', 'ǒ', 'ò'],
+  u: ['ū', 'ú', 'ǔ', 'ù'],
+  ü: ['ǖ', 'ǘ', 'ǚ', 'ǜ'],
+}
+
+const ZHUYIN_INITIALS: ReadonlyMap<string, string> = new Map([
+  ['b', 'ㄅ'],
+  ['p', 'ㄆ'],
+  ['m', 'ㄇ'],
+  ['f', 'ㄈ'],
+  ['d', 'ㄉ'],
+  ['t', 'ㄊ'],
+  ['n', 'ㄋ'],
+  ['l', 'ㄌ'],
+  ['g', 'ㄍ'],
+  ['k', 'ㄎ'],
+  ['h', 'ㄏ'],
+  ['j', 'ㄐ'],
+  ['q', 'ㄑ'],
+  ['x', 'ㄒ'],
+  ['zh', 'ㄓ'],
+  ['ch', 'ㄔ'],
+  ['sh', 'ㄕ'],
+  ['r', 'ㄖ'],
+  ['z', 'ㄗ'],
+  ['c', 'ㄘ'],
+  ['s', 'ㄙ'],
+  ['y', ''],
+  ['w', ''],
+  ['', ''],
+])
+
+const ZHUYIN_FINALS: ReadonlyMap<string, string> = new Map([
+  ['a', 'ㄚ'],
+  ['o', 'ㄛ'],
+  ['e', 'ㄜ'],
+  ['ai', 'ㄞ'],
+  ['ei', 'ㄟ'],
+  ['ao', 'ㄠ'],
+  ['ou', 'ㄡ'],
+  ['an', 'ㄢ'],
+  ['en', 'ㄣ'],
+  ['ang', 'ㄤ'],
+  ['eng', 'ㄥ'],
+  ['er', 'ㄦ'],
+  ['i', 'ㄧ'],
+  ['ia', 'ㄧㄚ'],
+  ['ie', 'ㄧㄝ'],
+  ['iao', 'ㄧㄠ'],
+  ['iu', 'ㄧㄡ'],
+  ['ian', 'ㄧㄢ'],
+  ['in', 'ㄧㄣ'],
+  ['iang', 'ㄧㄤ'],
+  ['ing', 'ㄧㄥ'],
+  ['iong', 'ㄩㄥ'],
+  ['u', 'ㄨ'],
+  ['ua', 'ㄨㄚ'],
+  ['uo', 'ㄨㄛ'],
+  ['uai', 'ㄨㄞ'],
+  ['ui', 'ㄨㄟ'],
+  ['uan', 'ㄨㄢ'],
+  ['un', 'ㄨㄣ'],
+  ['uang', 'ㄨㄤ'],
+  ['ong', 'ㄨㄥ'],
+  ['ueng', 'ㄨㄥ'],
+  ['v', 'ㄩ'],
+  ['ve', 'ㄩㄝ'],
+  ['van', 'ㄩㄢ'],
+  ['vn', 'ㄩㄣ'],
+  ['', ''],
+])
+
+const TONE_TO_ZHUYIN_MARK: Record<string, string> = {
+  '1': '',
+  '2': 'ˊ',
+  '3': 'ˇ',
+  '4': 'ˋ',
+  '5': '˙',
+}
+
 function getArg(args: string[], name: string, fallback: string): string {
   const index = args.findIndex((value) => value === name)
   return index < 0 ? fallback : (args[index + 1] ?? fallback)
+}
+
+function normalizeOptionalString(value: unknown): string | undefined {
+  if (typeof value !== 'string') {
+    return undefined
+  }
+  const trimmed = value.trim()
+  return trimmed ? trimmed : undefined
 }
 
 function requireString(value: unknown, label: string): string {
@@ -58,6 +191,377 @@ function normalizeSourcesManifest(raw: unknown, fallbackSha256: string): SourceM
     sha256: typeof source.sha256 === 'string' && source.sha256.trim() ? source.sha256.trim() : fallbackSha256,
     ...(typeof source.url === 'string' && source.url.trim() ? { url: source.url.trim() } : {}),
   }))
+}
+
+function parseDictionaryChars(dictionaryText: string): Set<string> {
+  const lines = dictionaryText.split(/\r?\n/u)
+  const chars = new Set<string>()
+  for (const line of lines) {
+    const trimmed = line.trim()
+    if (!trimmed) {
+      continue
+    }
+    const parts = trimmed.split(',')
+    if (parts[0]?.toLowerCase() === 'char') {
+      continue
+    }
+    const char = parts[0]?.trim()
+    if (char && Array.from(char).length === 1) {
+      chars.add(char)
+    }
+  }
+  return chars
+}
+
+function normalizePinyinAscii(raw: string): string | undefined {
+  const lowered = raw
+    .normalize('NFC')
+    .toLowerCase()
+    .replace(/ü/gu, 'v')
+    .replace(/u:/gu, 'v')
+    .replace(/'/gu, '')
+
+  if (!lowered) {
+    return undefined
+  }
+
+  const digits = lowered.match(/[1-5]/gu)
+  let explicitTone = digits ? digits[digits.length - 1] : undefined
+  let toneFromMark: string | undefined
+  let base = ''
+
+  for (const symbol of Array.from(lowered)) {
+    if ((symbol >= 'a' && symbol <= 'z') || symbol === 'v') {
+      base += symbol
+      continue
+    }
+    const marked = PINYIN_TONE_MARKS.get(symbol)
+    if (marked) {
+      const [plain, tone] = marked
+      base += plain
+      toneFromMark = tone
+    }
+  }
+
+  if (!base || !/^[a-zv]+$/u.test(base)) {
+    return undefined
+  }
+
+  if (!explicitTone) {
+    explicitTone = toneFromMark ?? '5'
+  }
+
+  if (!/^[1-5]$/u.test(explicitTone)) {
+    return undefined
+  }
+
+  return `${base}${explicitTone}`
+}
+
+function toPinyinDisplay(pinyinAscii: string): string {
+  const normalized = normalizePinyinAscii(pinyinAscii)
+  if (!normalized) {
+    throw new Error(`Invalid pinyin ascii: ${pinyinAscii}`)
+  }
+
+  const tone = normalized.length > 0 ? normalized[normalized.length - 1] : '5'
+  const syllable = normalized.slice(0, -1).replace(/v/gu, 'ü')
+
+  if (tone === '5') {
+    return syllable
+  }
+
+  const vowels = Array.from(syllable)
+  let targetIndex = vowels.indexOf('a')
+  if (targetIndex < 0) {
+    targetIndex = vowels.indexOf('e')
+  }
+  if (targetIndex < 0) {
+    const ou = syllable.indexOf('ou')
+    if (ou >= 0) {
+      targetIndex = ou
+    }
+  }
+  if (targetIndex < 0) {
+    for (let index = vowels.length - 1; index >= 0; index -= 1) {
+      if (/[aeiouü]/u.test(vowels[index] ?? '')) {
+        targetIndex = index
+        break
+      }
+    }
+  }
+
+  if (targetIndex < 0) {
+    return syllable
+  }
+
+  const targetVowel = vowels[targetIndex] ?? ''
+  const toneRow = PINYIN_VOWEL_TONE_MARKS[targetVowel]
+  if (!toneRow) {
+    return syllable
+  }
+
+  vowels[targetIndex] = toneRow[Number(tone) - 1]
+  return vowels.join('')
+}
+
+function splitInitial(base: string): { initial: string; final: string } {
+  const digraph = base.slice(0, 2)
+  if (digraph === 'zh' || digraph === 'ch' || digraph === 'sh') {
+    return { initial: digraph, final: base.slice(2) }
+  }
+
+  const mono = base.slice(0, 1)
+  if (ZHUYIN_INITIALS.has(mono)) {
+    return { initial: mono, final: base.slice(1) }
+  }
+
+  return { initial: '', final: base }
+}
+
+function normalizeFinal(initial: string, rawFinal: string): string {
+  let final = rawFinal
+
+  if (initial === 'y') {
+    if (!final) {
+      return 'i'
+    }
+    if (final.startsWith('u')) {
+      final = `v${final.slice(1)}`
+    } else if (!final.startsWith('i')) {
+      final = `i${final}`
+    }
+  } else if (initial === 'w') {
+    if (!final) {
+      return 'u'
+    }
+    if (!final.startsWith('u')) {
+      final = `u${final}`
+    }
+  }
+
+  if ((initial === 'j' || initial === 'q' || initial === 'x') && final.startsWith('u')) {
+    final = `v${final.slice(1)}`
+  }
+
+  if (final === 'iou') {
+    final = 'iu'
+  } else if (final === 'uei') {
+    final = 'ui'
+  } else if (final === 'uen') {
+    final = 'un'
+  }
+
+  if ((initial === 'zh' || initial === 'ch' || initial === 'sh' || initial === 'r' || initial === 'z' || initial === 'c' || initial === 's') && final === 'i') {
+    return ''
+  }
+
+  return final
+}
+
+function toZhuyinDisplay(pinyinAscii: string): string | undefined {
+  const normalized = normalizePinyinAscii(pinyinAscii)
+  if (!normalized) {
+    return undefined
+  }
+
+  const tone = normalized.length > 0 ? normalized[normalized.length - 1] : '5'
+  const base = normalized.slice(0, -1)
+  const { initial, final: rawFinal } = splitInitial(base)
+  const final = normalizeFinal(initial, rawFinal)
+  const initialZhuyin = ZHUYIN_INITIALS.get(initial)
+  const finalZhuyin = ZHUYIN_FINALS.get(final)
+
+  if (initialZhuyin === undefined || finalZhuyin === undefined) {
+    return undefined
+  }
+
+  const toneMark = TONE_TO_ZHUYIN_MARK[tone]
+  if (toneMark === undefined) {
+    return undefined
+  }
+
+  return `${initialZhuyin}${finalZhuyin}${toneMark}`.normalize('NFC')
+}
+
+function compareReadingCandidates(left: ReadingCandidate, right: ReadingCandidate): number {
+  return (
+    left.primary - right.primary ||
+    left.secondary - right.secondary ||
+    left.tertiary - right.tertiary ||
+    left.pinyinAscii.localeCompare(right.pinyinAscii, 'en')
+  )
+}
+
+function parseUnihanChar(codepointToken: string): string | undefined {
+  const match = /^U\+([0-9A-F]{4,6})$/iu.exec(codepointToken)
+  if (!match) {
+    return undefined
+  }
+
+  const codepoint = Number.parseInt(match[1], 16)
+  if (!Number.isFinite(codepoint)) {
+    return undefined
+  }
+
+  const char = String.fromCodePoint(codepoint)
+  return Array.from(char).length === 1 ? char : undefined
+}
+
+function collectReadingTokens(field: UnihanField, value: string): Array<{ reading: string; frequency: number; index: number }> {
+  const out: Array<{ reading: string; frequency: number; index: number }> = []
+
+  if (field === 'kMandarin') {
+    const tokens = value.split(/\s+/u).filter((token) => token.length > 0)
+    for (let index = 0; index < tokens.length; index += 1) {
+      out.push({ reading: tokens[index], frequency: 0, index })
+    }
+    return out
+  }
+
+  if (field === 'kHanyuPinyin') {
+    const clusters = value.split(/\s+/u).filter((token) => token.length > 0)
+    let globalIndex = 0
+    for (const cluster of clusters) {
+      const readingsPart = cluster.includes(':') ? cluster.split(':')[1] ?? '' : cluster
+      const tokens = readingsPart
+        .split(',')
+        .map((token) => token.trim())
+        .filter((token) => token.length > 0)
+      for (const token of tokens) {
+        out.push({ reading: token, frequency: 0, index: globalIndex })
+        globalIndex += 1
+      }
+    }
+    return out
+  }
+
+  const pinluTokens = value
+    .split(',')
+    .map((token) => token.trim())
+    .filter((token) => token.length > 0)
+
+  for (let index = 0; index < pinluTokens.length; index += 1) {
+    const match = /^([a-zA-Zü:]+[1-5]?)(?:\((\d+)\))?$/u.exec(pinluTokens[index])
+    if (!match) {
+      continue
+    }
+    out.push({ reading: match[1], frequency: Number.parseInt(match[2] ?? '0', 10) || 0, index })
+  }
+
+  return out
+}
+
+function parseUnihanRows(inputText: string): InputRow[] {
+  const byChar = new Map<string, Map<string, ReadingCandidate>>()
+  const lines = inputText.split(/\r?\n/u)
+
+  for (let lineIndex = 0; lineIndex < lines.length; lineIndex += 1) {
+    const line = lines[lineIndex]?.trim()
+    if (!line || line.startsWith('#')) {
+      continue
+    }
+
+    const parts = line.split('\t')
+    if (parts.length < 3) {
+      continue
+    }
+
+    const char = parseUnihanChar(parts[0])
+    if (!char) {
+      continue
+    }
+
+    const field = parts[1] as UnihanField
+    if (!UNIHAN_FIELDS.has(field)) {
+      continue
+    }
+
+    const value = parts[2]?.trim() ?? ''
+    if (!value) {
+      continue
+    }
+
+    const readings = collectReadingTokens(field, value)
+    if (readings.length === 0) {
+      continue
+    }
+
+    const charMap = byChar.get(char) ?? new Map<string, ReadingCandidate>()
+
+    for (const reading of readings) {
+      const pinyinAscii = normalizePinyinAscii(reading.reading)
+      if (!pinyinAscii) {
+        continue
+      }
+
+      const candidate: ReadingCandidate = {
+        pinyinAscii,
+        source: field,
+        primary: field === 'kMandarin' ? 0 : field === 'kHanyuPinlu' ? 1 : 2,
+        secondary: field === 'kHanyuPinlu' ? -reading.frequency : reading.index,
+        tertiary: lineIndex * 1024 + reading.index,
+      }
+
+      const existing = charMap.get(pinyinAscii)
+      if (!existing || compareReadingCandidates(candidate, existing) < 0) {
+        charMap.set(pinyinAscii, candidate)
+      }
+    }
+
+    if (charMap.size > 0) {
+      byChar.set(char, charMap)
+    }
+  }
+
+  const rows: InputRow[] = []
+  const chars = Array.from(byChar.keys()).sort((left, right) => left.localeCompare(right, 'zh-Hant'))
+
+  for (const char of chars) {
+    const candidates = Array.from(byChar.get(char)?.values() ?? []).sort(compareReadingCandidates)
+    for (const candidate of candidates) {
+      const zhuyinDisplay = toZhuyinDisplay(candidate.pinyinAscii)
+      if (!zhuyinDisplay) {
+        continue
+      }
+
+      rows.push({
+        char,
+        pinyinDisplay: toPinyinDisplay(candidate.pinyinAscii),
+        pinyinAscii: candidate.pinyinAscii,
+        zhuyinDisplay,
+        source: `unihan:${candidate.source}`,
+      })
+    }
+  }
+
+  return rows
+}
+
+function parseJsonRows(inputText: string): InputRow[] {
+  const rows = JSON.parse(inputText) as InputRow[]
+  if (!Array.isArray(rows)) {
+    throw new Error('Pronunciation input must be a JSON array')
+  }
+  return rows
+}
+
+function parseInputRows(inputText: string, inputPath: string): InputRow[] {
+  const lower = inputPath.toLowerCase()
+  if (lower.endsWith('.txt') || lower.endsWith('.tsv')) {
+    return parseUnihanRows(inputText)
+  }
+  if (lower.endsWith('.json')) {
+    return parseJsonRows(inputText)
+  }
+  throw new Error(`Unsupported pronunciation input format: ${inputPath}`)
+}
+
+function filterRowsByDictionary(rows: InputRow[], dictionaryChars: Set<string> | undefined): InputRow[] {
+  if (!dictionaryChars || dictionaryChars.size === 0) {
+    return rows
+  }
+  return rows.filter((row) => dictionaryChars.has(row.char))
 }
 
 function buildEntries(rows: InputRow[]) {
@@ -118,16 +622,20 @@ async function main(): Promise<void> {
   const input = getArg(args, '--input', 'public/dict/pronunciation-sample-unihan.json')
   const dictVersion = getArg(args, '--version', '2026.03.0')
   const outputDir = getArg(args, '--out-dir', 'public/dict')
+  const dictionaryPath = normalizeOptionalString(getArg(args, '--dictionary', 'public/dict/full-dictionary.csv'))
   const defaultSources = input.replace(/\.[^./\\]+$/u, '.sources.json')
   const sourcesPath = getArg(args, '--sources', defaultSources)
 
   const sourceText = await readFile(input, 'utf8')
   const sourceSha256 = createHash('sha256').update(sourceText).digest('hex')
-  const rows = JSON.parse(sourceText) as InputRow[]
-  if (!Array.isArray(rows)) {
-    throw new Error('Pronunciation input must be a JSON array')
+  const sourceRows = parseInputRows(sourceText, input)
+
+  let dictionaryChars: Set<string> | undefined
+  if (dictionaryPath) {
+    dictionaryChars = parseDictionaryChars(await readFile(dictionaryPath, 'utf8'))
   }
 
+  const rows = filterRowsByDictionary(sourceRows, dictionaryChars)
   const sources = normalizeSourcesManifest(JSON.parse(await readFile(sourcesPath, 'utf8')) as unknown, sourceSha256)
   const entries = buildEntries(rows)
   const preliminaryPayload = {
@@ -139,14 +647,18 @@ async function main(): Promise<void> {
   const preliminaryText = `${JSON.stringify(preliminaryPayload, null, 2)}\n`
   const shortHash = createHash('sha256').update(preliminaryText).digest('hex').slice(0, 8)
   const artifactFile = `pronunciation.${dictVersion}.${shortHash}.v1.json`
-  const artifactText = `${JSON.stringify({
-    ...preliminaryPayload,
-    artifact: {
-      file: artifactFile,
-      sha256: createHash('sha256').update(preliminaryText).digest('hex'),
-      bytes: Buffer.byteLength(preliminaryText),
+  const artifactText = `${JSON.stringify(
+    {
+      ...preliminaryPayload,
+      artifact: {
+        file: artifactFile,
+        sha256: createHash('sha256').update(preliminaryText).digest('hex'),
+        bytes: Buffer.byteLength(preliminaryText),
+      },
     },
-  }, null, 2)}\n`
+    null,
+    2,
+  )}\n`
   const artifactSha256 = createHash('sha256').update(artifactText).digest('hex')
   const artifactBytes = Buffer.byteLength(artifactText)
   const metaFile = `pronunciation.${dictVersion}.${shortHash}.meta.json`
@@ -155,28 +667,39 @@ async function main(): Promise<void> {
   await mkdir(outputDir, { recursive: true })
   await writeFile(join(outputDir, artifactFile), artifactText, 'utf8')
   await writeFile(join(outputDir, 'pronunciation.latest.v1.json'), artifactText, 'utf8')
-  await writeFile(join(outputDir, metaFile), `${JSON.stringify({
-    schema: 'cj-pronunciation-meta@1',
-    dictVersion,
-    artifact: { file: artifactFile, sha256: artifactSha256, bytes: artifactBytes },
-    stats: {
-      entryCount: Object.keys(entries).length,
-      readingCount: Object.values(entries).reduce((sum, entry) => sum + entry.mandarinReadings.length, 0),
-    },
-    sources,
-    build: {
-      toolVersion: 'pronunciation-build/0.1.0',
-      generatedAt: new Date().toISOString(),
-      gitCommit: process.env.GIT_COMMIT ?? 'unknown',
-    },
-  }, null, 2)}\n`, 'utf8')
   await writeFile(
-    join(outputDir, licensesFile),
-    `${JSON.stringify({ schema: 'cj-pronunciation-licenses@1', sources }, null, 2)}\n`,
+    join(outputDir, metaFile),
+    `${JSON.stringify(
+      {
+        schema: 'cj-pronunciation-meta@1',
+        dictVersion,
+        artifact: { file: artifactFile, sha256: artifactSha256, bytes: artifactBytes },
+        stats: {
+          entryCount: Object.keys(entries).length,
+          readingCount: Object.values(entries).reduce((sum, entry) => sum + entry.mandarinReadings.length, 0),
+          sourceRowCount: sourceRows.length,
+          filteredRowCount: rows.length,
+          dictionaryCharCount: dictionaryChars?.size ?? null,
+          dictionaryCoverageRatio:
+            dictionaryChars && dictionaryChars.size > 0 ? Number((Object.keys(entries).length / dictionaryChars.size).toFixed(6)) : null,
+        },
+        sources,
+        build: {
+          toolVersion: 'pronunciation-build/0.2.0',
+          generatedAt: new Date().toISOString(),
+          gitCommit: process.env.GIT_COMMIT ?? 'unknown',
+        },
+      },
+      null,
+      2,
+    )}\n`,
     'utf8',
   )
+  await writeFile(join(outputDir, licensesFile), `${JSON.stringify({ schema: 'cj-pronunciation-licenses@1', sources }, null, 2)}\n`, 'utf8')
 
-  process.stdout.write(`built ${artifactFile} (${Object.keys(entries).length} chars)\n`)
+  process.stdout.write(
+    `built ${artifactFile} (${Object.keys(entries).length} chars, ${rows.length} filtered rows from ${sourceRows.length} source rows)\n`,
+  )
 }
 
 void main()

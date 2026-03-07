@@ -1,0 +1,13 @@
+{
+  "schema": "cj-pronunciation-licenses@1",
+  "sources": [
+    {
+      "id": "unicode-unihan-readings",
+      "name": "Unicode Unihan_Readings",
+      "license": "Unicode License V3",
+      "version": "latest",
+      "sha256": "575e69c9ad85a4737a889a4f94cbd987042a90a1a6cc16dd3f4ed995c715b17c",
+      "url": "https://www.unicode.org/Public/UCD/latest/ucd/Unihan.zip"
+    }
+  ]
+}
