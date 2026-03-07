@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import './App.css'
-import { useDictionary } from './features/dictionary'
+import { useDictionary, usePronunciationDictionary } from './features/dictionary'
 import { DictionaryLookup } from './features/lookup'
 import { ResultScreen, TypingView, usePracticeSource, useTypingSession } from './features/typing'
 
@@ -65,6 +65,19 @@ function App() {
   }, [currentPracticeText, practiceSource.material.text, replacePracticeText])
 
   const { lookup, isLoading: dictLoading, loadError } = useDictionary()
+  const pronunciation = usePronunciationDictionary({ enabled: viewMode === 'lookup' })
+  const mergedLookup = useCallback(
+    (char: string) => {
+      const entry = lookup(char)
+      if (!entry) {
+        return undefined
+      }
+
+      const mandarinReadings = pronunciation.lookupPronunciation(char)
+      return mandarinReadings ? { ...entry, mandarinReadings } : entry
+    },
+    [lookup, pronunciation],
+  )
 
   const handleRestart = () => {
     typing.restart()
@@ -110,7 +123,12 @@ function App() {
         ) : null}
 
         {viewMode === 'lookup' ? (
-          <DictionaryLookup lookup={lookup} isLoading={dictLoading} loadError={loadError} />
+          <DictionaryLookup
+            lookup={mergedLookup}
+            isLoading={dictLoading}
+            loadError={loadError}
+            pronunciationLoadError={pronunciation.loadError}
+          />
         ) : null}
 
         {viewMode === 'result' ? (

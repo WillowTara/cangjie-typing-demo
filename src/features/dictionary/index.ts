@@ -1,3 +1,6 @@
 export { FALLBACK_DICTIONARY, FALLBACK_INDEX } from './fallbackDictionary'
 export type { DictionaryState } from './useDictionary'
+export type { PronunciationDictionaryState } from './usePronunciationDictionary'
 export { useDictionary } from './useDictionary'
+export { usePronunciationDictionary } from './usePronunciationDictionary'
+export { resetPronunciationDictionaryCacheForTests } from './usePronunciationDictionary'
