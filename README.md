@@ -1,6 +1,6 @@
 # 倉頡打字練習 - Cangjie Typing Practice Demo
 
-![Version](https://img.shields.io/badge/version-1.2.13-blue)
+![Version](https://img.shields.io/badge/version-2.0.0-blue)
 ![React](https://img.shields.io/badge/React-19.2+-61DAFB)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9+-3178C6)
 ![Vite](https://img.shields.io/badge/Vite-7.3+-646CFF)
@@ -292,6 +292,13 @@ VITE_DICTIONARY_VARIANT=full
 - UI 靈感：Monkeytype (https://monkeytype.com/)
 
 ## 更新日誌
+
+### v2.0.0 (2026-03-08) - Pronunciation full coverage milestone
+- ✅ Pronunciation data expanded from 3 characters to 41,304 characters (58.77% dictionary coverage)
+- ✅ Full Unihan Readings ingestion: kMandarin, kHanyuPinyin, kHanyuPinlu fields
+- ✅ Build script upgraded: `scripts/dict/build-pronunciation-unihan.mts` with deterministic normalization
+- ✅ New artifacts: `pronunciation.2026.03.0.a0b774bd.*` (15.6MB)
+- ✅ Version-locked release: package.json + README updated to 2.0.0
 
 ### v1.2.13 (2026-03-08) - Pronunciation coverage expansion
 - ✅ `scripts/dict/build-pronunciation-unihan.mts` 擴充為可直接 ingestion `Unihan_Readings.txt`（`kMandarin` / `kHanyuPinyin` / `kHanyuPinlu`），並在 build 期產生 `pinyinDisplay`、`zhuyinDisplay`、`zhuyinKeySequence`
