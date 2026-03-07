@@ -2,15 +2,18 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { act, fireEvent, render, renderHook, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import App from './App'
+import { resetPronunciationDictionaryCacheForTests } from './features/dictionary'
 import { OFFLINE_WHITELIST_PRACTICE_MATERIALS } from './features/typing'
 import { normalizeChineseText } from './features/typing/utils'
 import { useTypingSession } from './features/typing/useTypingSession'
 import { encodeDictionaryBinary } from './lib/dictionaryBinary'
 import type { DictionaryEntry } from './lib/dictionary'
+import { PRONUNCIATION_SCHEMA } from './lib/pronunciation'
 
 const MOCK_ENTRIES: DictionaryEntry[] = [
   { char: '日', cangjie: 'A', quick: 'A' },
   { char: '月', cangjie: 'B', quick: 'B' },
+  { char: '中', cangjie: 'L', quick: 'L' },
 ]
 
 const MOCK_DICTIONARY_JSON = JSON.stringify(MOCK_ENTRIES)
@@ -35,6 +38,53 @@ const MOCK_CORE_BINARY_ARRAY_BUFFER = (() => {
   new Uint8Array(out).set(MOCK_CORE_BINARY_BODY)
   return out
 })()
+const MOCK_PRONUNCIATION_PAYLOAD = {
+  schema: PRONUNCIATION_SCHEMA,
+  dictVersion: '2026.03.0',
+  artifact: {
+    file: 'pronunciation.2026.03.0.test.v1.json',
+    sha256: 'test-pronunciation-sha',
+    bytes: 321,
+  },
+  entries: {
+    日: {
+      mandarinReadings: [
+        {
+          id: 'sun-ri4',
+          pinyinDisplay: 'rì',
+          pinyinAscii: 'ri4',
+          zhuyinDisplay: 'ㄖˋ',
+          zhuyinKeySequence: 'b4',
+          source: 'unihan',
+          rank: 0,
+        },
+      ],
+    },
+    中: {
+      mandarinReadings: [
+        {
+          id: 'middle-zhong1',
+          pinyinDisplay: 'zhōng',
+          pinyinAscii: 'zhong1',
+          zhuyinDisplay: 'ㄓㄨㄥ',
+          zhuyinKeySequence: '5j/',
+          source: 'unihan',
+          rank: 0,
+        },
+        {
+          id: 'hit-zhong4',
+          pinyinDisplay: 'zhòng',
+          pinyinAscii: 'zhong4',
+          zhuyinDisplay: 'ㄓㄨㄥˋ',
+          zhuyinKeySequence: '5j/4',
+          source: 'unihan',
+          rank: 1,
+        },
+      ],
+    },
+  },
+}
+let pronunciationFetchMode: 'success' | 'http-error' = 'success'
 
 function readPracticeLengthFromPreview(): number {
   const previewText = screen.getByText(/^練習文本：全文約/).textContent ?? ''
@@ -43,8 +93,21 @@ function readPracticeLengthFromPreview(): number {
 }
 
 beforeEach(() => {
+  pronunciationFetchMode = 'success'
+  resetPronunciationDictionaryCacheForTests()
   vi.spyOn(globalThis, 'fetch').mockImplementation(async (input: RequestInfo | URL) => {
     const requestUrl = typeof input === 'string' ? input : input.toString()
+
+    if (requestUrl.includes('pronunciation.latest.v1.json')) {
+      if (pronunciationFetchMode === 'http-error') {
+        return new Response('missing pronunciation', { status: 404, statusText: 'Not Found' })
+      }
+
+      return new Response(JSON.stringify(MOCK_PRONUNCIATION_PAYLOAD), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      })
+    }
 
     if (requestUrl.toLowerCase().endsWith('.bin')) {
       return new Response(MOCK_CORE_BINARY_ARRAY_BUFFER, {
@@ -155,6 +218,133 @@ describe('App', () => {
     expect(screen.getAllByText('速成').length).toBeGreaterThan(0)
     expect(screen.getAllByText('A').length).toBeGreaterThan(0)
     expect(screen.getAllByText('B').length).toBeGreaterThan(0)
+  })
+
+  it('renders visible pronunciation rows by default when pronunciation data is available', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    await user.click(screen.getByRole('button', { name: '查碼' }))
+    const input = screen.getByPlaceholderText('輸入中文字查詢倉頡/速成碼...')
+
+    await waitFor(() => {
+      expect(input).not.toBeDisabled()
+    })
+
+    await user.type(input, '中日')
+
+    expect(screen.getByRole('button', { name: '倉頡' })).toHaveAttribute('aria-pressed', 'true')
+    expect(screen.getByRole('button', { name: '速成' })).toHaveAttribute('aria-pressed', 'true')
+    expect(screen.getByRole('button', { name: '拼音' })).toHaveAttribute('aria-pressed', 'true')
+    expect(screen.getByRole('button', { name: '注音' })).toHaveAttribute('aria-pressed', 'true')
+    expect(screen.getByText('zhōng')).toBeInTheDocument()
+    expect(screen.getByText('zhòng')).toBeInTheDocument()
+    expect(screen.getByText('rì')).toBeInTheDocument()
+    expect(screen.getByText('ㄓㄨㄥ')).toBeInTheDocument()
+    expect(screen.getByText('ㄓㄨㄥˋ')).toBeInTheDocument()
+    expect(screen.getByText('5 j /')).toBeInTheDocument()
+    expect(screen.getByText('5 j / 4')).toBeInTheDocument()
+    expect(screen.getByText('b 4')).toBeInTheDocument()
+  })
+
+  it('toggles visible lookup systems without breaking existing code rows', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    await user.click(screen.getByRole('button', { name: '查碼' }))
+    const input = screen.getByPlaceholderText('輸入中文字查詢倉頡/速成碼...')
+
+    await waitFor(() => {
+      expect(input).not.toBeDisabled()
+    })
+
+    await user.type(input, '中')
+
+    const pinyinToggle = screen.getByRole('button', { name: '拼音' })
+    const zhuyinToggle = screen.getByRole('button', { name: '注音' })
+    const cangjieToggle = screen.getByRole('button', { name: '倉頡' })
+    const quickToggle = screen.getByRole('button', { name: '速成' })
+
+    await user.click(pinyinToggle)
+    expect(pinyinToggle).toHaveAttribute('aria-pressed', 'false')
+    expect(screen.queryByText('zhōng')).not.toBeInTheDocument()
+    expect(screen.getByText('ㄓㄨㄥ')).toBeInTheDocument()
+    expect(screen.getAllByText('L').length).toBeGreaterThan(0)
+
+    await user.click(zhuyinToggle)
+    expect(zhuyinToggle).toHaveAttribute('aria-pressed', 'false')
+    expect(screen.queryByText('ㄓㄨㄥ')).not.toBeInTheDocument()
+    expect(screen.getAllByText('L').length).toBeGreaterThan(0)
+
+    await user.click(cangjieToggle)
+    await user.click(quickToggle)
+    expect(screen.getByText('請至少選擇一種顯示系統。')).toBeInTheDocument()
+    expect(screen.queryByText('zhōng')).not.toBeInTheDocument()
+    expect(screen.queryByText('ㄓㄨㄥ')).not.toBeInTheDocument()
+  })
+
+  it('shows a per-row empty state when only pronunciation systems are active but no reading data exists', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    await user.click(screen.getByRole('button', { name: '查碼' }))
+    const input = screen.getByPlaceholderText('輸入中文字查詢倉頡/速成碼...')
+
+    await waitFor(() => {
+      expect(input).not.toBeDisabled()
+    })
+
+    await user.click(screen.getByRole('button', { name: '倉頡' }))
+    await user.click(screen.getByRole('button', { name: '速成' }))
+    await user.type(input, '木')
+
+    expect(screen.getByText('所選系統暫無資料')).toBeInTheDocument()
+  })
+
+  it('loads pronunciation data only after entering lookup mode', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    await waitFor(() => {
+      expect(globalThis.fetch).toHaveBeenCalledWith('/dict/full.latest.v2.bin')
+    })
+    expect(
+      vi.mocked(globalThis.fetch).mock.calls.some(([input]) =>
+        (typeof input === 'string' ? input : input.toString()).includes('pronunciation.latest.v1.json'),
+      ),
+    ).toBe(false)
+
+    await user.click(screen.getByRole('button', { name: '查碼' }))
+
+    await waitFor(() => {
+      expect(
+        vi.mocked(globalThis.fetch).mock.calls.some(([input]) =>
+          (typeof input === 'string' ? input : input.toString()).includes('pronunciation.latest.v1.json'),
+        ),
+      ).toBe(true)
+    })
+  })
+
+  it('keeps lookup usable when pronunciation loading fails', async () => {
+    pronunciationFetchMode = 'http-error'
+    const user = userEvent.setup()
+    render(<App />)
+
+    await user.click(screen.getByRole('button', { name: '查碼' }))
+    const input = screen.getByPlaceholderText('輸入中文字查詢倉頡/速成碼...')
+
+    await waitFor(() => {
+      expect(input).not.toBeDisabled()
+    })
+
+    await user.type(input, '日')
+
+    expect(screen.getByText('讀音資料暫時不可用，查碼功能仍可正常使用。')).toBeInTheDocument()
+    expect(screen.getAllByText('倉頡').length).toBeGreaterThan(0)
+    expect(screen.getAllByText('速成').length).toBeGreaterThan(0)
+    expect(screen.getAllByText('A').length).toBeGreaterThan(0)
+    expect(screen.queryByText('rì')).not.toBeInTheDocument()
+    expect(screen.queryByText('ㄖˋ')).not.toBeInTheDocument()
   })
 
   it('shows fallback marker for unknown characters', async () => {
