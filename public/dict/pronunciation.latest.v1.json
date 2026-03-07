@@ -1,0 +1,59 @@
+{
+  "schema": "cj-pronunciation@1",
+  "dictVersion": "2026.03.0",
+  "artifact": {
+    "file": "pronunciation.2026.03.0.ec9a1af4.v1.json",
+    "sha256": "ec9a1af4d7a960306dd61b564006153cd4881345bf4d61bb534d1b67c50909a2",
+    "bytes": 1318
+  },
+  "entries": {
+    "中": {
+      "mandarinReadings": [
+        {
+          "id": "中-zhong1",
+          "pinyinDisplay": "zhōng",
+          "pinyinAscii": "zhong1",
+          "zhuyinDisplay": "ㄓㄨㄥ",
+          "zhuyinKeySequence": "5j/",
+          "source": "unihan",
+          "rank": 0
+        },
+        {
+          "id": "中-zhong4",
+          "pinyinDisplay": "zhòng",
+          "pinyinAscii": "zhong4",
+          "zhuyinDisplay": "ㄓㄨㄥˋ",
+          "zhuyinKeySequence": "5j/4",
+          "source": "unihan",
+          "rank": 1
+        }
+      ]
+    },
+    "好": {
+      "mandarinReadings": [
+        {
+          "id": "好-hao3",
+          "pinyinDisplay": "hǎo",
+          "pinyinAscii": "hao3",
+          "zhuyinDisplay": "ㄏㄠˇ",
+          "zhuyinKeySequence": "cl3",
+          "source": "unihan",
+          "rank": 0
+        }
+      ]
+    },
+    "國": {
+      "mandarinReadings": [
+        {
+          "id": "國-guo2",
+          "pinyinDisplay": "guó",
+          "pinyinAscii": "guo2",
+          "zhuyinDisplay": "ㄍㄨㄛˊ",
+          "zhuyinKeySequence": "eji6",
+          "source": "unihan",
+          "rank": 0
+        }
+      ]
+    }
+  }
+}

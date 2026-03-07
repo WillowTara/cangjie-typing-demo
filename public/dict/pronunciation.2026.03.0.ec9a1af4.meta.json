@@ -1,0 +1,28 @@
+{
+  "schema": "cj-pronunciation-meta@1",
+  "dictVersion": "2026.03.0",
+  "artifact": {
+    "file": "pronunciation.2026.03.0.ec9a1af4.v1.json",
+    "sha256": "ba76fde3ca05bf251e998df74af0aa7bb30f2986224771c5d5ae4c5c9ede7f86",
+    "bytes": 1425
+  },
+  "stats": {
+    "entryCount": 3,
+    "readingCount": 4
+  },
+  "sources": [
+    {
+      "id": "unicode-unihan-sample",
+      "name": "Unicode Unihan sample extract",
+      "license": "Unicode License V3",
+      "version": "2026.03.0",
+      "sha256": "6561c767c19c2065acc26c661411a329f0b0426b73f08cba22e54e1f55f5338b",
+      "url": "https://www.unicode.org/reports/tr38/"
+    }
+  ],
+  "build": {
+    "toolVersion": "pronunciation-build/0.1.0",
+    "generatedAt": "2026-03-07T20:45:14.314Z",
+    "gitCommit": "unknown"
+  }
+}
