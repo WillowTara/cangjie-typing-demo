@@ -26,6 +26,7 @@
     "test:all": "npm run test:node && npm run test:dom",
     "check": "npm run typecheck && npm run lint && npm run test:all && npm run test:coverage",
     "dict:build:v2": "node scripts/dict/build-v2.mts",
+    "dict:pronunciation:build": "node scripts/dict/build-pronunciation-unihan.mts",
     "dict:verify:core": "node scripts/dict/verify-core-artifacts.mts",
     "dict:verify:full": "node scripts/dict/verify-core-artifacts.mts --variant full --input public/dict/full-dictionary.csv",
     "dict:export:sqlite": "node scripts/dict/export-sqlite.mts",
