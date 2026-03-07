@@ -8,7 +8,7 @@ export default defineConfig({
     environment: 'node',
     globals: true,
     setupFiles: ['./src/test/setup-node.ts'],
-    include: ['src/lib/**/*.test.ts'],
+    include: ['src/lib/**/*.test.ts', 'src/features/lookup/**/*.test.ts'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
