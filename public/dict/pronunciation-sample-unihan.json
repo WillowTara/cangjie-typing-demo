@@ -1,0 +1,6 @@
+[
+  { "char": "中", "pinyinDisplay": "zhōng", "pinyinAscii": "zhong1", "zhuyinDisplay": "ㄓㄨㄥ", "source": "unihan" },
+  { "char": "中", "pinyinDisplay": "zhòng", "pinyinAscii": "zhong4", "zhuyinDisplay": "ㄓㄨㄥˋ", "source": "unihan" },
+  { "char": "國", "pinyinDisplay": "guó", "pinyinAscii": "guo2", "zhuyinDisplay": "ㄍㄨㄛˊ", "source": "unihan" },
+  { "char": "好", "pinyinDisplay": "hǎo", "pinyinAscii": "hao3", "zhuyinDisplay": "ㄏㄠˇ", "source": "unihan" }
+]
