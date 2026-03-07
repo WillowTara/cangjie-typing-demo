@@ -33,7 +33,7 @@ Monkeytype 風格的倉頡與速成輸入法練習應用，同時提供字典查
 - **Vercel**: https://cangjie-typing-demo.vercel.app
 - **GitHub**: https://github.com/WillowTara/cangjie-typing-demo
 - **最新測試連結（Production，快取破除）**: https://cangjie-typing-demo.vercel.app/?v=verify-20260308-coverage-full
-- **最新封版基準 commit**: 95839a8
+- **最新封版基準 commit**: 5429ef1
 
 ## 技術架構
 
