@@ -1,6 +1,6 @@
 # 倉頡打字練習 - Cangjie Typing Practice Demo
 
-![Version](https://img.shields.io/badge/version-1.2.12-blue)
+![Version](https://img.shields.io/badge/version-1.2.13-blue)
 ![React](https://img.shields.io/badge/React-19.2+-61DAFB)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9+-3178C6)
 ![Vite](https://img.shields.io/badge/Vite-7.3+-646CFF)
@@ -32,8 +32,8 @@ Monkeytype 風格的倉頡與速成輸入法練習應用，同時提供字典查
 
 - **Vercel**: https://cangjie-typing-demo.vercel.app
 - **GitHub**: https://github.com/WillowTara/cangjie-typing-demo
-- **最新測試連結（Production，快取破除）**: https://cangjie-typing-demo.vercel.app/?v=verify-20260305-0010
-- **最新封版基準 commit**: 799c3ac
+- **最新測試連結（Production，快取破除）**: https://cangjie-typing-demo.vercel.app/?v=verify-20260308-coverage-full
+- **最新封版基準 commit**: 95839a8
 
 ## 技術架構
 
@@ -225,7 +225,7 @@ npm run dict:export:sqlite -- --input public/dict/sample-dictionary.json --outpu
 4. 部署完成後取得網址
 
 ### 部署後快速驗證（建議）
-1. 開啟 Production smoke test：`https://cangjie-typing-demo.vercel.app/?v=verify-20260305-0010`
+1. 開啟 Production smoke test：`https://cangjie-typing-demo.vercel.app/?v=verify-20260308-coverage-full`
 2. 進入打字模式確認：素材來源可切換（離線白名單 / 線上維基隨機），且文章展示最多三行、輸入框保持可見
 3. 確認字典 binary 可直接存取：
    - `https://cangjie-typing-demo.vercel.app/dict/core.latest.v2.bin`
@@ -292,6 +292,12 @@ VITE_DICTIONARY_VARIANT=full
 - UI 靈感：Monkeytype (https://monkeytype.com/)
 
 ## 更新日誌
+
+### v1.2.13 (2026-03-08) - Pronunciation coverage expansion
+- ✅ `scripts/dict/build-pronunciation-unihan.mts` 擴充為可直接 ingestion `Unihan_Readings.txt`（`kMandarin` / `kHanyuPinyin` / `kHanyuPinlu`），並在 build 期產生 `pinyinDisplay`、`zhuyinDisplay`、`zhuyinKeySequence`
+- ✅ 新增 full-source manifest：`public/dict/pronunciation-unihan-full.sources.json`（Unicode License V3）
+- ✅ pronunciation artifact 由 starter 規模升級為完整覆蓋版：`public/dict/pronunciation.2026.03.0.a0b774bd.*`，`entryCount` 由 `3` 提升至 `41304`、`readingCount` 由 `4` 提升至 `52299`
+- ✅ 驗證通過：`npm run check`、`npm run build`、`npm run test:e2e -- e2e/lookup-query.spec.ts`
 
 ### v1.2.12 (2026-03-05) - 離線白名單繁體重收錄與封版
 - ✅ 修正查碼 IME 選字同步：`compositionend` 後補一次 settled sync，避免最終選字晚到造成查字結果未更新（`src/features/lookup/DictionaryLookup.tsx`，`src/App.test.tsx`，commit `a5a15be`）

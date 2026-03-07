@@ -105,3 +105,37 @@ All commands passed on branch `pr/01-dict-v2-lookup-abstraction`.
 - Runtime default variant remains `core`; full rollout is config-gated by `VITE_DICTIONARY_VARIANT=full`.
 - Build now requires `*.sources.json` metadata (id/name/license/version/sha256) and rejects `UNSPECIFIED` licenses.
 - Release candidate gate requires both `npm run dict:verify:core` and `npm run dict:verify:full`.
+
+## Post-release continuation (Pronunciation Coverage Expansion)
+
+### Scope
+
+- Expand `scripts/dict/build-pronunciation-unihan.mts` from starter JSON-only ingestion to full Unihan `Unihan_Readings.txt` ingestion.
+- Add deterministic normalization pipeline for `kMandarin` / `kHanyuPinyin` / `kHanyuPinlu` and generate zhuyin + keyboard hints during build.
+- Filter pronunciation rows by `public/dict/full-dictionary.csv` to keep shipped artifact aligned with lookup dictionary scope.
+- Regenerate pronunciation artifact and update `pronunciation.latest.v1.json` from starter (3 chars) to full coverage.
+
+### Verification Snapshot
+
+```bash
+npm run dict:pronunciation:build -- --input C:\Users\User\AppData\Local\Temp\Unihan_Readings.txt --sources public/dict/pronunciation-unihan-full.sources.json --version 2026.03.0
+npm run check
+npm run build
+npm run test:e2e -- e2e/lookup-query.spec.ts
+```
+
+All commands passed.
+
+### Artifacts (pronunciation)
+
+- `public/dict/pronunciation.2026.03.0.a0b774bd.v1.json`
+- `public/dict/pronunciation.2026.03.0.a0b774bd.meta.json`
+- `public/dict/pronunciation.2026.03.0.a0b774bd.licenses.json`
+- `public/dict/pronunciation.latest.v1.json`
+
+### Coverage Snapshot
+
+- Previous starter artifact: `entryCount: 3`, `readingCount: 4`
+- Expanded artifact: `entryCount: 41304`, `readingCount: 52299`
+- Filter scope: `dictionaryCharCount: 70275`
+- Coverage ratio: `0.587748`

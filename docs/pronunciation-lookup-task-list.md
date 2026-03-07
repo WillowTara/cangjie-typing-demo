@@ -1,6 +1,6 @@
 # Pronunciation Lookup 開發任務清單
 
-Status: Phase 1-3 Complete (PR1-PR5 Done)
+Status: Phase 1-3 Complete + Coverage Expansion Complete
 Owner: Lookup Platform
 Last Updated: 2026-03-08
 Related Spec: `docs/pronunciation-lookup-spec.md`
@@ -67,7 +67,7 @@ Related Spec: `docs/pronunciation-lookup-spec.md`
 
 ### T8. Docs and release prep
 - [x] 更新相關 docs（至少 spec / checklist / task list）
-- [ ] 在 release notes 中記錄 pronunciation artifact 與 visible UI rollout
+- [x] 在 release notes 中記錄 pronunciation artifact 與 visible UI rollout
 - [x] 記錄 provenance / license notice 落點
 
 ## 2. Phase 2 - Visible Pronunciation Filter + Pinyin UI
