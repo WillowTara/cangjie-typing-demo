@@ -1,3 +1,5 @@
+import type { MandarinReading } from './pronunciation'
+
 export const DICTIONARY_SCHEMA_VERSION = 'v1' as const
 
 export type DictionaryEntry = {
@@ -18,6 +20,7 @@ export type DictionaryIndex = {
 export type LookupResult = {
   cangjie: string
   quick: string
+  mandarinReadings?: readonly MandarinReading[]
 }
 
 /**
