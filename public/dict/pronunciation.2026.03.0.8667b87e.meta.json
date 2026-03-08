@@ -1,0 +1,48 @@
+{
+  "schema": "cj-pronunciation-meta@1",
+  "dictVersion": "2026.03.0",
+  "artifact": {
+    "file": "pronunciation.2026.03.0.8667b87e.v1.json",
+    "sha256": "1bf31d435601ce6234d268582b78988f63abd04cf098c2bb3166002c64bc3009",
+    "bytes": 29107675
+  },
+  "stats": {
+    "entryCount": 70203,
+    "readingCount": 97827,
+    "sourceRowCount": 173048,
+    "filteredRowCount": 140558,
+    "dictionaryCharCount": 70275,
+    "dictionaryCoverageRatio": 0.998975
+  },
+  "sources": [
+    {
+      "id": "unicode-unihan-readings",
+      "name": "Unicode Unihan_Readings",
+      "license": "Unicode License V3",
+      "version": "latest",
+      "sha256": "f7a48b2b545acfaa77b2d607ae28747404ce02baefee16396c5d2d7a8ef34b5e",
+      "url": "https://www.unicode.org/Public/UCD/latest/ucd/Unihan.zip"
+    },
+    {
+      "id": "cns11643-properties",
+      "name": "CNS11643 Properties (phonetic + pinyin)",
+      "license": "Government Data Open License v1.0",
+      "version": "2026-01-09",
+      "sha256": "0d1e06958650fcc076699fa8cf1dc0f096c3ce2dfe75ba49dfd3104725112738",
+      "url": "https://www.cns11643.gov.tw/opendata/Properties.zip"
+    },
+    {
+      "id": "cns11643-unicode-mapping",
+      "name": "CNS11643 Mapping Tables (Unicode)",
+      "license": "Government Data Open License v1.0",
+      "version": "2026-01-09",
+      "sha256": "fb3179402976e326aaa3f257313f5cbdab14a8c14eff355095fa7d9b8435adba",
+      "url": "https://www.cns11643.gov.tw/opendata/MapingTables.zip"
+    }
+  ],
+  "build": {
+    "toolVersion": "pronunciation-build/0.3.0",
+    "generatedAt": "2026-03-08T22:22:44.553Z",
+    "gitCommit": "unknown"
+  }
+}

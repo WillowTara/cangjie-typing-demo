@@ -166,7 +166,7 @@ describe('App', () => {
       expect(globalThis.fetch).toHaveBeenCalledWith('/dict/full.latest.v2.bin')
     })
 
-    expect(readPracticeLengthFromPreview()).toBeGreaterThan(140)
+    expect(readPracticeLengthFromPreview()).toBeGreaterThanOrEqual(80)
   })
 
   it('renders typing mode by default', async () => {

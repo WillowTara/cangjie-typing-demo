@@ -2,7 +2,8 @@
 
 import { createHash } from 'node:crypto'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
-import { join } from 'node:path'
+import { dirname, join } from 'node:path'
+import { pathToFileURL } from 'node:url'
 import { PRONUNCIATION_SCHEMA } from '../../src/lib/pronunciation.ts'
 import { zhuyinToKeySequence } from '../../src/features/lookup/zhuyinKeyboard.ts'
 
@@ -28,7 +29,7 @@ type InputRow = {
   source?: string
 }
 
-type UnihanField = 'kMandarin' | 'kHanyuPinyin' | 'kHanyuPinlu'
+type UnihanField = 'kMandarin' | 'kHanyuPinyin' | 'kHanyuPinlu' | 'kXHC1983' | 'kTGHZ2013'
 
 type ReadingCandidate = {
   pinyinAscii: string
@@ -38,7 +39,13 @@ type ReadingCandidate = {
   tertiary: number
 }
 
-const UNIHAN_FIELDS: ReadonlySet<UnihanField> = new Set(['kMandarin', 'kHanyuPinyin', 'kHanyuPinlu'])
+const UNIHAN_FIELDS: ReadonlySet<UnihanField> = new Set([
+  'kMandarin',
+  'kHanyuPinyin',
+  'kHanyuPinlu',
+  'kXHC1983',
+  'kTGHZ2013',
+])
 
 const PINYIN_TONE_MARKS = new Map<string, readonly [base: string, tone: string]>([
   ['ā', ['a', '1']],
@@ -156,6 +163,17 @@ const TONE_TO_ZHUYIN_MARK: Record<string, string> = {
 function getArg(args: string[], name: string, fallback: string): string {
   const index = args.findIndex((value) => value === name)
   return index < 0 ? fallback : (args[index + 1] ?? fallback)
+}
+
+function parseListArg(value: string | undefined): string[] {
+  if (!value) {
+    return []
+  }
+
+  return value
+    .split(/[;,]/u)
+    .map((item) => item.trim())
+    .filter((item) => item.length > 0)
 }
 
 function normalizeOptionalString(value: unknown): string | undefined {
@@ -408,7 +426,27 @@ function parseUnihanChar(codepointToken: string): string | undefined {
   return Array.from(char).length === 1 ? char : undefined
 }
 
-function collectReadingTokens(field: UnihanField, value: string): Array<{ reading: string; frequency: number; index: number }> {
+function extractUnihanReadingValue(token: string): string {
+  const separatorIndex = token.indexOf(':')
+  return separatorIndex >= 0 ? token.slice(separatorIndex + 1) : token
+}
+
+function getFieldPriority(field: UnihanField): number {
+  switch (field) {
+    case 'kMandarin':
+      return 0
+    case 'kHanyuPinlu':
+      return 1
+    case 'kTGHZ2013':
+      return 2
+    case 'kXHC1983':
+      return 3
+    case 'kHanyuPinyin':
+      return 4
+  }
+}
+
+export function collectReadingTokens(field: UnihanField, value: string): Array<{ reading: string; frequency: number; index: number }> {
   const out: Array<{ reading: string; frequency: number; index: number }> = []
 
   if (field === 'kMandarin') {
@@ -423,7 +461,7 @@ function collectReadingTokens(field: UnihanField, value: string): Array<{ readin
     const clusters = value.split(/\s+/u).filter((token) => token.length > 0)
     let globalIndex = 0
     for (const cluster of clusters) {
-      const readingsPart = cluster.includes(':') ? cluster.split(':')[1] ?? '' : cluster
+      const readingsPart = extractUnihanReadingValue(cluster)
       const tokens = readingsPart
         .split(',')
         .map((token) => token.trim())
@@ -432,6 +470,18 @@ function collectReadingTokens(field: UnihanField, value: string): Array<{ readin
         out.push({ reading: token, frequency: 0, index: globalIndex })
         globalIndex += 1
       }
+    }
+    return out
+  }
+
+  if (field === 'kXHC1983' || field === 'kTGHZ2013') {
+    const clusters = value.split(/\s+/u).filter((token) => token.length > 0)
+    for (let index = 0; index < clusters.length; index += 1) {
+      const reading = extractUnihanReadingValue(clusters[index]).trim()
+      if (!reading) {
+        continue
+      }
+      out.push({ reading, frequency: 0, index })
     }
     return out
   }
@@ -452,7 +502,7 @@ function collectReadingTokens(field: UnihanField, value: string): Array<{ readin
   return out
 }
 
-function parseUnihanRows(inputText: string): InputRow[] {
+export function parseUnihanRows(inputText: string): InputRow[] {
   const byChar = new Map<string, Map<string, ReadingCandidate>>()
   const lines = inputText.split(/\r?\n/u)
 
@@ -498,7 +548,7 @@ function parseUnihanRows(inputText: string): InputRow[] {
       const candidate: ReadingCandidate = {
         pinyinAscii,
         source: field,
-        primary: field === 'kMandarin' ? 0 : field === 'kHanyuPinlu' ? 1 : 2,
+        primary: getFieldPriority(field),
         secondary: field === 'kHanyuPinlu' ? -reading.frequency : reading.index,
         tertiary: lineIndex * 1024 + reading.index,
       }
@@ -555,6 +605,119 @@ function parseInputRows(inputText: string, inputPath: string): InputRow[] {
     return parseJsonRows(inputText)
   }
   throw new Error(`Unsupported pronunciation input format: ${inputPath}`)
+}
+
+function parseCnsUnicodeMaps(inputTexts: string[]): Map<string, string> {
+  const out = new Map<string, string>()
+
+  for (const inputText of inputTexts) {
+    const lines = inputText.split(/\r?\n/u)
+    for (const line of lines) {
+      const trimmed = line.trim()
+      if (!trimmed || trimmed.startsWith('#')) {
+        continue
+      }
+
+      const parts = trimmed.split('\t')
+      if (parts.length < 2) {
+        continue
+      }
+
+      const cnsCode = parts[0]?.trim()
+      const hexCodepoint = parts[1]?.trim()
+      if (!cnsCode || !hexCodepoint || !/^\d+-[0-9A-F]{4}$/iu.test(cnsCode) || !/^[0-9A-F]{4,6}$/iu.test(hexCodepoint)) {
+        continue
+      }
+
+      const codepoint = Number.parseInt(hexCodepoint, 16)
+      if (!Number.isFinite(codepoint)) {
+        continue
+      }
+
+      out.set(cnsCode.toUpperCase(), String.fromCodePoint(codepoint))
+    }
+  }
+
+  return out
+}
+
+function parseCnsPinyinMap(inputText: string): Map<string, string> {
+  const out = new Map<string, string>()
+  const lines = inputText.split(/\r?\n/u)
+
+  for (const line of lines) {
+    const trimmed = line.trim()
+    if (!trimmed || trimmed.startsWith('#')) {
+      continue
+    }
+
+    const parts = trimmed.split('\t')
+    if (parts.length < 2) {
+      continue
+    }
+
+    const zhuyinDisplay = parts[0]?.trim().normalize('NFC')
+    const hanyuDisplay = parts[1]?.trim().normalize('NFC')
+    if (!zhuyinDisplay || !hanyuDisplay) {
+      continue
+    }
+
+    out.set(zhuyinDisplay, hanyuDisplay)
+  }
+
+  return out
+}
+
+export function parseCnsRows(
+  phoneticText: string,
+  cnsCodeToChar: ReadonlyMap<string, string>,
+  zhuyinToPinyinDisplay: ReadonlyMap<string, string>,
+): InputRow[] {
+  const out: InputRow[] = []
+  const lines = phoneticText.split(/\r?\n/u)
+
+  for (const line of lines) {
+    const trimmed = line.trim()
+    if (!trimmed || trimmed.startsWith('#')) {
+      continue
+    }
+
+    const parts = trimmed.split('\t')
+    if (parts.length < 2) {
+      continue
+    }
+
+    const cnsCode = parts[0]?.trim().toUpperCase()
+    const zhuyinDisplay = parts[1]?.trim().normalize('NFC')
+    if (!cnsCode || !zhuyinDisplay) {
+      continue
+    }
+
+    const char = cnsCodeToChar.get(cnsCode)
+    if (!char || Array.from(char).length !== 1) {
+      continue
+    }
+
+    const pinyinDisplay = zhuyinToPinyinDisplay.get(zhuyinDisplay)
+    if (!pinyinDisplay) {
+      continue
+    }
+
+    const pinyinAscii = normalizePinyinAscii(pinyinDisplay)
+    if (!pinyinAscii) {
+      continue
+    }
+
+    out.push({
+      char,
+      pinyinDisplay,
+      pinyinAscii,
+      zhuyinDisplay,
+      source: 'cns11643:phonetic+han',
+    })
+  }
+
+  return out
 }
 
 function filterRowsByDictionary(rows: InputRow[], dictionaryChars: Set<string> | undefined): InputRow[] {
@@ -625,17 +788,48 @@ async function main(): Promise<void> {
   const dictionaryPath = normalizeOptionalString(getArg(args, '--dictionary', 'public/dict/full-dictionary.csv'))
   const defaultSources = input.replace(/\.[^./\\]+$/u, '.sources.json')
   const sourcesPath = getArg(args, '--sources', defaultSources)
+  const cnsPhoneticPath = normalizeOptionalString(getArg(args, '--cns-phonetic', ''))
+  const cnsPinyinPathArg = normalizeOptionalString(getArg(args, '--cns-pinyin', ''))
+  const cnsUnicodeMapsArg = normalizeOptionalString(getArg(args, '--cns-unicode-maps', ''))
 
   const sourceText = await readFile(input, 'utf8')
   const sourceSha256 = createHash('sha256').update(sourceText).digest('hex')
   const sourceRows = parseInputRows(sourceText, input)
+
+  let cnsRows: InputRow[] = []
+  if (cnsPhoneticPath) {
+    const cnsPhoneticText = await readFile(cnsPhoneticPath, 'utf8')
+    const cnsPinyinPath =
+      cnsPinyinPathArg ?? join(dirname(cnsPhoneticPath), 'CNS_pinyin_2.txt')
+    const cnsPinyinText = await readFile(cnsPinyinPath, 'utf8')
+
+    const cnsUnicodeMapPathsArg = parseListArg(cnsUnicodeMapsArg)
+    const cnsUnicodeMapPaths =
+      cnsUnicodeMapPathsArg.length > 0
+        ? cnsUnicodeMapPathsArg
+        : [
+            join(dirname(cnsPhoneticPath), '../mapping/Unicode/CNS2UNICODE_Unicode BMP.txt'),
+            join(dirname(cnsPhoneticPath), '../mapping/Unicode/CNS2UNICODE_Unicode 2.txt'),
+            join(dirname(cnsPhoneticPath), '../mapping/Unicode/CNS2UNICODE_Unicode 3.txt'),
+            join(dirname(cnsPhoneticPath), '../mapping/Unicode/CNS2UNICODE_Unicode 15.txt'),
+          ]
+
+    const cnsUnicodeMapTexts = await Promise.all(cnsUnicodeMapPaths.map((path) => readFile(path, 'utf8')))
+    cnsRows = parseCnsRows(
+      cnsPhoneticText,
+      parseCnsUnicodeMaps(cnsUnicodeMapTexts),
+      parseCnsPinyinMap(cnsPinyinText),
+    )
+  }
+
+  const mergedSourceRows = [...sourceRows, ...cnsRows]
 
   let dictionaryChars: Set<string> | undefined
   if (dictionaryPath) {
     dictionaryChars = parseDictionaryChars(await readFile(dictionaryPath, 'utf8'))
   }
 
-  const rows = filterRowsByDictionary(sourceRows, dictionaryChars)
+  const rows = filterRowsByDictionary(mergedSourceRows, dictionaryChars)
   const sources = normalizeSourcesManifest(JSON.parse(await readFile(sourcesPath, 'utf8')) as unknown, sourceSha256)
   const entries = buildEntries(rows)
   const preliminaryPayload = {
@@ -677,7 +871,7 @@ async function main(): Promise<void> {
         stats: {
           entryCount: Object.keys(entries).length,
           readingCount: Object.values(entries).reduce((sum, entry) => sum + entry.mandarinReadings.length, 0),
-          sourceRowCount: sourceRows.length,
+          sourceRowCount: mergedSourceRows.length,
           filteredRowCount: rows.length,
           dictionaryCharCount: dictionaryChars?.size ?? null,
           dictionaryCoverageRatio:
@@ -685,7 +879,7 @@ async function main(): Promise<void> {
         },
         sources,
         build: {
-          toolVersion: 'pronunciation-build/0.2.0',
+          toolVersion: 'pronunciation-build/0.3.0',
           generatedAt: new Date().toISOString(),
           gitCommit: process.env.GIT_COMMIT ?? 'unknown',
         },
@@ -698,8 +892,12 @@ async function main(): Promise<void> {
   await writeFile(join(outputDir, licensesFile), `${JSON.stringify({ schema: 'cj-pronunciation-licenses@1', sources }, null, 2)}\n`, 'utf8')
 
   process.stdout.write(
-    `built ${artifactFile} (${Object.keys(entries).length} chars, ${rows.length} filtered rows from ${sourceRows.length} source rows)\n`,
+    `built ${artifactFile} (${Object.keys(entries).length} chars, ${rows.length} filtered rows from ${mergedSourceRows.length} source rows)\n`,
   )
 }
 
-void main()
+const isDirectRun = process.argv[1] ? pathToFileURL(process.argv[1]).href === import.meta.url : false
+
+if (isDirectRun) {
+  void main()
+}

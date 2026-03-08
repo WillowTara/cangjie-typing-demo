@@ -1,8 +1,8 @@
 # Pronunciation Lookup 開發任務清單
 
-Status: Phase 1-3 Complete + Coverage Expansion Complete
+Status: Phase 1-3 Complete + Post-v2.0 Coverage Backfill In Progress
 Owner: Lookup Platform
-Last Updated: 2026-03-08
+Last Updated: 2026-03-09
 Related Spec: `docs/pronunciation-lookup-spec.md`
 
 本清單用於把 pronunciation lookup 規格拆成可執行的開發任務，方便分 PR 落地並保持既有 `cangjie` / `quick` 行為不回歸。
@@ -153,3 +153,27 @@ Related Spec: `docs/pronunciation-lookup-spec.md`
 - [x] Pinyin / Zhuyin 可獨立開關
 - [x] 多音字 deterministic
 - [x] 商業可用資料來源邊界可被 docs 與 artifacts 證明
+
+## 7. Post-v2.0 Full-Coverage Backfill
+
+### T16. Unicode-only backfill round 1
+- [x] 新增 `kXHC1983` ingestion
+- [x] 新增 `kTGHZ2013` ingestion
+- [x] 新增 `scripts/dict/audit-pronunciation-coverage.mts`
+- [x] 新增 `npm run dict:pronunciation:audit`
+- [x] 新增 build/audit script regression tests（含 ExtB / non-BMP）
+- [x] 使用 Unicode 官方 `Unihan_Readings.txt` 重建 pronunciation artifact
+- [x] 產出新 artifact：`public/dict/pronunciation.2026.03.0.c5c8713a.*`
+- [x] coverage 由 `41,304 / 70,275` 提升到 `41,306 / 70,275`
+- [x] readingCount 由 `52,299` 提升到 `52,793`
+
+### T17. Unicode-only exhaustion assessment
+- [x] 證明第一輪主要收益在多音字補齊，而不是大量新增字頭
+- [x] 證明殘餘缺口仍以 `ExtB+` 為主
+- [x] 決定加入 open-data character-level source（CNS11643）並完成第二輪 merge
+
+### T18. External-source decision gate
+- [x] 完成 `CNS11643` 精確檔案、欄位、授權 notice 審核
+- [x] 若啟用新來源，先更新 `docs/pronunciation-full-coverage-backfill.md`
+- [x] 第二輪 merge 產出 `pronunciation.2026.03.0.8667b87e.*`
+- [ ] 若需要 optional add-on，保持與 base artifact 分離

@@ -1,7 +1,7 @@
 {
   "name": "newproject",
   "private": true,
-  "version": "2.0.0",
+  "version": "2.0.1",
   "engines": {
     "node": ">=20.19.0"
   },
@@ -27,6 +27,8 @@
     "check": "npm run typecheck && npm run lint && npm run test:all && npm run test:coverage",
     "dict:build:v2": "node scripts/dict/build-v2.mts",
     "dict:pronunciation:build": "node scripts/dict/build-pronunciation-unihan.mts",
+    "dict:pronunciation:build:cns": "node scripts/dict/build-pronunciation-unihan.mts --input public/dict/cns11643-download/Unihan_Readings.txt --sources public/dict/pronunciation-unihan-cns11643.sources.json --cns-phonetic public/dict/cns11643-download/properties/CNS_phonetic.txt --cns-pinyin public/dict/cns11643-download/properties/CNS_pinyin_2.txt --cns-unicode-maps \"public/dict/cns11643-download/mapping/Unicode/CNS2UNICODE_Unicode BMP.txt;public/dict/cns11643-download/mapping/Unicode/CNS2UNICODE_Unicode 2.txt;public/dict/cns11643-download/mapping/Unicode/CNS2UNICODE_Unicode 3.txt;public/dict/cns11643-download/mapping/Unicode/CNS2UNICODE_Unicode 15.txt\"",
+    "dict:pronunciation:audit": "node scripts/dict/audit-pronunciation-coverage.mts",
     "dict:verify:core": "node scripts/dict/verify-core-artifacts.mts",
     "dict:verify:full": "node scripts/dict/verify-core-artifacts.mts --variant full --input public/dict/full-dictionary.csv",
     "dict:export:sqlite": "node scripts/dict/export-sqlite.mts",

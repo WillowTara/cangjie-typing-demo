@@ -1,6 +1,6 @@
 # 倉頡打字練習 - Cangjie Typing Practice Demo
 
-![Version](https://img.shields.io/badge/version-2.0.0-blue)
+![Version](https://img.shields.io/badge/version-2.0.1-blue)
 ![React](https://img.shields.io/badge/React-19.2+-61DAFB)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9+-3178C6)
 ![Vite](https://img.shields.io/badge/Vite-7.3+-646CFF)
@@ -32,8 +32,8 @@ Monkeytype 風格的倉頡與速成輸入法練習應用，同時提供字典查
 
 - **Vercel**: https://cangjie-typing-demo.vercel.app
 - **GitHub**: https://github.com/WillowTara/cangjie-typing-demo
-- **最新測試連結（Production，快取破除）**: https://cangjie-typing-demo.vercel.app/?v=verify-20260308-coverage-full
-- **最新封版基準 commit**: 5429ef1
+- **最新測試連結（Production，快取破除）**: https://cangjie-typing-demo.vercel.app/?v=verify-20260309-release-v2.0.1
+- **最新封版基準 commit**: 待本次封版提交
 
 ## 技術架構
 
@@ -292,6 +292,15 @@ VITE_DICTIONARY_VARIANT=full
 - UI 靈感：Monkeytype (https://monkeytype.com/)
 
 ## 更新日誌
+
+### v2.0.1 (2026-03-09) - Pronunciation backfill round 1
+- ✅ `scripts/dict/build-pronunciation-unihan.mts` 新增 `kXHC1983` / `kTGHZ2013` ingestion，並保留 deterministic dedupe 與 source provenance
+- ✅ 新增 coverage audit：`npm run dict:pronunciation:audit`（`scripts/dict/audit-pronunciation-coverage.mts`）
+- ✅ 新增 script regression tests，覆蓋 `kXHC1983` / `kTGHZ2013` 解析、ExtB/non-BMP retention、audit block classification
+- ✅ 使用 Unicode 官方 `Unihan_Readings.txt` 重建新 artifact：`pronunciation.2026.03.0.c5c8713a.*`
+- ✅ coverage 由 `41,304` 提升至 `41,306`，readingCount 由 `52,299` 提升至 `52,793`
+- ✅ 第二輪加入 CNS11643 character-level phonetic + Unicode mapping merge，重建 artifact：`pronunciation.2026.03.0.8667b87e.*`
+- ✅ coverage 由 `58.7777%` 提升至 `99.8975%`（`70,203 / 70,275`，剩餘缺口 `72` 字）
 
 ### v2.0.0 (2026-03-08) - Pronunciation full coverage milestone
 - ✅ Pronunciation data expanded from 3 characters to 41,304 characters (58.77% dictionary coverage)
