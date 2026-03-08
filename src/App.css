@@ -462,7 +462,7 @@ font-size: 0.74rem;
 }
 
 .pronunciation-row {
-  align-items: flex-start;
+  align-items: center;
 }
 
 .code-label {
@@ -472,7 +472,8 @@ font-size: 0.74rem;
   width: 2.9rem;
 }
 
-.code-value {
+.code-value,
+.code-chinese {
   color: var(--text-color);
   font-size: 1.02rem;
   font-weight: 700;
@@ -502,8 +503,7 @@ font-size: 0.74rem;
 }
 
 .reading-chip-zhuyin {
-  background: rgba(226, 183, 20, 0.08);
-  border-color: rgba(226, 183, 20, 0.18);
+  /* 注音不需要特殊樣式，使用基礎 .reading-chip 樣式即可 */
 }
 
 .reading-main {

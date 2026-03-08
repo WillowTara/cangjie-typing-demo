@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { DictionaryLookupFn } from '../../lib/dictionary'
 import { formatKeySequence } from './zhuyinKeyboard'
+import { cangjieToChinese, cangjieToEnglishKeys } from './cangjieMapping'
 
 type LookupSystem = 'cangjie' | 'quick' | 'pinyin' | 'zhuyin'
 
@@ -22,9 +23,6 @@ const DEFAULT_VISIBLE_SYSTEMS: VisibleSystems = {
   zhuyin: true,
 }
 
-function codeToEnglishKeys(code: string): string {
-  return code.split('').join(' ')
-}
 
 function hasAnyVisibleSystem(visibleSystems: VisibleSystems): boolean {
   return LOOKUP_SYSTEM_OPTIONS.some((system) => visibleSystems[system])
@@ -99,10 +97,14 @@ export function DictionaryLookup({
         char,
         cangjie: entry?.cangjie ?? '-',
         quick: entry?.quick ?? '-',
-        cangjieKeys: entry ? codeToEnglishKeys(entry.cangjie) : '-',
+        cangjieChinese: entry ? cangjieToChinese(entry.cangjie) : '-',
+        quickChinese: entry ? cangjieToChinese(entry.quick) : '-',
+        cangjieKeys: entry ? cangjieToEnglishKeys(entry.cangjie) : '-',
+        quickKeys: entry ? cangjieToEnglishKeys(entry.quick) : '-',
         mandarinReadings: entry?.mandarinReadings ?? [],
       }
     })
+
   }, [input, lookup])
 
   const hasVisibleSystems = hasAnyVisibleSystem(visibleSystems)
@@ -167,44 +169,44 @@ export function DictionaryLookup({
                 {visibleSystems.cangjie ? (
                   <div className="code-row">
                     <span className="code-label">倉頡</span>
-                    <span className="code-value">{row.cangjie}</span>
+                    <span className="code-chinese">{row.cangjieChinese}</span>
                     <span className="code-english">{row.cangjieKeys}</span>
                   </div>
                 ) : null}
 
+
                 {visibleSystems.quick ? (
                   <div className="code-row">
                     <span className="code-label">速成</span>
-                    <span className="code-value">{row.quick}</span>
+                    <span className="code-chinese">{row.quickChinese}</span>
+                    <span className="code-english">{row.quickKeys}</span>
                   </div>
                 ) : null}
+
 
                 {visibleSystems.pinyin && row.mandarinReadings.length > 0 ? (
                   <div className="code-row pronunciation-row">
                     <span className="code-label">拼音</span>
-                    <div className="reading-list" aria-label={`${row.char} 普通話拼音`}>
-                      {row.mandarinReadings.map((reading) => (
-                        <span key={`${row.char}-${reading.id}-pinyin`} className="reading-chip">
-                          <span className="reading-main">{reading.pinyinDisplay}</span>
-                        </span>
-                      ))}
-                    </div>
+                    <span className="code-chinese">
+                      {row.mandarinReadings.map((r) => r.pinyinDisplay).join(' ')}
+                    </span>
                   </div>
                 ) : null}
 
                 {visibleSystems.zhuyin && row.mandarinReadings.length > 0 ? (
                   <div className="code-row pronunciation-row">
                     <span className="code-label">注音</span>
-                    <div className="reading-list" aria-label={`${row.char} 台灣注音`}>
-                      {row.mandarinReadings.map((reading) => (
-                        <span key={`${row.char}-${reading.id}-zhuyin`} className="reading-chip reading-chip-zhuyin">
-                          <span className="reading-main">{reading.zhuyinDisplay}</span>
-                          <span className="reading-keys">{formatKeySequence(reading.zhuyinKeySequence)}</span>
-                        </span>
-                      ))}
-                    </div>
+                    <span className="code-chinese">
+                      {row.mandarinReadings.map((r) => r.zhuyinDisplay).join(' ')}
+                    </span>
+                    <span className="code-english">
+                      {row.mandarinReadings.map((r) => formatKeySequence(r.zhuyinKeySequence)).join(' ')}
+                    </span>
                   </div>
                 ) : null}
+
+
+
 
                 {!rowHasVisibleContent(visibleSystems, row.mandarinReadings.length) ? (
                   <div className="code-row code-row-empty">

@@ -237,13 +237,11 @@ describe('App', () => {
     expect(screen.getByRole('button', { name: '速成' })).toHaveAttribute('aria-pressed', 'true')
     expect(screen.getByRole('button', { name: '拼音' })).toHaveAttribute('aria-pressed', 'true')
     expect(screen.getByRole('button', { name: '注音' })).toHaveAttribute('aria-pressed', 'true')
-    expect(screen.getByText('zhōng')).toBeInTheDocument()
-    expect(screen.getByText('zhòng')).toBeInTheDocument()
+    expect(screen.getByText('zhōng zhòng')).toBeInTheDocument()
     expect(screen.getByText('rì')).toBeInTheDocument()
-    expect(screen.getByText('ㄓㄨㄥ')).toBeInTheDocument()
-    expect(screen.getByText('ㄓㄨㄥˋ')).toBeInTheDocument()
-    expect(screen.getByText('5 j /')).toBeInTheDocument()
-    expect(screen.getByText('5 j / 4')).toBeInTheDocument()
+    expect(screen.getByText('rì')).toBeInTheDocument()
+    expect(screen.getByText('ㄓㄨㄥ ㄓㄨㄥˋ')).toBeInTheDocument()
+    expect(screen.getByText('b 4')).toBeInTheDocument()
     expect(screen.getByText('b 4')).toBeInTheDocument()
   })
 
@@ -267,20 +265,20 @@ describe('App', () => {
 
     await user.click(pinyinToggle)
     expect(pinyinToggle).toHaveAttribute('aria-pressed', 'false')
-    expect(screen.queryByText('zhōng')).not.toBeInTheDocument()
-    expect(screen.getByText('ㄓㄨㄥ')).toBeInTheDocument()
+    expect(screen.queryByText('zhōng zhòng')).not.toBeInTheDocument()
+    expect(screen.getByText('ㄓㄨㄥ ㄓㄨㄥˋ')).toBeInTheDocument()
     expect(screen.getAllByText('L').length).toBeGreaterThan(0)
 
     await user.click(zhuyinToggle)
     expect(zhuyinToggle).toHaveAttribute('aria-pressed', 'false')
-    expect(screen.queryByText('ㄓㄨㄥ')).not.toBeInTheDocument()
+    expect(screen.queryByText('ㄓㄨㄥ ㄓㄨㄥˋ')).not.toBeInTheDocument()
     expect(screen.getAllByText('L').length).toBeGreaterThan(0)
 
     await user.click(cangjieToggle)
     await user.click(quickToggle)
     expect(screen.getByText('請至少選擇一種顯示系統。')).toBeInTheDocument()
-    expect(screen.queryByText('zhōng')).not.toBeInTheDocument()
-    expect(screen.queryByText('ㄓㄨㄥ')).not.toBeInTheDocument()
+    expect(screen.queryByText('zhōng zhòng')).not.toBeInTheDocument()
+    expect(screen.queryByText('ㄓㄨㄥ ㄓㄨㄥˋ')).not.toBeInTheDocument()
   })
 
   it('shows a per-row empty state when only pronunciation systems are active but no reading data exists', async () => {

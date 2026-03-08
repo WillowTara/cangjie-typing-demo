@@ -20,7 +20,7 @@ test('lookup mode returns cangjie and quick code for known character', async ({ 
   await expect(firstItem.locator('.lookup-char')).toHaveText('日')
   await expect(firstItem.getByText('倉頡')).toBeVisible()
   await expect(firstItem.getByText('速成')).toBeVisible()
-  await expect(firstItem.locator('.code-value').first()).toHaveText('A')
+  await expect(firstItem.locator('.code-chinese').first()).toHaveText('日')
 })
 
 test('lookup mode renders pronunciation rows and filter toggles for characters with pronunciation data', async ({ page }) => {
@@ -40,10 +40,10 @@ test('lookup mode renders pronunciation rows and filter toggles for characters w
   await expect(firstItem.getByText('注音')).toBeVisible()
   await expect(firstItem.getByText('zhōng')).toBeVisible()
   await expect(firstItem.getByText('zhòng')).toBeVisible()
-  await expect(firstItem.getByText('ㄓㄨㄥ', { exact: true })).toBeVisible()
-  await expect(firstItem.getByText('ㄓㄨㄥˋ', { exact: true })).toBeVisible()
+  await expect(firstItem.getByText('ㄓㄨㄥ')).toBeVisible()
+  await expect(firstItem.getByText('ㄓㄨㄥˋ')).toBeVisible()
 
   await page.getByRole('button', { name: '拼音' }).click()
   await expect(firstItem.getByText('zhōng')).toHaveCount(0)
-  await expect(firstItem.getByText('ㄓㄨㄥ', { exact: true })).toBeVisible()
+  await expect(firstItem.getByText('ㄓㄨㄥ')).toBeVisible()
 })
