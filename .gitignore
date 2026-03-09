@@ -25,3 +25,9 @@ test-results
 *.njsproj
 *.sln
 *.sw?
+
+# Local agent/tool artifacts
+%TEMP%/
+.opencode/
+.sisyphus/
+opencode.json
