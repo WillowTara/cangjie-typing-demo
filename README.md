@@ -32,8 +32,8 @@ Monkeytype 風格的倉頡與速成輸入法練習應用，同時提供字典查
 
 - **Vercel**: https://cangjie-typing-demo.vercel.app
 - **GitHub**: https://github.com/WillowTara/cangjie-typing-demo
-- **最新測試連結（Production，快取破除）**: https://cangjie-typing-demo.vercel.app/?v=verify-9bc9b50
-- **最新封版基準 commit**: 9bc9b50
+- **最新測試連結（Production，快取破除）**: https://cangjie-typing-demo.vercel.app/?v=verify-5502ae4
+- **最新封版基準 commit**: 5502ae4
 
 ## 技術架構
 
@@ -297,7 +297,7 @@ VITE_DICTIONARY_VARIANT=full
 - ✅ 查碼 UI 顯示邏輯更新：倉頡/速成改為「中文部件 + 英文字母空格鍵序」，拼音/注音行與查碼行對齊、移除 chip 外框
 - ✅ 查碼回歸測試更新：同步調整 `src/App.test.tsx` 與 `e2e/lookup-query.spec.ts` 斷言，覆蓋新顯示格式
 - ✅ 倉庫清理：移除誤追蹤的本地工具檔案，並在 `.gitignore` 增加 `%TEMP%/`、`.opencode/`、`.sisyphus/`、`opencode.json`
-- ✅ 封版基準 commit：`9bc9b50`
+- ✅ 封版基準 commit：`5502ae4`
 
 ### v2.0.1 (2026-03-09) - Pronunciation backfill round 1
 - ✅ `scripts/dict/build-pronunciation-unihan.mts` 新增 `kXHC1983` / `kTGHZ2013` ingestion，並保留 deterministic dedupe 與 source provenance
