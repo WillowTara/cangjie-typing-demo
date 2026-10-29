@@ -26,6 +26,7 @@ Monkeytype 風格的倉頡與速成輸入法練習應用，同時提供字典查
   - 倉頡碼 (Cangjie Code)
   - 速成碼 (Quick Code)
   - 英文鍵序 (Key Sequence)
+  - 拼音與注音（查碼列可開關；讀音資料載入失敗時不影響倉頡/速成）
 - 支援批量查詢（一次輸入多個字）
 
 ## 線上展示
@@ -48,7 +49,7 @@ Monkeytype 風格的倉頡與速成輸入法練習應用，同時提供字典查
 
 ### 專案結構
 ```
-newproject/
+cangjie-typing-demo/
 ├── src/
 │   ├── App.tsx              # 應用組裝層（composition root）
 │   ├── App.css             # 樣式定義
@@ -245,7 +246,8 @@ npm run dict:export:sqlite -- --input public/dict/sample-dictionary.json --outpu
 ### 字典查詢模式
 1. 點擊「查碼」標籤進入查詢模式
 2. 輸入要查詢的中文字元
-3. 立即顯示對應的倉頡碼、速成碼、鍵盤序列
+3. 立即顯示對應的倉頡碼、速成碼、鍵盤序列，以及預設開啟的拼音與注音
+4. 可用顯示列開關倉頡、速成、拼音、注音
 
 ## Demo 資料說明
 
@@ -289,6 +291,7 @@ VITE_DICTIONARY_VARIANT=full
 - 練習素材：離線白名單完整文章 + 維基百科隨機完整條目（CC BY-SA 4.0）
 - 上架策略：離線白名單維持人工審核，避免敏感題材誤入
 - 字典資料：需自行準備版權合規的字典檔
+- 讀音資料：隨附產物 `public/dict/pronunciation.*.licenses.json`（Unicode License V3、CNS11643 政府資料開放授權），追溯欄位見對應 `.meta.json`
 - UI 靈感：Monkeytype (https://monkeytype.com/)
 
 ## 更新日誌

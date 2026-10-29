@@ -52,7 +52,7 @@
 ## 現有資料夾結構
 
 ```
-newproject/
+cangjie-typing-demo/
 ├── dist/                 # npm run build 產出
 ├── public/dict/          # 範例、core/full 字典與產物
 │   ├── sample-dictionary.csv
