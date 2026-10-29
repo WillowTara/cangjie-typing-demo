@@ -286,6 +286,9 @@ VITE_DICTIONARY_VARIANT=full
 - 封版說明：`docs/release-v1.2.0.md`
 - 建議流程：先更新規格，再依清單拆 PR 實作，避免 migration 規則在開發中遺漏
 
+### 5. 文件維運（docs / ops）
+- Notion↔GitHub 同步（只同步差異，對照 `docs/notion-doc-map.json`）：`docs/notion-github-sync.md`
+
 ## 授權與鳴謝
 
 - 練習素材：離線白名單完整文章 + 維基百科隨機完整條目（CC BY-SA 4.0）

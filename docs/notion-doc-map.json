@@ -1,0 +1,121 @@
+{
+  "schema_version": 1,
+  "github_repo": "https://github.com/WillowTara/cangjie-typing-demo",
+  "source_of_truth": "github_markdown",
+  "notion_root": {
+    "title": "倉頡打字練習 — 專案文檔",
+    "url": "https://app.notion.com/p/40790ae2adae80308584c55eed8dab60",
+    "notes": "Notion is a mirror. Do not author canonical docs here first."
+  },
+  "sync": {
+    "mode": "delta-only",
+    "full_copy": false,
+    "hub_update": "one-line status bump only",
+    "workflow": "docs/notion-github-sync.md"
+  },
+  "documents": [
+    {
+      "source_path": "README.md",
+      "notion_url": "https://app.notion.com/p/40790ae2adae811f83becc672caec389",
+      "kind": "file",
+      "notes": "Product readme. Update it in the same PR when behavior or operator-facing docs change."
+    },
+    {
+      "source_path": "DEPLOY.md",
+      "notion_url": "https://app.notion.com/p/40790ae2adae815785d6e5ad378175d2",
+      "kind": "file",
+      "notes": "Deploy and operator notes."
+    },
+    {
+      "source_path": "AGENTS.md",
+      "notion_url": "https://app.notion.com/p/40790ae2adae8120b4f8f0e32246d9e5",
+      "kind": "file",
+      "notes": "Agent rules. GitHub copy wins over the existing Notion mirror."
+    },
+    {
+      "source_path": "docs/pronunciation-lookup-implementation-checklist.md",
+      "notion_url": "https://app.notion.com/p/40790ae2adae81f68e62e8f8c9297acc",
+      "kind": "file",
+      "notes": ""
+    },
+    {
+      "source_path": "docs/pronunciation-lookup-spec.md",
+      "notion_url": "https://app.notion.com/p/40790ae2adae8118bd28da1f91779ae2",
+      "kind": "file",
+      "notes": ""
+    },
+    {
+      "source_path": "docs/pronunciation-lookup-task-list.md",
+      "notion_url": "https://app.notion.com/p/40790ae2adae81cf9cc7f072a2cce86c",
+      "kind": "file",
+      "notes": ""
+    },
+    {
+      "source_path": "docs/pronunciation-lookup-phase1-starter.md",
+      "notion_url": "https://app.notion.com/p/40790ae2adae8111b186d5ace2e3746d",
+      "kind": "file",
+      "notes": ""
+    },
+    {
+      "source_path": "docs/pronunciation-full-coverage-backfill.md",
+      "notion_url": "https://app.notion.com/p/40790ae2adae81338f01ebb8cfa7bdd1",
+      "kind": "file",
+      "notes": ""
+    },
+    {
+      "source_path": "docs/dictionary-v2-checklist.md",
+      "notion_url": "https://app.notion.com/p/40790ae2adae8104af44f37991598298",
+      "kind": "file",
+      "notes": ""
+    },
+    {
+      "source_path": "docs/dictionary-v2-spec.md",
+      "notion_url": "https://app.notion.com/p/40790ae2adae8188839ff52279aa3360",
+      "kind": "file",
+      "notes": ""
+    },
+    {
+      "source_path": "docs/mobile-dict.md",
+      "notion_url": "https://app.notion.com/p/40790ae2adae819199e1d23a98ae361d",
+      "kind": "file",
+      "notes": ""
+    },
+    {
+      "source_path": "HANDOFF.md",
+      "notion_url": "https://app.notion.com/p/40790ae2adae81dd9811e7d6b5bcc9f7",
+      "kind": "file",
+      "notes": "Notion page exists. The file is not in the GitHub repo. Do not create HANDOFF.md only to sync. If the file is added later, GitHub markdown becomes the source of truth."
+    },
+    {
+      "source_path": null,
+      "title": "Project Hub",
+      "notion_url": "https://app.notion.com/p/40790ae2adae81b184d6fc8370887029",
+      "kind": "hub",
+      "notes": "Status only, not a file source of truth. One-line status bumps only."
+    },
+    {
+      "source_path": "LICENSE",
+      "notion_url": null,
+      "kind": "optional",
+      "notes": "Unmapped until a Notion page exists. The repo file is the MIT license. Do not create a Notion page ad hoc; add the URL here first."
+    },
+    {
+      "source_path": "docs/notion-github-sync.md",
+      "notion_url": null,
+      "kind": "optional",
+      "notes": "Workflow doc. Unmapped until a Notion page exists."
+    },
+    {
+      "source_path": "docs/notion-doc-map.json",
+      "notion_url": null,
+      "kind": "optional",
+      "notes": "This map. Do not mirror the JSON into Notion."
+    },
+    {
+      "source_path": "docs/release-v1.2.0.md",
+      "notion_url": null,
+      "kind": "optional",
+      "notes": "Release freeze note present in the repo. Unmapped until a Notion page exists."
+    }
+  ]
+}
